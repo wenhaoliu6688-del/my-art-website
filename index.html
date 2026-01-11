@@ -5,23 +5,15 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>HARRY6</title>
 
-  <script src="https://cdn.jsdelivr.net/npm/p5@1.11.11/lib/p5.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/p5@1.11.11/lib/addons/p5.sound.min.js"></script>
-
   <style>
     :root{
       --text:#111;
       --muted: rgba(0,0,0,.48);
       --muted2: rgba(0,0,0,.30);
       --line: rgba(0,0,0,.10);
-
       --leftPad: 56px;
       --panelW: 360px;
       --panelPad: 18px;
-      --gap: 14px;
-
-      --font: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial,
-              "PingFang SC","Hiragino Sans GB","Microsoft YaHei", sans-serif;
     }
     *{ box-sizing:border-box; }
     html, body{
@@ -29,8 +21,7 @@
       margin:0;
       background:#fff;
       color:var(--text);
-      font-family: var(--font);
-      overflow:hidden;
+      font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Arial, "PingFang SC","Microsoft YaHei", sans-serif;
     }
 
     /* p5 stage */
@@ -41,7 +32,6 @@
       align-items:center;
       justify-content:center;
       z-index: 1;
-      pointer-events:none;
     }
     canvas{ display:block; pointer-events:auto; }
 
@@ -57,7 +47,6 @@
       font-size:18px;
       letter-spacing:.10em;
       text-transform:uppercase;
-      line-height:1;
     }
     .brand:hover{ opacity:.78; }
 
@@ -76,7 +65,7 @@
       display:inline-block;
       cursor:pointer;
       border:none;
-      background: rgba(255, 255, 255, 0.95);
+      background: #ffffff;
       padding: 10px 12px;
       margin-left:-12px;
       font-size:15px;
@@ -84,10 +73,12 @@
       text-transform:uppercase;
       color:var(--text);
       border-radius: 999px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
     }
     .navBtn:hover{
       color:var(--text);
-      background: rgba(255, 255, 255, 1);
+      background: #ffffff;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.15);
     }
     .navBtn.is-active{ color:var(--text); }
 
@@ -100,7 +91,6 @@
       border:1px solid var(--line);
       padding: var(--panelPad);
       z-index:1001;
-
       opacity:0;
       pointer-events:none;
       transform: translateY(-8px);
@@ -111,7 +101,6 @@
       pointer-events:auto;
       transform: translateY(0);
     }
-    /* “桥接区域”：让鼠标从按钮移到弹框不会瞬间消失 */
     .panel::before{
       content:"";
       position:absolute;
@@ -150,8 +139,6 @@
       font-size:13px;
       letter-spacing:.06em;
       color:var(--muted);
-      user-select:text;
-      white-space:nowrap;
       text-align: center;
     }
     .emailCopy{
@@ -159,24 +146,26 @@
       padding: 6px 10px;
       border:1px solid transparent;
       border-radius:999px;
-      transition: border-color .15s ease, color .15s ease;
-      background: rgba(255, 255, 255, 0.85);
+      background: #ffffff;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+      transition: border-color .15s ease, color .15s ease, box-shadow .15s ease;
     }
     .emailCopy:hover{
       border-color: var(--line);
       color: var(--text);
-      background: rgba(255, 255, 255, 0.95);
+      box-shadow: 0 2px 6px rgba(0,0,0,0.15);
     }
 
-    /* 互动提示 */
     .hint{
-      font-size:11px;
+      font-size:12px;
       letter-spacing:.18em;
       text-transform:uppercase;
-      color:rgba(0,0,0,.35);
-      margin-bottom: 6px;
-      display: none; /* 默认隐藏，只在手机显示 */
+      color:rgba(0,0,0,.6);
+      margin-bottom: 8px;
+      display: none;
+      font-weight: 500;
     }
+
     .toast{
       position:absolute;
       left:100%;
@@ -196,7 +185,7 @@
       :root{ --leftPad: 22px; --panelW: 320px; }
       .brand{ top:22px; }
       .navBtn{ font-size:14px; letter-spacing:.20em; }
-      .hint{ display: block; } /* 手机/平板上显示互动提示 */
+      .hint{ display: block; }
     }
   </style>
 </head>
@@ -223,11 +212,12 @@
 
   <div id="stage"></div>
 
+  <script src="https://cdn.jsdelivr.net/npm/p5@1.11.11/lib/p5.js"></script>
+
   <script>
-    /* ===== GitHub Pages base（自动识别 /my-art-website/） ===== */
+    // ===== 导航和面板逻辑 =====
     const REPO = location.pathname.split("/")[1];
     const BASE = REPO ? `/${REPO}/` : "/";
-
     document.getElementById("homeLink").setAttribute("href", BASE);
 
     const PROJECTS = [
@@ -270,7 +260,6 @@
     function positionPanelNearButton(btn){
       const r = btn.getBoundingClientRect();
       const gap = 14;
-
       let left = Math.round(r.right + gap);
       let top  = Math.round(r.top + r.height/2);
 
@@ -287,7 +276,6 @@
 
     function openPanelFor(key, btn){
       clearTimeout(closeTimer);
-
       activeKey = key;
       setActiveButton(key);
 
@@ -311,27 +299,23 @@
       closeTimer = setTimeout(closePanel, 220);
     }
 
-    /* 检测是否是触摸设备 */
     const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
 
     items.forEach(item => {
       const key = item.dataset.menu;
       const btn = item.querySelector(".navBtn");
 
-      /* ✅ 电脑上：projects/images 使用 hover 打开面板 */
       if(!isTouchDevice && (key === "projects" || key === "images")){
         item.addEventListener("mouseenter", () => openPanelFor(key, btn));
         item.addEventListener("mouseleave", scheduleClose);
       }
 
-      /* ✅ 点击事件：about 跳转，projects/images 打开/关闭面板 */
       btn.addEventListener("click", (e) => {
         if(key === "about"){
           window.location.href = ABOUT_HREF;
           e.preventDefault();
           return;
         }
-        /* projects/images：点击切换面板状态 */
         if(panel.classList.contains("is-open") && activeKey === key){
           closePanel();
         }else{
@@ -354,7 +338,7 @@
       if(e.key === "Escape" && panel.classList.contains("is-open")) closePanel();
     });
 
-    /* email copy */
+    // 邮箱复制
     const emailEl = document.getElementById("emailCopy");
     const toast = document.getElementById("toast");
     let toastTimer = null;
@@ -376,20 +360,23 @@
       toastTimer = setTimeout(()=>toast.classList.remove("show"), 900);
     }
     emailEl.addEventListener("click", copyEmail);
-
-    window.__P5_PARENT__ = document.getElementById("stage");
   </script>
 
   <script>
-    // ===== 封面互动动画 =====
+    // ===== P5.js 动画（必须分开一个 script 标签）=====
     let particles = [];
     let numParticles = 50;
 
     function setup() {
-      let cnv = createCanvas(800, 600);
+      // 根据窗口大小创建 canvas，但保持最大尺寸
+      let w = Math.min(windowWidth * 0.9, 1200);
+      let h = Math.min(windowHeight * 0.8, 800);
+      let cnv = createCanvas(w, h);
       cnv.parent("stage");
       pixelDensity(1);
       frameRate(60);
+
+      console.log("Canvas 尺寸:", width, "x", height);
 
       // 创建粒子
       for (let i = 0; i < numParticles; i++) {
@@ -402,8 +389,8 @@
 
       // 检测设备类型
       let pointerX = mouseX;
-      if (touchX !== undefined && touchX > 0) {
-        pointerX = touchX;
+      if (touches.length > 0) {
+        pointerX = touches[0].x;
       }
 
       let distFromCenter = abs(width / 2 - pointerX);
@@ -443,7 +430,6 @@
       text("Slide to interact", width / 2, height / 2 + 120);
     }
 
-    // 粒子类
     class Particle {
       constructor() {
         this.pos = createVector(random(width), random(height));
@@ -455,11 +441,9 @@
       update(intensity) {
         this.pos.add(this.vel);
 
-        // 边界反弹
         if (this.pos.x < 0 || this.pos.x > width) this.vel.x *= -1;
         if (this.pos.y < 0 || this.pos.y > height) this.vel.y *= -1;
 
-        // 鼠标互动
         let d = dist(mouseX, mouseY, this.pos.x, this.pos.y);
         if (d < 100) {
           let force = p5.Vector.sub(this.pos, createVector(mouseX, mouseY));
@@ -467,7 +451,6 @@
           this.vel.add(force);
         }
 
-        // 速度限制
         this.vel.limit(3 + intensity * 2);
       }
 
@@ -479,7 +462,9 @@
     }
 
     function windowResized() {
-      resizeCanvas(800, 600);
+      let w = Math.min(windowWidth * 0.9, 1200);
+      let h = Math.min(windowHeight * 0.8, 800);
+      resizeCanvas(w, h);
       particles = [];
       for (let i = 0; i < numParticles; i++) {
         particles.push(new Particle());
@@ -492,20 +477,6 @@
       }
       return true;
     }
-  </script>
-
-  <script>
-    // 把 canvas 放进 #stage，保证严格居中不受导航影响
-    const tryMove = () => {
-      const c = document.querySelector("canvas");
-      const stage = document.getElementById("stage");
-      if(c && stage && c.parentElement !== stage){
-        stage.appendChild(c);
-      }
-    };
-    setTimeout(tryMove, 0);
-    setTimeout(tryMove, 200);
-    window.addEventListener("resize", () => setTimeout(tryMove, 50));
   </script>
 
 </body>
