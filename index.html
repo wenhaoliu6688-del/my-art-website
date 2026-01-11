@@ -378,10 +378,8 @@
         };
 
         p.setup = function() {
-          // 根据窗口大小创建 canvas，但保持最大尺寸
-          let w = Math.min(p.windowWidth * 0.9, 500);
-          let h = Math.min(p.windowHeight * 0.8, 750);
-          let cnv = p.createCanvas(w, h);
+          // 固定尺寸 500×750，保持宽高比
+          let cnv = p.createCanvas(500, 750);
           cnv.parent("stage");
           p.pixelDensity(1);
           p.frameRate(60);
@@ -440,11 +438,8 @@
         };
 
         p.windowResized = function() {
-          let w = Math.min(p.windowWidth * 0.9, 500);
-          let h = Math.min(p.windowHeight * 0.8, 750);
-          p.resizeCanvas(w, h);
+          // 固定尺寸，不随窗口变化
           if (img) {
-            img.resize(p.width, p.height);
             p.image(img, 0, 0);
           }
         };
