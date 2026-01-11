@@ -1,0 +1,400 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>HARRY6</title>
+
+  <script src="https://cdn.jsdelivr.net/npm/p5@1.11.11/lib/p5.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/p5@1.11.11/lib/addons/p5.sound.min.js"></script>
+
+  <style>
+    :root{
+      --text:#111;
+      --muted: rgba(0,0,0,.48);
+      --muted2: rgba(0,0,0,.30);
+      --line: rgba(0,0,0,.10);
+
+      --leftPad: 56px;
+      --panelW: 360px;
+      --panelPad: 18px;
+      --gap: 14px;
+
+      --font: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial,
+              "PingFang SC","Hiragino Sans GB","Microsoft YaHei", sans-serif;
+    }
+    *{ box-sizing:border-box; }
+    html, body{
+      height:100%;
+      margin:0;
+      background:#fff;
+      color:var(--text);
+      font-family: var(--font);
+      overflow:hidden;
+    }
+
+    /* p5 stage */
+    #stage{
+      position: fixed;
+      inset: 0;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      z-index: 1;
+      pointer-events:none;
+    }
+    canvas{ display:block; pointer-events:auto; }
+
+    /* brand */
+    .brand{
+      position:fixed;
+      top:44px;
+      left:var(--leftPad);
+      z-index:1000;
+      text-decoration:none;
+      color:var(--text);
+      font-weight:600;
+      font-size:18px;
+      letter-spacing:.10em;
+      text-transform:uppercase;
+      line-height:1;
+    }
+    .brand:hover{ opacity:.78; }
+
+    /* nav */
+    .nav{
+      position:fixed;
+      left:var(--leftPad);
+      top:50%;
+      transform:translateY(-50%);
+      z-index:1000;
+      user-select:none;
+    }
+    .navItem{ margin: 18px 0; }
+
+    .navBtn{
+      display:inline-block;
+      cursor:pointer;
+      border:none;
+      background: rgba(255, 255, 255, 0.85);
+      padding: 10px 12px;
+      margin-left:-12px;
+      font-size:15px;
+      letter-spacing:.24em;
+      text-transform:uppercase;
+      color:var(--muted);
+      border-radius: 999px;
+    }
+    .navBtn:hover{
+      color:var(--text);
+      background: rgba(255, 255, 255, 0.95);
+    }
+    .navBtn.is-active{ color:var(--text); }
+
+    /* panel */
+    .panel{
+      position:fixed;
+      width: var(--panelW);
+      max-width: calc(100vw - 24px);
+      background:#fff;
+      border:1px solid var(--line);
+      padding: var(--panelPad);
+      z-index:1001;
+
+      opacity:0;
+      pointer-events:none;
+      transform: translateY(-8px);
+      transition: opacity .14s ease, transform .14s ease;
+    }
+    .panel.is-open{
+      opacity:1;
+      pointer-events:auto;
+      transform: translateY(0);
+    }
+    /* “桥接区域”：让鼠标从按钮移到弹框不会瞬间消失 */
+    .panel::before{
+      content:"";
+      position:absolute;
+      left:-18px;
+      top:0;
+      width:18px;
+      height:100%;
+      background:transparent;
+    }
+
+    .panelList{ list-style:none; padding:0; margin:0; }
+    .panelList li{ margin: 10px 0; }
+
+    .panelLink{
+      text-decoration:none;
+      color:var(--text);
+      font-size:16px;
+      letter-spacing:.02em;
+      display:inline-block;
+      padding: 6px 4px;
+    }
+    .panelLink:hover{ opacity:.75; }
+    .panelLink .year{
+      color:var(--muted);
+      margin-left:.35em;
+      letter-spacing:.06em;
+    }
+
+    /* email */
+    .emailWrap{
+      position:fixed;
+      left:50%;
+      bottom:28px;
+      transform:translateX(-50%);
+      z-index:1000;
+      font-size:13px;
+      letter-spacing:.06em;
+      color:var(--muted);
+      user-select:text;
+      white-space:nowrap;
+      text-align: center;
+    }
+    .emailCopy{
+      cursor:pointer;
+      padding: 6px 10px;
+      border:1px solid transparent;
+      border-radius:999px;
+      transition: border-color .15s ease, color .15s ease;
+      background: rgba(255, 255, 255, 0.85);
+    }
+    .emailCopy:hover{
+      border-color: var(--line);
+      color: var(--text);
+      background: rgba(255, 255, 255, 0.95);
+    }
+
+    /* 互动提示 */
+    .hint{
+      font-size:11px;
+      letter-spacing:.18em;
+      text-transform:uppercase;
+      color:rgba(0,0,0,.35);
+      margin-bottom: 6px;
+      display: none; /* 默认隐藏，只在手机显示 */
+    }
+    .toast{
+      position:absolute;
+      left:100%;
+      top:50%;
+      transform: translate(10px,-50%);
+      font-size:12px;
+      color:var(--muted2);
+      letter-spacing:.18em;
+      text-transform:uppercase;
+      opacity:0;
+      transition: opacity .18s ease;
+      pointer-events:none;
+    }
+    .toast.show{ opacity:1; }
+
+    @media (max-width: 820px){
+      :root{ --leftPad: 22px; --panelW: 320px; }
+      .brand{ top:22px; }
+      .navBtn{ font-size:14px; letter-spacing:.20em; }
+      .hint{ display: block; } /* 手机上显示互动提示 */
+    }
+  </style>
+</head>
+
+<body>
+
+  <a id="homeLink" class="brand" href="#">HARRY6</a>
+
+  <nav class="nav" aria-label="Primary">
+    <div class="navItem" data-menu="projects"><button class="navBtn" type="button">PROJECTS</button></div>
+    <div class="navItem" data-menu="images"><button class="navBtn" type="button">IMAGES</button></div>
+    <div class="navItem" data-menu="about"><button class="navBtn" type="button">ABOUT</button></div>
+  </nav>
+
+  <div id="panel" class="panel" role="dialog" aria-hidden="true">
+    <ul id="panelList" class="panelList"></ul>
+  </div>
+
+  <div class="emailWrap">
+    <div class="hint">SLIDE TO INTERACT</div>
+    <span id="emailCopy" class="emailCopy" title="Click to copy">wenhao_liu888@163.com</span>
+    <span id="toast" class="toast">COPIED</span>
+  </div>
+
+  <div id="stage"></div>
+
+  <script>
+    /* ===== GitHub Pages base（自动识别 /my-art-website/） ===== */
+    const REPO = location.pathname.split("/")[1];
+    const BASE = REPO ? `/${REPO}/` : "/";
+
+    document.getElementById("homeLink").setAttribute("href", BASE);
+
+    const PROJECTS = [
+      { title: "Yellow River", year: "2025", href: BASE + "projects/yellow-river/" },
+      { title: "Frontispiece", year: "2024", href: BASE + "projects/frontispiece/" },
+      { title: "Formless Buddha", year: "2023", href: BASE + "projects/formless-buddha/" },
+      { title: "Yellow", year: "2021", href: BASE + "projects/yellow/" }
+    ];
+
+    const IMAGES = [
+      { title: "Yellow River", year: "2025", href: BASE + "images/yellow-river/" }
+    ];
+
+    const ABOUT_HREF = BASE + "about/";
+
+    const panel = document.getElementById("panel");
+    const panelList = document.getElementById("panelList");
+    const items = Array.from(document.querySelectorAll(".navItem"));
+    const btns  = Array.from(document.querySelectorAll(".navBtn"));
+
+    let activeKey = null;
+    let closeTimer = null;
+
+    function setActiveButton(key){
+      btns.forEach(b => b.classList.remove("is-active"));
+      const item = items.find(i => i.dataset.menu === key);
+      if(item) item.querySelector(".navBtn").classList.add("is-active");
+    }
+
+    function renderList(list){
+      panelList.innerHTML = list.map(it => `
+        <li>
+          <a class="panelLink" href="${it.href}">
+            ${it.title} <span class="year">— ${it.year}</span>
+          </a>
+        </li>
+      `).join("");
+    }
+
+    function positionPanelNearButton(btn){
+      const r = btn.getBoundingClientRect();
+      const gap = 14;
+
+      let left = Math.round(r.right + gap);
+      let top  = Math.round(r.top + r.height/2);
+
+      panel.style.top = `${top}px`;
+      panel.style.transform = "translateY(-50%)";
+
+      const panelWidth = Math.min(panel.offsetWidth || 360, window.innerWidth - 24);
+      if(left + panelWidth + 12 > window.innerWidth){
+        left = Math.round(r.left - gap - panelWidth);
+      }
+      left = Math.max(12, left);
+      panel.style.left = `${left}px`;
+    }
+
+    function openPanelFor(key, btn){
+      clearTimeout(closeTimer);
+
+      activeKey = key;
+      setActiveButton(key);
+
+      if(key === "projects") renderList(PROJECTS);
+      if(key === "images") renderList(IMAGES);
+
+      panel.classList.add("is-open");
+      panel.setAttribute("aria-hidden","false");
+      requestAnimationFrame(() => positionPanelNearButton(btn));
+    }
+
+    function closePanel(){
+      activeKey = null;
+      btns.forEach(b => b.classList.remove("is-active"));
+      panel.classList.remove("is-open");
+      panel.setAttribute("aria-hidden","true");
+    }
+
+    function scheduleClose(){
+      clearTimeout(closeTimer);
+      closeTimer = setTimeout(closePanel, 220);
+    }
+
+    /* 检测是否是触摸设备 */
+    const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+
+    items.forEach(item => {
+      const key = item.dataset.menu;
+      const btn = item.querySelector(".navBtn");
+
+      /* ✅ 电脑上：projects/images 使用 hover 打开面板 */
+      if(!isTouchDevice && (key === "projects" || key === "images")){
+        item.addEventListener("mouseenter", () => openPanelFor(key, btn));
+        item.addEventListener("mouseleave", scheduleClose);
+      }
+
+      /* ✅ 点击事件：about 跳转，projects/images 打开/关闭面板 */
+      btn.addEventListener("click", (e) => {
+        if(key === "about"){
+          window.location.href = ABOUT_HREF;
+          e.preventDefault();
+          return;
+        }
+        /* projects/images：点击切换面板状态 */
+        if(panel.classList.contains("is-open") && activeKey === key){
+          closePanel();
+        }else{
+          openPanelFor(key, btn);
+        }
+        e.preventDefault();
+      });
+    });
+
+    panel.addEventListener("mouseenter", () => clearTimeout(closeTimer));
+    panel.addEventListener("mouseleave", scheduleClose);
+
+    document.addEventListener("mousedown", (e) => {
+      const isNav = e.target.closest(".nav");
+      const isPanel = e.target.closest("#panel");
+      if(!isNav && !isPanel && panel.classList.contains("is-open")) closePanel();
+    });
+
+    document.addEventListener("keydown", (e) => {
+      if(e.key === "Escape" && panel.classList.contains("is-open")) closePanel();
+    });
+
+    /* email copy */
+    const emailEl = document.getElementById("emailCopy");
+    const toast = document.getElementById("toast");
+    let toastTimer = null;
+
+    async function copyEmail(){
+      const text = emailEl.textContent.trim();
+      try{
+        await navigator.clipboard.writeText(text);
+      }catch(err){
+        const ta = document.createElement("textarea");
+        ta.value = text;
+        document.body.appendChild(ta);
+        ta.select();
+        document.execCommand("copy");
+        document.body.removeChild(ta);
+      }
+      toast.classList.add("show");
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(()=>toast.classList.remove("show"), 900);
+    }
+    emailEl.addEventListener("click", copyEmail);
+
+    window.__P5_PARENT__ = document.getElementById("stage");
+  </script>
+
+  <script src="sketch.js"></script>
+
+  <script>
+    // 把 canvas 放进 #stage，保证严格居中不受导航影响
+    const tryMove = () => {
+      const c = document.querySelector("canvas");
+      const stage = document.getElementById("stage");
+      if(c && stage && c.parentElement !== stage){
+        stage.appendChild(c);
+      }
+    };
+    setTimeout(tryMove, 0);
+    setTimeout(tryMove, 200);
+    window.addEventListener("resize", () => setTimeout(tryMove, 50));
+  </script>
+
+</body>
+</html>
