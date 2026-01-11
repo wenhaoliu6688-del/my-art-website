@@ -337,36 +337,20 @@
         item.addEventListener("mouseleave", scheduleClose);
       }
 
-      // 手机端：使用 touchstart 代替 click，响应更快
-      if(isTouchDevice){
-        btn.addEventListener("touchstart", (e) => {
-          e.preventDefault(); // 防止触发 click 事件
-          if(key === "about"){
-            window.location.href = ABOUT_HREF;
-            return;
-          }
-          if(panel.classList.contains("is-open") && activeKey === key){
-            closePanel();
-          }else{
-            openPanelFor(key, btn);
-          }
-        }, {passive: false});
-      }else{
-        // 电脑端：click 事件
-        btn.addEventListener("click", (e) => {
-          if(key === "about"){
-            window.location.href = ABOUT_HREF;
-            e.preventDefault();
-            return;
-          }
-          if(panel.classList.contains("is-open") && activeKey === key){
-            closePanel();
-          }else{
-            openPanelFor(key, btn);
-          }
+      // 所有设备：统一使用 click 事件（兼容性最好）
+      btn.addEventListener("click", (e) => {
+        if(key === "about"){
+          window.location.href = ABOUT_HREF;
           e.preventDefault();
-        });
-      }
+          return;
+        }
+        if(panel.classList.contains("is-open") && activeKey === key){
+          closePanel();
+        }else{
+          openPanelFor(key, btn);
+        }
+        e.preventDefault();
+      });
     });
 
     // 电脑端：面板 hover 保持打开
@@ -375,23 +359,12 @@
       panel.addEventListener("mouseleave", scheduleClose);
     }
 
-    // 点击外部关闭面板（电脑端）
-    if(!isTouchDevice){
-      document.addEventListener("mousedown", (e) => {
-        const isNav = e.target.closest(".nav");
-        const isPanel = e.target.closest("#panel");
-        if(!isNav && !isPanel && panel.classList.contains("is-open")) closePanel();
-      });
-    }
-
-    // 触摸外部关闭面板（手机端）
-    if(isTouchDevice){
-      document.addEventListener("touchstart", (e) => {
-        const isNav = e.target.closest(".nav");
-        const isPanel = e.target.closest("#panel");
-        if(!isNav && !isPanel && panel.classList.contains("is-open")) closePanel();
-      });
-    }
+    // 点击外部关闭面板（所有设备）
+    document.addEventListener("mousedown", (e) => {
+      const isNav = e.target.closest(".nav");
+      const isPanel = e.target.closest("#panel");
+      if(!isNav && !isPanel && panel.classList.contains("is-open")) closePanel();
+    });
 
     document.addEventListener("keydown", (e) => {
       if(e.key === "Escape" && panel.classList.contains("is-open")) closePanel();
