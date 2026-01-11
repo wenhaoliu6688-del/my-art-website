@@ -190,16 +190,33 @@
     }
     .toast.show{ opacity:1; }
 
-    @media (max-width: 1366px){
+    /* 触摸设备：显示提示文字 */
+    body.is-touch-device .hint{
+      display: block;
+    }
+
+    /* 小屏幕设备（手机和部分平板）：调整布局 */
+    @media (max-width: 1024px){
       :root{ --leftPad: 22px; --panelW: 320px; }
       .brand{ top:22px; }
       .navBtn{ font-size:14px; letter-spacing:.20em; }
-      .hint{ display: block; }
     }
   </style>
 </head>
 
 <body>
+
+  <script>
+    // 检测是否为触摸设备
+    function isTouchDevice() {
+      return 'ontouchstart' in window || navigator.maxTouchPoints > 0 || navigator.msMaxTouchPoints > 0;
+    }
+
+    // 给 body 添加触摸设备标识
+    if (isTouchDevice()) {
+      document.body.classList.add('is-touch-device');
+    }
+  </script>
 
   <a id="homeLink" class="brand" href="#">HARRY6</a>
 
