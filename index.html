@@ -206,18 +206,6 @@
 
 <body>
 
-  <script>
-    // 检测是否为触摸设备
-    function isTouchDevice() {
-      return 'ontouchstart' in window || navigator.maxTouchPoints > 0 || navigator.msMaxTouchPoints > 0;
-    }
-
-    // 给 body 添加触摸设备标识
-    if (isTouchDevice()) {
-      document.body.classList.add('is-touch-device');
-    }
-  </script>
-
   <a id="homeLink" class="brand" href="#">HARRY6</a>
 
   <nav class="nav" aria-label="Primary">
@@ -242,6 +230,13 @@
 
   <script>
     // ===== 导航和面板逻辑 =====
+
+    // 检测触摸设备并添加标识
+    const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+    if (isTouchDevice) {
+      document.body.classList.add('is-touch-device');
+    }
+
     const REPO = location.pathname.split("/")[1];
     const BASE = REPO ? `/${REPO}/` : "/";
     document.getElementById("homeLink").setAttribute("href", BASE);
@@ -324,8 +319,6 @@
       clearTimeout(closeTimer);
       closeTimer = setTimeout(closePanel, 220);
     }
-
-    const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
 
     items.forEach(item => {
       const key = item.dataset.menu;
