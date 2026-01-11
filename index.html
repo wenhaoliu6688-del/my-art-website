@@ -76,18 +76,18 @@
       display:inline-block;
       cursor:pointer;
       border:none;
-      background: rgba(255, 255, 255, 0.85);
+      background: rgba(255, 255, 255, 0.95);
       padding: 10px 12px;
       margin-left:-12px;
       font-size:15px;
       letter-spacing:.24em;
       text-transform:uppercase;
-      color:var(--muted);
+      color:var(--text);
       border-radius: 999px;
     }
     .navBtn:hover{
       color:var(--text);
-      background: rgba(255, 255, 255, 0.95);
+      background: rgba(255, 255, 255, 1);
     }
     .navBtn.is-active{ color:var(--text); }
 
@@ -192,11 +192,11 @@
     }
     .toast.show{ opacity:1; }
 
-    @media (max-width: 820px){
+    @media (max-width: 1024px){
       :root{ --leftPad: 22px; --panelW: 320px; }
       .brand{ top:22px; }
       .navBtn{ font-size:14px; letter-spacing:.20em; }
-      .hint{ display: block; } /* 手机上显示互动提示 */
+      .hint{ display: block; } /* 手机/平板上显示互动提示 */
     }
   </style>
 </head>

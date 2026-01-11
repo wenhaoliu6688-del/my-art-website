@@ -73,7 +73,11 @@ function draw() {
   }
 }
 
-// 触摸设备：防止滑动时滚动页面
+// 触摸设备：只有在触摸 canvas 时才阻止默认行为
 function touchStarted() {
-  return false;
+  // 只在触摸 canvas 区域时阻止滚动
+  if (mouseX > 0 && mouseX < width && mouseY > 0 && mouseY < height) {
+    return false;
+  }
+  return true;
 }
