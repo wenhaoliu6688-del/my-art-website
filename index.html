@@ -49,7 +49,7 @@
       text-transform:uppercase;
       padding: 10px 14px;
       border-radius: 999px;
-      background: #ffffff;
+      background: rgba(255,255,255,0.85);
       box-shadow: 0 1px 3px rgba(0,0,0,0.1);
       transition: opacity .15s ease, box-shadow .15s ease;
     }
@@ -73,7 +73,7 @@
       display:inline-block;
       cursor:pointer;
       border:none;
-      background: #ffffff;
+      background: rgba(255,255,255,0.85);
       padding: 10px 12px;
       margin-left:-12px;
       font-size:15px;
@@ -85,7 +85,7 @@
     }
     .navBtn:hover{
       color:var(--text);
-      background: #ffffff;
+      background: rgba(255,255,255,0.95);
       box-shadow: 0 2px 6px rgba(0,0,0,0.15);
     }
     .navBtn.is-active{ color:var(--text); }
@@ -154,13 +154,14 @@
       padding: 6px 10px;
       border:1px solid transparent;
       border-radius:999px;
-      background: #ffffff;
+      background: rgba(255,255,255,0.85);
       box-shadow: 0 1px 3px rgba(0,0,0,0.1);
       transition: border-color .15s ease, color .15s ease, box-shadow .15s ease;
     }
     .emailCopy:hover{
       border-color: var(--line);
       color: var(--text);
+      background: rgba(255,255,255,0.95);
       box-shadow: 0 2px 6px rgba(0,0,0,0.15);
     }
 
@@ -386,8 +387,27 @@
         };
 
         p.setup = function() {
-          // 固定尺寸 500×750，保持宽高比
-          let cnv = p.createCanvas(500, 750);
+          // 根据屏幕大小计算尺寸，保持 2:3 比例，确保有留白
+          // 减去顶部导航和底部邮箱的空间
+          let availableHeight = p.windowHeight - 150;
+          let availableWidth = p.windowWidth - 100;
+
+          // 计算高度（取可用高度的 85%）
+          let h = Math.floor(availableHeight * 0.85);
+          // 根据宽高比 2:3 计算宽度
+          let w = Math.floor(h * 2 / 3);
+
+          // 如果宽度超出可用空间，按宽度重新计算
+          if (w > availableWidth) {
+            w = Math.floor(availableWidth * 0.9);
+            h = Math.floor(w * 3 / 2);
+          }
+
+          // 不超过原始尺寸 500×750
+          w = Math.min(w, 500);
+          h = Math.min(h, 750);
+
+          let cnv = p.createCanvas(w, h);
           cnv.parent("stage");
           p.pixelDensity(1);
           p.frameRate(60);
@@ -446,8 +466,24 @@
         };
 
         p.windowResized = function() {
-          // 固定尺寸，不随窗口变化
+          // 根据屏幕大小重新计算尺寸，保持 2:3 比例
+          let availableHeight = p.windowHeight - 150;
+          let availableWidth = p.windowWidth - 100;
+
+          let h = Math.floor(availableHeight * 0.85);
+          let w = Math.floor(h * 2 / 3);
+
+          if (w > availableWidth) {
+            w = Math.floor(availableWidth * 0.9);
+            h = Math.floor(w * 3 / 2);
+          }
+
+          w = Math.min(w, 500);
+          h = Math.min(h, 750);
+
+          p.resizeCanvas(w, h);
           if (img) {
+            img.resize(p.width, p.height);
             p.image(img, 0, 0);
           }
         };
