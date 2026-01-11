@@ -314,11 +314,13 @@
       const key = item.dataset.menu;
       const btn = item.querySelector(".navBtn");
 
+      // 电脑端：hover 效果
       if(!isTouchDevice && (key === "projects" || key === "images")){
         item.addEventListener("mouseenter", () => openPanelFor(key, btn));
         item.addEventListener("mouseleave", scheduleClose);
       }
 
+      // 手机端和电脑端：点击切换
       btn.addEventListener("click", (e) => {
         if(key === "about"){
           window.location.href = ABOUT_HREF;
@@ -332,16 +334,40 @@
         }
         e.preventDefault();
       });
+
+      // 手机端：触摸后延迟自动关闭面板
+      if(isTouchDevice && (key === "projects" || key === "images")){
+        btn.addEventListener("touchend", (e) => {
+          setTimeout(() => {
+            if(panel.classList.contains("is-open")){
+              scheduleClose();
+            }
+          }, 3000); // 3秒后自动关闭
+        });
+      }
     });
 
-    panel.addEventListener("mouseenter", () => clearTimeout(closeTimer));
-    panel.addEventListener("mouseleave", scheduleClose);
+    // 电脑端：面板 hover 保持打开
+    if(!isTouchDevice){
+      panel.addEventListener("mouseenter", () => clearTimeout(closeTimer));
+      panel.addEventListener("mouseleave", scheduleClose);
+    }
 
+    // 点击/触摸外部关闭面板
     document.addEventListener("mousedown", (e) => {
       const isNav = e.target.closest(".nav");
       const isPanel = e.target.closest("#panel");
       if(!isNav && !isPanel && panel.classList.contains("is-open")) closePanel();
     });
+
+    // 手机端：触摸外部关闭面板
+    if(isTouchDevice){
+      document.addEventListener("touchstart", (e) => {
+        const isNav = e.target.closest(".nav");
+        const isPanel = e.target.closest("#panel");
+        if(!isNav && !isPanel && panel.classList.contains("is-open")) closePanel();
+      });
+    }
 
     document.addEventListener("keydown", (e) => {
       if(e.key === "Escape" && panel.classList.contains("is-open")) closePanel();
