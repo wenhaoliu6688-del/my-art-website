@@ -413,10 +413,11 @@
       // 创建 p5 实例 - Digital Strata 故障艺术动画
       new p5(function(p) {
         let img;
+        let originalImg; // 保存原始图片，避免反复 resize 导致质量损失
         let smoothPresence = 0.0;
 
         p.preload = function() {
-          img = p.loadImage("LWH_8128.JPG");
+          originalImg = p.loadImage("LWH_8128.JPG");
         };
 
         p.setup = function() {
@@ -447,7 +448,9 @@
 
           console.log("Canvas 尺寸:", p.width, "x", p.height);
 
-          if (img) {
+          if (originalImg) {
+            // 从原始图片创建副本并 resize
+            img = originalImg.get();
             img.resize(p.width, p.height);
           }
         };
@@ -515,8 +518,9 @@
 
           p.resizeCanvas(w, h);
 
-          // 重新 resize 图片到新尺寸
-          if (img) {
+          // 从原始图片创建副本并 resize，避免质量损失
+          if (originalImg) {
+            img = originalImg.get();
             img.resize(p.width, p.height);
           }
         };
