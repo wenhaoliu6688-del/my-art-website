@@ -449,7 +449,6 @@
 
           if (img) {
             img.resize(p.width, p.height);
-            p.image(img, 0, 0);
           }
         };
 
@@ -516,9 +515,9 @@
 
           p.resizeCanvas(w, h);
 
-          // 重绘图片
+          // 重新 resize 图片到新尺寸
           if (img) {
-            p.image(img, 0, 0, p.width, p.height);
+            img.resize(p.width, p.height);
           }
         };
 
