@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Inline Test</title>
+  <style>
+    * { box-sizing:border-box; }
+    html, body {
+      height:100%;
+      margin:0;
+      background:#fff;
+    }
+    #stage{
+      position: fixed;
+      inset: 0;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      z-index: 1;
+    }
+    canvas{ display:block; pointer-events:auto; }
+  </style>
+</head>
+<body>
+  <div id="stage"></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/p5@1.11.11/lib/p5.js"></script>
+  <script>
+    // 直接在这里写代码，不依赖外部文件
+    function setup() {
+      let cnv = createCanvas(600, 400);
+      cnv.parent("stage");
+      background(100, 150, 255);
+      fill(255);
+      textAlign(CENTER, CENTER);
+      textSize(40);
+      text("HARRY6", width/2, height/2);
+      console.log("Canvas 创建成功！");
+    }
+
+    function draw() {
+      // 不需要动画
+    }
+  </script>
+</body>
+</html>

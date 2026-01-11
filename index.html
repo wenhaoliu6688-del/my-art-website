@@ -368,15 +368,19 @@
     window.addEventListener('load', function() {
       console.log("页面完全加载，开始初始化 p5.js");
 
-      let particles = [];
-      let numParticles = 50;
-
-      // 创建 p5 实例
+      // 创建 p5 实例 - Digital Strata 故障艺术动画
       new p5(function(p) {
+        let img;
+        let smoothPresence = 0.0;
+
+        p.preload = function() {
+          img = p.loadImage("LWH_8128.JPG");
+        };
+
         p.setup = function() {
           // 根据窗口大小创建 canvas，但保持最大尺寸
-          let w = Math.min(p.windowWidth * 0.9, 1200);
-          let h = Math.min(p.windowHeight * 0.8, 800);
+          let w = Math.min(p.windowWidth * 0.9, 500);
+          let h = Math.min(p.windowHeight * 0.8, 750);
           let cnv = p.createCanvas(w, h);
           cnv.parent("stage");
           p.pixelDensity(1);
@@ -384,65 +388,64 @@
 
           console.log("Canvas 尺寸:", p.width, "x", p.height);
 
-          // 创建粒子
-          for (let i = 0; i < numParticles; i++) {
-            particles.push(new Particle(p));
+          if (img) {
+            img.resize(p.width, p.height);
+            p.image(img, 0, 0);
           }
         };
 
         p.draw = function() {
-          p.background(250);
-
-          // 检测设备类型
+          // 检测设备类型 - 支持触摸
           let pointerX = p.mouseX;
           if (p.touches.length > 0) {
             pointerX = p.touches[0].x;
           }
 
           let distFromCenter = p.abs(p.width / 2 - pointerX);
-          let intensity = p.map(distFromCenter, 0, p.width / 2, 0, 1);
+          let distFactor = p.map(distFromCenter, 0, p.width / 2, 1.0, 0.0);
+          smoothPresence = p.lerp(smoothPresence, distFactor, 0.03);
 
-          // 更新和绘制粒子
-          for (let i = 0; i < particles.length; i++) {
-            particles[i].update(intensity);
-            particles[i].display();
+          let glitchIntensity = 1.0 - smoothPresence;
+
+          // 底图控制（冻结效果）
+          if (smoothPresence > 0.05 && img) {
+            p.tint(255, smoothPresence * 255);
+            p.image(img, 0, 0);
+            p.noTint();
           }
 
-          // 连线
-          p.stroke(200, 150);
-          p.strokeWeight(0.5);
-          for (let i = 0; i < particles.length; i++) {
-            for (let j = i + 1; j < particles.length; j++) {
-              let d = p.dist(particles[i].pos.x, particles[i].pos.y, particles[j].pos.x, particles[j].pos.y);
-              if (d < 80) {
-                p.line(particles[i].pos.x, particles[i].pos.y, particles[j].pos.x, particles[j].pos.y);
-              }
+          // 横向拉伸故障效果
+          let count = Math.floor(p.map(glitchIntensity, 0, 1, 0, 40));
+
+          for (let i = 0; i < count; i++) {
+            let y = Math.floor(p.random(p.height));
+            let h = Math.floor(p.random(2, 15));
+            let x = Math.floor(p.width / 2 + p.random(-50, 50));
+            let w = Math.floor(p.random(1, 3));
+
+            p.copy(img, x, y, w, h, 0, y, p.width, h);
+          }
+
+          // 局部修复
+          if (smoothPresence > 0.2) {
+            let restoreCount = Math.floor(p.map(smoothPresence, 0, 1, 0, 200));
+            for (let i = 0; i < restoreCount; i++) {
+              let x = Math.floor(p.random(p.width));
+              let y = Math.floor(p.random(p.height));
+              let w = Math.floor(p.random(20, 100));
+              let h = Math.floor(p.random(2, 5));
+              p.copy(img, x, y, w, h, x, y, w, h);
             }
           }
-
-          // 中心圆
-          p.noStroke();
-          let centerSize = p.map(p.sin(p.frameCount * 0.02), -1, 1, 60, 100) + intensity * 50;
-          p.fill(50, 100, 200, 180);
-          p.ellipse(p.width / 2, p.height / 2, centerSize, centerSize);
-
-          // 文字
-          p.fill(80);
-          p.textAlign(p.CENTER, p.CENTER);
-          p.textSize(32);
-          p.text("HARRY6", p.width / 2, p.height / 2 - 120);
-          p.textSize(13);
-          p.fill(150);
-          p.text("Slide to interact", p.width / 2, p.height / 2 + 120);
         };
 
         p.windowResized = function() {
-          let w = Math.min(p.windowWidth * 0.9, 1200);
-          let h = Math.min(p.windowHeight * 0.8, 800);
+          let w = Math.min(p.windowWidth * 0.9, 500);
+          let h = Math.min(p.windowHeight * 0.8, 750);
           p.resizeCanvas(w, h);
-          particles = [];
-          for (let i = 0; i < numParticles; i++) {
-            particles.push(new Particle(p));
+          if (img) {
+            img.resize(p.width, p.height);
+            p.image(img, 0, 0);
           }
         };
 
@@ -452,40 +455,6 @@
           }
           return true;
         };
-
-        // 粒子类
-        class Particle {
-          constructor(p) {
-            this.p = p;
-            this.pos = p5.Vector.random2D().mult(p.random(p.width/2));
-            this.pos.add(p.createVector(p.width/2, p.height/2));
-            this.vel = p.createVector(p.random(-1, 1), p.random(-1, 1));
-            this.size = p.random(3, 8);
-            this.color = p.color(50 + p.random(50), 100 + p.random(100), 200 - p.random(50), 180);
-          }
-
-          update(intensity) {
-            this.pos.add(this.vel);
-
-            if (this.pos.x < 0 || this.pos.x > this.p.width) this.vel.x *= -1;
-            if (this.pos.y < 0 || this.pos.y > this.p.height) this.vel.y *= -1;
-
-            let d = this.p.dist(this.p.mouseX, this.p.mouseY, this.pos.x, this.pos.y);
-            if (d < 100) {
-              let force = p5.Vector.sub(this.pos, this.p.createVector(this.p.mouseX, this.p.mouseY));
-              force.setMag(0.5);
-              this.vel.add(force);
-            }
-
-            this.vel.limit(3 + intensity * 2);
-          }
-
-          display() {
-            this.p.noStroke();
-            this.p.fill(this.color);
-            this.p.ellipse(this.pos.x, this.pos.y, this.size, this.size);
-          }
-        }
       });
     });
   </script>

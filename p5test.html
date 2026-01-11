@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>P5.js Test</title>
+  <style>
+    * { box-sizing:border-box; }
+    html, body {
+      height:100%;
+      margin:0;
+      background:#fff;
+      font-family: Arial, sans-serif;
+    }
+    #stage {
+      position: fixed;
+      inset: 0;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      z-index: 1;
+    }
+  </style>
+</head>
+<body>
+  <div id="stage"></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/p5@1.11.11/lib/p5.js"></script>
+
+  <script>
+    function setup() {
+      let cnv = createCanvas(400, 400);
+      cnv.parent("stage");
+      background(255, 0, 0); // 红色背景
+    }
+
+    function draw() {
+      background(255, 0, 0); // 红色背景
+      fill(255);
+      noStroke();
+      ellipse(width / 2, height / 2, 100, 100); // 白色圆
+    }
+  </script>
+</body>
+</html>
