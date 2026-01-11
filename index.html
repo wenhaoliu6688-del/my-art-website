@@ -320,29 +320,34 @@
         item.addEventListener("mouseleave", scheduleClose);
       }
 
-      // 手机端和电脑端：点击切换
-      btn.addEventListener("click", (e) => {
-        if(key === "about"){
-          window.location.href = ABOUT_HREF;
+      // 手机端：使用 touchstart 代替 click，响应更快
+      if(isTouchDevice){
+        btn.addEventListener("touchstart", (e) => {
+          e.preventDefault(); // 防止触发 click 事件
+          if(key === "about"){
+            window.location.href = ABOUT_HREF;
+            return;
+          }
+          if(panel.classList.contains("is-open") && activeKey === key){
+            closePanel();
+          }else{
+            openPanelFor(key, btn);
+          }
+        }, {passive: false});
+      }else{
+        // 电脑端：click 事件
+        btn.addEventListener("click", (e) => {
+          if(key === "about"){
+            window.location.href = ABOUT_HREF;
+            e.preventDefault();
+            return;
+          }
+          if(panel.classList.contains("is-open") && activeKey === key){
+            closePanel();
+          }else{
+            openPanelFor(key, btn);
+          }
           e.preventDefault();
-          return;
-        }
-        if(panel.classList.contains("is-open") && activeKey === key){
-          closePanel();
-        }else{
-          openPanelFor(key, btn);
-        }
-        e.preventDefault();
-      });
-
-      // 手机端：触摸后延迟自动关闭面板
-      if(isTouchDevice && (key === "projects" || key === "images")){
-        btn.addEventListener("touchend", (e) => {
-          setTimeout(() => {
-            if(panel.classList.contains("is-open")){
-              scheduleClose();
-            }
-          }, 3000); // 3秒后自动关闭
         });
       }
     });
@@ -353,14 +358,16 @@
       panel.addEventListener("mouseleave", scheduleClose);
     }
 
-    // 点击/触摸外部关闭面板
-    document.addEventListener("mousedown", (e) => {
-      const isNav = e.target.closest(".nav");
-      const isPanel = e.target.closest("#panel");
-      if(!isNav && !isPanel && panel.classList.contains("is-open")) closePanel();
-    });
+    // 点击外部关闭面板（电脑端）
+    if(!isTouchDevice){
+      document.addEventListener("mousedown", (e) => {
+        const isNav = e.target.closest(".nav");
+        const isPanel = e.target.closest("#panel");
+        if(!isNav && !isPanel && panel.classList.contains("is-open")) closePanel();
+      });
+    }
 
-    // 手机端：触摸外部关闭面板
+    // 触摸外部关闭面板（手机端）
     if(isTouchDevice){
       document.addEventListener("touchstart", (e) => {
         const isNav = e.target.closest(".nav");
@@ -406,10 +413,11 @@
       // 创建 p5 实例 - Digital Strata 故障艺术动画
       new p5(function(p) {
         let img;
+        let originalImg; // 保存原始图片，避免反复 resize 导致质量损失
         let smoothPresence = 0.0;
 
         p.preload = function() {
-          img = p.loadImage("LWH_8128.JPG");
+          originalImg = p.loadImage("LWH_8128.JPG");
         };
 
         p.setup = function() {
@@ -440,7 +448,9 @@
 
           console.log("Canvas 尺寸:", p.width, "x", p.height);
 
-          if (img) {
+          if (originalImg) {
+            // 从原始图片创建缩放版本
+            img = originalImg.copy();
             img.resize(p.width, p.height);
             p.image(img, 0, 0);
           }
@@ -508,7 +518,10 @@
           h = Math.min(h, 750);
 
           p.resizeCanvas(w, h);
-          if (img) {
+
+          // 从原始图片重新创建缩放版本，避免质量损失
+          if (originalImg) {
+            img = originalImg.copy();
             img.resize(p.width, p.height);
             p.image(img, 0, 0);
           }
