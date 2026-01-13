@@ -340,7 +340,7 @@
       }
 
       .bottomNav{
-        bottom:40px;
+        bottom:70px;
         gap:16px;
       }
 
@@ -371,6 +371,7 @@
       .gallery{
         align-items: flex-start;
         padding-top: 12vh;
+        padding-bottom: 140px;
       }
 
       .imageContainer{
@@ -379,6 +380,10 @@
       }
       .imageContainer img{
         max-height:50vh;
+      }
+
+      .bottomNav{
+        bottom:48px;
       }
     }
   </style>
@@ -601,7 +606,8 @@
       // 只在元素存在时添加事件监听
       if(menuToggle && topMenuPanel){
         // 切换主菜单
-        menuToggle.addEventListener('click', () => {
+        menuToggle.addEventListener('click', (e) => {
+          e.stopPropagation();
           topMenuPanel.classList.toggle('is-open');
         });
 
@@ -611,6 +617,7 @@
         if(mobileProjects && projectsSubmenu){
           mobileProjects.addEventListener('click', (e) => {
             e.preventDefault();
+            e.stopPropagation();
             projectsSubmenu.classList.toggle('is-open');
             const imagesSubmenu = document.getElementById('imagesSubmenu');
             if(imagesSubmenu) imagesSubmenu.classList.remove('is-open');
@@ -623,6 +630,7 @@
         if(mobileImages && imagesSubmenu){
           mobileImages.addEventListener('click', (e) => {
             e.preventDefault();
+            e.stopPropagation();
             // 关闭Projects子菜单
             const projectsSubmenu = document.getElementById('projectsSubmenu');
             if(projectsSubmenu) projectsSubmenu.classList.remove('is-open');
@@ -630,6 +638,25 @@
             imagesSubmenu.classList.toggle('is-open');
           });
         }
+
+        // 点击主菜单项（非子菜单链接）关闭所有子菜单
+        const allMenuItems = topMenuPanel.querySelectorAll('.topMenuItem');
+        allMenuItems.forEach(item => {
+          item.addEventListener('click', (e) => {
+            // 如果不是有子菜单的项目，关闭菜单
+            if(!item.classList.contains('has-children')){
+              topMenuPanel.classList.remove('is-open');
+            }
+          });
+        });
+
+        // 子菜单链接点击后关闭主菜单
+        const submenuLinks = topMenuPanel.querySelectorAll('.topMenuLevel2 a');
+        submenuLinks.forEach(link => {
+          link.addEventListener('click', () => {
+            topMenuPanel.classList.remove('is-open');
+          });
+        });
 
         // 点击外部关闭菜单
         document.addEventListener('touchstart', (e) => {
