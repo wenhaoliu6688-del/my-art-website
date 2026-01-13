@@ -360,11 +360,21 @@
     function renderList(list){
       panelList.innerHTML = list.map(it => `
         <li>
-          <a class="panelLink" href="${it.href}">
+          <a class="panelLink" href="${it.href}" data-panel-link>
             ${it.title} <span class="year">— ${it.year}</span>
           </a>
         </li>
       `).join("");
+
+      // 触摸设备：优化面板链接点击
+      if(isTouchDevice){
+        panelList.querySelectorAll("[data-panel-link]").forEach(link => {
+          link.addEventListener("touchend", (e) => {
+            // 阻止事件冒泡，防止触发关闭面板
+            e.stopPropagation();
+          }, {passive: true});
+        });
+      }
     }
 
     function positionPanelNearButton(btn){
