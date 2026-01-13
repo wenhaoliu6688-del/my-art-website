@@ -279,6 +279,17 @@
       display: none;
       font-weight: 500;
     }
+    /* 非触摸设备：显示电脑端提示 */
+    .desktop-hint{
+      display: block;
+    }
+    /* 触摸设备：隐藏电脑端提示，显示触摸端提示 */
+    body.is-touch-device .desktop-hint{
+      display: none;
+    }
+    body.is-touch-device .touch-hint{
+      display: block;
+    }
 
     .toast{
       position:absolute;
@@ -441,7 +452,8 @@
   </div>
 
   <div class="emailWrap">
-    <div class="hint">按住左右滑动·互动</div>
+    <div class="hint desktop-hint">移动鼠标 · 互动</div>
+    <div class="hint touch-hint">按住左右滑动·互动</div>
     <span id="emailCopy" class="emailCopy" title="Click to copy">wenhao_liu888@163.com</span>
     <span id="toast" class="toast">COPIED</span>
   </div>
@@ -462,6 +474,8 @@
 
     // 检测触摸设备并添加标识
     const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+    // iPad特殊检测：屏幕宽度768-1024px
+    const isIPad = window.innerWidth >= 768 && window.innerWidth <= 1024;
     if (isTouchDevice) {
       document.body.classList.add('is-touch-device');
     }
@@ -553,27 +567,14 @@
       const key = item.dataset.menu;
       const btn = item.querySelector(".navBtn");
 
-      // 电脑端：hover 效果
-      if(!isTouchDevice && (key === "projects" || key === "images")){
+      // 电脑端和iPad：hover 效果
+      if((!isTouchDevice || isIPad) && (key === "projects" || key === "images")){
         item.addEventListener("mouseenter", () => openPanelFor(key, btn));
         item.addEventListener("mouseleave", scheduleClose);
       }
 
-      // 触摸设备：使用 touchstart（响应快）
-      if(isTouchDevice){
-        btn.addEventListener("touchstart", (e) => {
-          if(key === "about"){
-            window.location.href = ABOUT_HREF;
-            return;
-          }
-          if(panel.classList.contains("is-open") && activeKey === key){
-            closePanel();
-          }else{
-            openPanelFor(key, btn);
-          }
-        }, {passive: true});
-      }else{
-        // 电脑端：click 事件
+      // iPad和电脑端：使用click（更可靠）
+      if(isIPad || !isTouchDevice){
         btn.addEventListener("click", (e) => {
           if(key === "about"){
             window.location.href = ABOUT_HREF;
@@ -587,25 +588,38 @@
           }
           e.preventDefault();
         });
+      }else{
+        // 手机端：使用touchstart
+        btn.addEventListener("touchstart", (e) => {
+          if(key === "about"){
+            window.location.href = ABOUT_HREF;
+            return;
+          }
+          if(panel.classList.contains("is-open") && activeKey === key){
+            closePanel();
+          }else{
+            openPanelFor(key, btn);
+          }
+        }, {passive: true});
       }
     });
 
-    // 电脑端：面板 hover 保持打开
-    if(!isTouchDevice){
+    // 电脑端和iPad：面板 hover 保持打开
+    if(!isTouchDevice || isIPad){
       panel.addEventListener("mouseenter", () => clearTimeout(closeTimer));
       panel.addEventListener("mouseleave", scheduleClose);
     }
 
     // 点击外部关闭面板
-    if(isTouchDevice){
-      // 触摸设备：touchstart
+    if(isTouchDevice && !isIPad){
+      // 手机端：touchstart
       document.addEventListener("touchstart", (e) => {
         const isNav = e.target.closest(".nav");
         const isPanel = e.target.closest("#panel");
         if(!isNav && !isPanel && panel.classList.contains("is-open")) closePanel();
       });
     }else{
-      // 电脑端：mousedown
+      // 电脑端和iPad：mousedown
       document.addEventListener("mousedown", (e) => {
         const isNav = e.target.closest(".nav");
         const isPanel = e.target.closest("#panel");
@@ -723,8 +737,11 @@
         if(mobileImages && imagesSubmenu){
           mobileImages.addEventListener('click', (e) => {
             e.preventDefault();
-            imagesSubmenu.classList.toggle('is-open');
+            // 关闭Projects子菜单
+            const projectsSubmenu = document.getElementById('projectsSubmenu');
             if(projectsSubmenu) projectsSubmenu.classList.remove('is-open');
+            // 切换Images子菜单
+            imagesSubmenu.classList.toggle('is-open');
           });
         }
 

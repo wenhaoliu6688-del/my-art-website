@@ -339,7 +339,7 @@
       }
 
       .bottomNav{
-        bottom:24px;
+        bottom:40px;
         gap:16px;
       }
 
@@ -541,9 +541,25 @@
       updateDots();
     }
 
-    // 按钮事件
-    prevBtn.addEventListener('click', showPrev);
-    nextBtn.addEventListener('click', showNext);
+    // 按钮事件 - 同时支持click和touchend以确保iPad响应
+    prevBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      showPrev();
+    });
+    nextBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      showNext();
+    });
+
+    // iPad优化：touchend也监听（响应更快）
+    prevBtn.addEventListener('touchend', (e) => {
+      e.preventDefault();
+      showPrev();
+    });
+    nextBtn.addEventListener('touchend', (e) => {
+      e.preventDefault();
+      showNext();
+    });
 
     // 键盘导航
     document.addEventListener('keydown', (e) => {
@@ -617,8 +633,11 @@
         if(mobileImages && imagesSubmenu){
           mobileImages.addEventListener('click', (e) => {
             e.preventDefault();
-            imagesSubmenu.classList.toggle('is-open');
+            // 关闭Projects子菜单
+            const projectsSubmenu = document.getElementById('projectsSubmenu');
             if(projectsSubmenu) projectsSubmenu.classList.remove('is-open');
+            // 切换Images子菜单
+            imagesSubmenu.classList.toggle('is-open');
           });
         }
 
@@ -657,6 +676,8 @@
     const ABOUT_HREF = BASE + "about/";
 
     const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+    // iPad特殊检测：屏幕宽度768-1024px，使用click而不是touchstart
+    const isIPad = window.innerWidth >= 768 && window.innerWidth <= 1024;
 
     const panel = document.createElement('div');
     panel.className = 'panel';
@@ -734,24 +755,14 @@
       const key = item.dataset.menu;
       const btn = item.querySelector('.navBtn');
 
-      if(!isTouchDevice && (key === 'projects' || key === 'images')){
+      // 电脑端和iPad：hover效果
+      if((!isTouchDevice || isIPad) && (key === 'projects' || key === 'images')){
         item.addEventListener('mouseenter', () => openPanelFor(key, btn));
         item.addEventListener('mouseleave', scheduleClose);
       }
 
-      if(isTouchDevice){
-        btn.addEventListener('touchstart', (e) => {
-          if(key === 'about'){
-            window.location.href = ABOUT_HREF;
-            return;
-          }
-          if(panel.classList.contains('is-open') && activeKey === key){
-            closePanel();
-          }else{
-            openPanelFor(key, btn);
-          }
-        }, {passive: true});
-      }else{
+      // iPad和电脑端：使用click（更可靠）
+      if(isIPad || !isTouchDevice){
         btn.addEventListener('click', (e) => {
           if(key === 'about'){
             window.location.href = ABOUT_HREF;
@@ -765,21 +776,37 @@
           }
           e.preventDefault();
         });
+      }else{
+        // 手机端：使用touchstart
+        btn.addEventListener('touchstart', (e) => {
+          if(key === 'about'){
+            window.location.href = ABOUT_HREF;
+            return;
+          }
+          if(panel.classList.contains('is-open') && activeKey === key){
+            closePanel();
+          }else{
+            openPanelFor(key, btn);
+          }
+        }, {passive: true});
       }
     });
 
-    if(!isTouchDevice){
+    // 电脑端和iPad：面板hover保持打开
+    if(!isTouchDevice || isIPad){
       panel.addEventListener('mouseenter', () => clearTimeout(closeTimer));
       panel.addEventListener('mouseleave', scheduleClose);
     }
 
-    if(isTouchDevice){
+    // 手机端：touchstart关闭
+    if(isTouchDevice && !isIPad){
       document.addEventListener('touchstart', (e) => {
         const isNav = e.target.closest('.nav');
         const isPanel = e.target.closest('.panel');
         if(!isNav && !isPanel && panel.classList.contains('is-open')) closePanel();
       });
     }else{
+      // 电脑端和iPad：mousedown关闭
       document.addEventListener('mousedown', (e) => {
         const isNav = e.target.closest('.nav');
         const isPanel = e.target.closest('.panel');
