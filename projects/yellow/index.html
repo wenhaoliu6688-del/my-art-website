@@ -98,14 +98,23 @@
       justify-content:center;
     }
 
-    /* 图片 - 直接切换，无动画 */
+    /* 图片 - Scale + Fade 电影感转场 */
     .imageContainer img{
+      position:absolute;
       max-width:100%;
       max-height:75vh;
       display:block;
+      opacity:0;
+      transform: scale(0.98);
+      transition: opacity 0.4s ease-out, transform 0.4s ease-out;
     }
-    .imageContainer img.hidden{
-      display:none;
+    .imageContainer img.active{
+      opacity:1;
+      transform: scale(1);
+    }
+    .imageContainer img.leaving{
+      opacity:0;
+      transform: scale(0.98);
     }
 
     /* 作品容器整体 */
@@ -262,7 +271,8 @@
   <div class="gallery">
     <div class="artworkWrapper">
       <div class="imageContainer">
-        <img id="currentImage" src="" alt="Yellow (2021)">
+        <img id="imageA" class="active" src="" alt="Yellow (2021)">
+        <img id="imageB" src="" alt="">
       </div>
       <div class="divider"></div>
       <div class="artworkInfo">
@@ -302,7 +312,10 @@
     ];
 
     let currentIndex = 0;
-    const imgElement = document.getElementById('currentImage');
+    let isAnimating = false;
+    let useImageA = true;
+    const imageA = document.getElementById('imageA');
+    const imageB = document.getElementById('imageB');
     const prevBtn = document.getElementById('prevBtn');
     const nextBtn = document.getElementById('nextBtn');
     const dotsContainer = document.getElementById('dotsContainer');
@@ -332,9 +345,30 @@
       updateDots();
     }
 
-    // 直接切换图片，无动画
+    // Scale + Fade 电影感切换
     function showImage(index) {
-      imgElement.src = images[index];
+      if(isAnimating) return;
+      isAnimating = true;
+
+      const currentImg = useImageA ? imageA : imageB;
+      const nextImg = useImageA ? imageB : imageA;
+
+      // 设置新图片
+      nextImg.src = images[index];
+
+      // 交叉动画：当前缩小淡出，新图片放大淡入
+      requestAnimationFrame(() => {
+        nextImg.classList.add('active');
+        currentImg.classList.add('leaving');
+        currentImg.classList.remove('active');
+      });
+
+      // 动画完成后清理
+      setTimeout(() => {
+        currentImg.classList.remove('leaving');
+        useImageA = !useImageA;
+        isAnimating = false;
+      }, 400);
     }
 
     // 上一张
@@ -389,7 +423,7 @@
 
     // 初始化
     createDots();
-    imgElement.src = images[0];
+    imageA.src = images[0];
   </script>
 
   <!-- 导航和面板逻辑 -->
