@@ -144,8 +144,9 @@
       position:fixed;
       inset:0;
       display:flex;
-      align-items:center;
+      align-items:flex-start;
       justify-content:center;
+      padding-top: 18vh;
       z-index:1;
     }
 
@@ -335,11 +336,10 @@
 
   <!-- 顶部下拉菜单（手机端） -->
   <div class="topMenuPanel" id="topMenuPanel">
-    <a href="../../">Home</a>
-    <a href="../yellow-river/">Yellow River (2025)</a>
-    <a href="../frontispiece/">Frontispiece (2024)</a>
-    <a href="../formless-buddha/">Formless Buddha (2023)</a>
+    <a href="#" id="mobileProjects">Projects</a>
+    <a href="#" id="mobileImages">Images</a>
     <a href="../../about/">About</a>
+    <a href="../../">Home</a>
   </div>
 
   <div class="gallery">
@@ -386,6 +386,7 @@
 
     let currentIndex = 0;
     let isAnimating = false;
+    let isFirstImageLoaded = false;
     const imgElement = document.getElementById('currentImage');
     const prevBtn = document.getElementById('prevBtn');
     const nextBtn = document.getElementById('nextBtn');
@@ -427,6 +428,7 @@
     // 显示当前图片 - 图片已预加载，直接切换
     function showImage(index) {
       if(isAnimating) return;
+      if(!isFirstImageLoaded && index !== 0) return; // 等待第一张加载完成
       isAnimating = true;
 
       // 淡出当前图片
@@ -448,6 +450,7 @@
 
     // 上一张
     function showPrev() {
+      if(!isFirstImageLoaded) return;
       currentIndex = (currentIndex - 1 + images.length) % images.length;
       showImage(currentIndex);
       updateDots();
@@ -455,6 +458,7 @@
 
     // 下一张
     function showNext() {
+      if(!isFirstImageLoaded) return;
       currentIndex = (currentIndex + 1) % images.length;
       showImage(currentIndex);
       updateDots();
@@ -501,6 +505,7 @@
     createDots();
     imgElement.src = images[0];
     imgElement.onload = () => {
+      isFirstImageLoaded = true;
       requestAnimationFrame(() => {
         imgElement.classList.add('active');
       });
@@ -509,12 +514,36 @@
     // 顶部菜单控制（手机端）
     const menuToggle = document.getElementById('menuToggle');
     const topMenuPanel = document.getElementById('topMenuPanel');
+    const mobileProjects = document.getElementById('mobileProjects');
+    const mobileImages = document.getElementById('mobileImages');
 
     // 只在元素存在时添加事件监听
     if(menuToggle && topMenuPanel){
       menuToggle.addEventListener('click', () => {
         topMenuPanel.classList.toggle('is-open');
       });
+
+      // Projects 链接：显示项目面板
+      if(mobileProjects){
+        mobileProjects.addEventListener('click', (e) => {
+          e.preventDefault();
+          topMenuPanel.classList.remove('is-open');
+          // 触发左侧 PROJECTS 按钮的点击
+          const projectsBtn = document.querySelector('[data-menu="projects"] .navBtn');
+          if(projectsBtn) projectsBtn.click();
+        });
+      }
+
+      // Images 链接：显示图片面板
+      if(mobileImages){
+        mobileImages.addEventListener('click', (e) => {
+          e.preventDefault();
+          topMenuPanel.classList.remove('is-open');
+          // 触发左侧 IMAGES 按钮的点击
+          const imagesBtn = document.querySelector('[data-menu="images"] .navBtn');
+          if(imagesBtn) imagesBtn.click();
+        });
+      }
 
       // 点击外部关闭菜单
       document.addEventListener('touchstart', (e) => {
