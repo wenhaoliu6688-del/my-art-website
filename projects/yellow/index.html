@@ -366,18 +366,18 @@
 
     /* iPad/平板设备专用调整（768px - 1024px） */
     @media (min-width: 768px) and (max-width: 1024px){
-      /* iPad：作品居中，但保持合理尺寸 */
+      /* iPad：作品在上半部分，不跟底部导航重合 */
       .gallery{
-        align-items: center;
-        padding-top: 0;
+        align-items: flex-start;
+        padding-top: 12vh;
       }
 
       .imageContainer{
         max-width:80vw;
-        max-height:55vh;
+        max-height:50vh;
       }
       .imageContainer img{
-        max-height:55vh;
+        max-height:50vh;
       }
     }
   </style>
