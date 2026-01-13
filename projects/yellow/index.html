@@ -98,17 +98,14 @@
       justify-content:center;
     }
 
-    /* 图片 - 叠加显示，交叉淡入淡出 */
+    /* 图片 - 直接切换，无动画 */
     .imageContainer img{
-      position:absolute;
       max-width:100%;
       max-height:75vh;
       display:block;
-      opacity:0;
-      transition: opacity 0.28s ease-out;
     }
-    .imageContainer img.active{
-      opacity:1;
+    .imageContainer img.hidden{
+      display:none;
     }
 
     /* 作品容器整体 */
@@ -265,8 +262,7 @@
   <div class="gallery">
     <div class="artworkWrapper">
       <div class="imageContainer">
-        <img id="currentImage" class="active" src="" alt="Yellow (2021)">
-        <img id="nextImage" src="" alt="">
+        <img id="currentImage" src="" alt="Yellow (2021)">
       </div>
       <div class="divider"></div>
       <div class="artworkInfo">
@@ -306,22 +302,10 @@
     ];
 
     let currentIndex = 0;
-    let isAnimating = false;
-    const currentImg = document.getElementById('currentImage');
-    const nextImg = document.getElementById('nextImage');
+    const imgElement = document.getElementById('currentImage');
     const prevBtn = document.getElementById('prevBtn');
     const nextBtn = document.getElementById('nextBtn');
     const dotsContainer = document.getElementById('dotsContainer');
-
-    // 预加载所有图片
-    const loadedImages = {};
-    function preloadImages() {
-      images.forEach((src, index) => {
-        const img = new Image();
-        img.src = src;
-        loadedImages[index] = img;
-      });
-    }
 
     // 生成圆点导航
     function createDots() {
@@ -348,26 +332,9 @@
       updateDots();
     }
 
-    // 交叉淡入淡出切换
+    // 直接切换图片，无动画
     function showImage(index) {
-      if(isAnimating) return;
-      isAnimating = true;
-
-      // 确定哪张是当前显示的，哪张是隐藏的
-      const showing = currentImg.classList.contains('active') ? currentImg : nextImg;
-      const hiding = currentImg.classList.contains('active') ? nextImg : currentImg;
-
-      // 设置隐藏图片的src（已预加载，瞬间完成）
-      hiding.src = images[index];
-
-      // 交叉淡入淡出
-      hiding.classList.add('active');
-      showing.classList.remove('active');
-
-      // 280ms 后解锁（与 CSS 过渡时间匹配）
-      setTimeout(() => {
-        isAnimating = false;
-      }, 280);
+      imgElement.src = images[index];
     }
 
     // 上一张
@@ -421,9 +388,8 @@
     }
 
     // 初始化
-    preloadImages();
     createDots();
-    currentImg.src = images[0];
+    imgElement.src = images[0];
   </script>
 
   <!-- 导航和面板逻辑 -->
@@ -433,9 +399,9 @@
 
     const PROJECTS = [
       { title: "Yellow River", year: "2025", href: BASE + "projects/yellow-river/" },
-      { title: "Yellow", year: "2021", href: BASE + "projects/yellow/" },
+      { title: "Frontispiece", year: "2024", href: BASE + "projects/frontispiece/" },
       { title: "Formless Buddha", year: "2023", href: BASE + "projects/formless-buddha/" },
-      { title: "Frontispiece", year: "2024", href: BASE + "projects/frontispiece/" }
+      { title: "Yellow", year: "2021", href: BASE + "projects/yellow/" }
     ];
 
     const IMAGES = [
