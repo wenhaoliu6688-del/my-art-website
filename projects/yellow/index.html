@@ -190,6 +190,7 @@
       align-items:flex-start;
       justify-content:center;
       padding-top: 18vh;
+      padding-bottom: 120px;
       z-index:1;
     }
 
@@ -254,7 +255,7 @@
     /* 底部导航区域 */
     .bottomNav{
       position:fixed;
-      bottom:32px;
+      bottom:48px;
       left:50%;
       transform:translateX(-50%);
       display:flex;
@@ -466,7 +467,6 @@
     ];
 
     let currentIndex = 0;
-    let isAnimating = false;
     const imgElement = document.getElementById('currentImage');
     const prevBtn = document.getElementById('prevBtn');
     const nextBtn = document.getElementById('nextBtn');
@@ -507,24 +507,14 @@
 
     // 显示当前图片 - 图片已预加载，直接切换
     function showImage(index) {
-      if(isAnimating) return;
-      isAnimating = true;
+      // 立即更新图片源（已预加载，瞬间完成）
+      imgElement.src = images[index];
 
-      // 淡出当前图片
+      // 短暂淡出淡入效果
       imgElement.classList.remove('active');
-
-      setTimeout(() => {
-        // 更换图片（已预加载，瞬间完成）
-        imgElement.src = images[index];
-
-        // 立即淡入
-        requestAnimationFrame(() => {
-          imgElement.classList.add('active');
-          setTimeout(() => {
-            isAnimating = false;
-          }, 200);
-        });
-      }, 150);
+      requestAnimationFrame(() => {
+        imgElement.classList.add('active');
+      });
     }
 
     // 上一张
