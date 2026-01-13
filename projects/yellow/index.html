@@ -281,12 +281,18 @@
       .menuToggle{ display: block; }
       .topMenuPanel{ display: block; }
 
+      /* 手机端：作品居中显示 */
+      .gallery{
+        align-items: center;
+        padding-top: 0;
+      }
+
       .imageContainer{
         max-width:85vw;
-        max-height:65vh;
+        max-height:50vh;
       }
       .imageContainer img{
-        max-height:65vh;
+        max-height:50vh;
       }
 
       .bottomNav{
@@ -386,7 +392,6 @@
 
     let currentIndex = 0;
     let isAnimating = false;
-    let isFirstImageLoaded = false;
     const imgElement = document.getElementById('currentImage');
     const prevBtn = document.getElementById('prevBtn');
     const nextBtn = document.getElementById('nextBtn');
@@ -428,7 +433,6 @@
     // 显示当前图片 - 图片已预加载，直接切换
     function showImage(index) {
       if(isAnimating) return;
-      if(!isFirstImageLoaded && index !== 0) return; // 等待第一张加载完成
       isAnimating = true;
 
       // 淡出当前图片
@@ -450,7 +454,6 @@
 
     // 上一张
     function showPrev() {
-      if(!isFirstImageLoaded) return;
       currentIndex = (currentIndex - 1 + images.length) % images.length;
       showImage(currentIndex);
       updateDots();
@@ -458,7 +461,6 @@
 
     // 下一张
     function showNext() {
-      if(!isFirstImageLoaded) return;
       currentIndex = (currentIndex + 1) % images.length;
       showImage(currentIndex);
       updateDots();
@@ -505,7 +507,6 @@
     createDots();
     imgElement.src = images[0];
     imgElement.onload = () => {
-      isFirstImageLoaded = true;
       requestAnimationFrame(() => {
         imgElement.classList.add('active');
       });
