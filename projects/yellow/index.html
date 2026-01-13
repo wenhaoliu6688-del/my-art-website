@@ -98,28 +98,38 @@
       justify-content:center;
     }
 
-    /* 图片 - 丝滑过渡 */
+    /* 图片 - 快速干脆的过渡 */
     .imageContainer img{
       max-width:100%;
       max-height:75vh;
       display:block;
       opacity:0;
-      transform:scale(0.98);
-      transition: opacity 0.6s cubic-bezier(0.4, 0, 0.2, 1),
-                  transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+      transition: opacity 0.35s ease-out;
     }
     .imageContainer img.active{
       opacity:1;
-      transform:scale(1);
     }
 
-    /* 作品信息 - 右下角 */
+    /* 作品容器整体 */
+    .artworkWrapper{
+      position:relative;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+    }
+
+    /* 作品分隔线 */
+    .divider{
+      width: 60px;
+      height:1px;
+      background:var(--line);
+      margin-top:16px;
+    }
+
+    /* 作品信息 - 下方居中 */
     .artworkInfo{
-      position:fixed;
-      bottom:32px;
-      right:32px;
-      z-index:100;
-      text-align:right;
+      text-align:center;
+      margin-top:16px;
       pointer-events:none;
     }
     .artworkInfo .title{
@@ -127,7 +137,7 @@
       font-weight:500;
       letter-spacing:.06em;
       color:var(--text);
-      margin-bottom:2px;
+      margin-bottom:4px;
     }
     .artworkInfo .year{
       font-size:11px;
@@ -136,46 +146,65 @@
       font-weight:400;
     }
 
-    /* 导航箭头 - 极简设计，在屏幕外侧 */
-    .navArrow{
+    /* 底部导航区域 */
+    .bottomNav{
       position:fixed;
-      top:50%;
-      transform:translateY(-50%);
-      width:40px;
-      height:40px;
+      bottom:32px;
+      left:50%;
+      transform:translateX(-50%);
+      display:flex;
+      align-items:center;
+      gap:24px;
+      z-index:100;
+    }
+
+    /* 左右箭头按钮 */
+    .navArrow{
+      width:32px;
+      height:32px;
       border:none;
       background: transparent;
       cursor:pointer;
-      z-index:100;
       display:flex;
       align-items:center;
       justify-content:center;
-      transition: opacity .2s ease, transform .2s ease;
       padding:0;
       margin:0;
-    }
-    .navArrow:hover{
-      transform:translateY(-50%) scale(1.1);
+      flex-shrink: 0;
+      transition: opacity .2s ease;
     }
     .navArrow svg{
-      width:24px;
-      height:24px;
+      width:18px;
+      height:18px;
       stroke:var(--text);
-      stroke-width:1;
+      stroke-width:1.2;
       fill:none;
-      opacity:0.3;
-      transition: opacity .2s ease, stroke .2s ease;
+      opacity:0.25;
+      transition: opacity .2s ease;
     }
     .navArrow:hover svg{
-      opacity:0.8;
-      stroke:var(--text);
+      opacity:0.6;
     }
 
-    .navArrow.prev{
-      left:8px;
+    /* 圆点导航 */
+    .dots{
+      display:flex;
+      gap:8px;
+      align-items:center;
     }
-    .navArrow.next{
-      right:8px;
+    .dot{
+      width:6px;
+      height:6px;
+      border-radius:50%;
+      background:var(--line);
+      cursor:pointer;
+      transition: all .2s ease;
+    }
+    .dot.active{
+      background:var(--text);
+    }
+    .dot:hover{
+      transform:scale(1.2);
     }
 
     /* 小屏幕设备调整 */
@@ -194,30 +223,29 @@
         max-height:70vh;
       }
 
-      .artworkInfo{
+      .bottomNav{
         bottom:24px;
-        right:24px;
+        gap:16px;
       }
+
+      .navArrow svg{
+        width:16px;
+        height:16px;
+      }
+
+      .dot{
+        width:5px;
+        height:5px;
+      }
+      .dots{
+        gap:6px;
+      }
+
       .artworkInfo .title{
         font-size:12px;
       }
       .artworkInfo .year{
         font-size:10px;
-      }
-
-      .navArrow{
-        width:36px;
-        height:36px;
-      }
-      .navArrow.prev{
-        left:6px;
-      }
-      .navArrow.next{
-        right:6px;
-      }
-      .navArrow svg{
-        width:20px;
-        height:20px;
       }
     }
   </style>
@@ -234,29 +262,34 @@
   </nav>
 
   <div class="gallery">
-    <div class="imageContainer">
-      <img id="currentImage" src="" alt="Yellow (2021)">
+    <div class="artworkWrapper">
+      <div class="imageContainer">
+        <img id="currentImage" src="" alt="Yellow (2021)">
+      </div>
+      <div class="divider"></div>
+      <div class="artworkInfo">
+        <div class="title">Yellow</div>
+        <div class="year">2021</div>
+      </div>
     </div>
   </div>
 
-  <!-- 作品信息 -->
-  <div class="artworkInfo">
-    <div class="title">Yellow</div>
-    <div class="year">2021</div>
+  <!-- 底部导航 -->
+  <div class="bottomNav">
+    <button class="navArrow prev" id="prevBtn" aria-label="上一张">
+      <svg viewBox="0 0 24 24">
+        <path d="M15 18l-6-6 6-6"/>
+      </svg>
+    </button>
+
+    <div class="dots" id="dotsContainer"></div>
+
+    <button class="navArrow next" id="nextBtn" aria-label="下一张">
+      <svg viewBox="0 0 24 24">
+        <path d="M9 18l6-6-6-6"/>
+      </svg>
+    </button>
   </div>
-
-  <!-- 导航箭头 -->
-  <button class="navArrow prev" id="prevBtn" aria-label="上一张">
-    <svg viewBox="0 0 24 24">
-      <path d="M15 18l-6-6 6-6"/>
-    </svg>
-  </button>
-
-  <button class="navArrow next" id="nextBtn" aria-label="下一张">
-    <svg viewBox="0 0 24 24">
-      <path d="M9 18l6-6-6-6"/>
-    </svg>
-  </button>
 
   <script>
     // ===== 图片列表 =====
@@ -275,8 +308,34 @@
     const imgElement = document.getElementById('currentImage');
     const prevBtn = document.getElementById('prevBtn');
     const nextBtn = document.getElementById('nextBtn');
+    const dotsContainer = document.getElementById('dotsContainer');
 
-    // 显示当前图片 - 丝滑过渡
+    // 生成圆点导航
+    function createDots() {
+      for (let i = 0; i < images.length; i++) {
+        const dot = document.createElement('div');
+        dot.className = 'dot' + (i === 0 ? ' active' : '');
+        dot.addEventListener('click', () => goToImage(i));
+        dotsContainer.appendChild(dot);
+      }
+    }
+
+    // 更新圆点状态
+    function updateDots() {
+      const dots = dotsContainer.querySelectorAll('.dot');
+      dots.forEach((dot, index) => {
+        dot.classList.toggle('active', index === currentIndex);
+      });
+    }
+
+    // 跳转到指定图片
+    function goToImage(index) {
+      currentIndex = index;
+      showImage(currentIndex);
+      updateDots();
+    }
+
+    // 显示当前图片 - 快速干脆的过渡
     function showImage(index) {
       if(isAnimating) return;
       isAnimating = true;
@@ -294,22 +353,24 @@
             imgElement.classList.add('active');
             setTimeout(() => {
               isAnimating = false;
-            }, 600);
+            }, 400);
           });
         };
-      }, 300);
+      }, 350);
     }
 
     // 上一张
     function showPrev() {
       currentIndex = (currentIndex - 1 + images.length) % images.length;
       showImage(currentIndex);
+      updateDots();
     }
 
     // 下一张
     function showNext() {
       currentIndex = (currentIndex + 1) % images.length;
       showImage(currentIndex);
+      updateDots();
     }
 
     // 按钮事件
@@ -348,7 +409,8 @@
       }
     }
 
-    // 初始化显示第一张
+    // 初始化
+    createDots();
     imgElement.src = images[0];
     imgElement.onload = () => {
       requestAnimationFrame(() => {
