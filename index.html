@@ -110,6 +110,11 @@
       pointer-events:auto;
       transform: translateY(0);
     }
+
+    /* 触摸设备：优化面板动画，减少闪烁 */
+    body.is-touch-device .panel{
+      transition: opacity .10s ease, transform .10s ease;
+    }
     .panel::before{
       content:"";
       position:absolute;

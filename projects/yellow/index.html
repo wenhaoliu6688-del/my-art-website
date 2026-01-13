@@ -215,8 +215,14 @@
       .brand{ top:22px; }
       .navBtn{ font-size:14px; letter-spacing:.20em; }
 
+      /* 手机端：作品区域向右偏移，避开左侧按钮 */
+      .gallery{
+        justify-content: flex-end;
+        padding-right: 5vw;
+      }
+
       .imageContainer{
-        max-width:70vw;
+        max-width:85vw;
         max-height:70vh;
       }
       .imageContainer img{
