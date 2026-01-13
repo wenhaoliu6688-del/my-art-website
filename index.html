@@ -197,12 +197,24 @@
       :root{ --leftPad: 22px; --panelW: 320px; }
       .brand{ top:22px; }
       .navBtn{ font-size:14px; letter-spacing:.20em; }
-      .resonanceWrap{ top:15px; right:22px; }
+
+      /* 手机端共鸣按钮：完全模仿 HARRY6 的样式 */
+      .resonanceWrap{ top:22px; right:22px; }
       .resonanceCopy{
+        display: inline-block;
         padding: 10px 14px;
+        border-radius: 999px;
+        background: rgba(255,255,255,0.85);
+        box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        font-size: 15px;
+        font-weight: 600;
+        letter-spacing: .08em;
+        color: var(--text);
+        text-decoration: none;
+        white-space: nowrap;
       }
-      .resonanceCopy .label{ font-size: 14px; }
-      .resonanceCopy .count{ font-size: 14px; font-weight: 600; }
+      .resonanceCopy .label{ display: none; }
+      .resonanceCopy .count{ font-size: 15px; font-weight: 600; }
     }
 
     /* 共鸣计数器 */
