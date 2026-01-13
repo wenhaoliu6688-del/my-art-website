@@ -46,6 +46,67 @@
       box-shadow: 0 2px 6px rgba(0,0,0,0.15);
     }
 
+    /* 顶部菜单按钮（手机端） */
+    .menuToggle{
+      display:none;
+      position:fixed;
+      top:22px;
+      right:22px;
+      width:44px;
+      height:44px;
+      border:none;
+      background: rgba(255,255,255,0.85);
+      border-radius: 999px;
+      cursor:pointer;
+      z-index:1001;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+      transition: opacity .15s ease;
+    }
+    .menuToggle:hover{
+      opacity:.75;
+    }
+    .menuToggle svg{
+      width:20px;
+      height:20px;
+      stroke:var(--text);
+      stroke-width:1.5;
+      fill:none;
+    }
+    /* 顶部下拉菜单（手机端） */
+    .topMenuPanel{
+      display:none;
+      position:fixed;
+      top:72px;
+      right:22px;
+      background:#fff;
+      border:1px solid var(--line);
+      border-radius:12px;
+      padding:12px 16px;
+      z-index:1001;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      opacity:0;
+      transform: translateY(-8px);
+      transition: opacity .15s ease, transform .15s ease;
+      pointer-events:none;
+    }
+    .topMenuPanel.is-open{
+      opacity:1;
+      transform: translateY(0);
+      pointer-events:auto;
+    }
+    .topMenuPanel a{
+      display:block;
+      text-decoration:none;
+      color:var(--text);
+      font-size:14px;
+      letter-spacing:.06em;
+      padding: 8px 4px;
+      white-space:nowrap;
+    }
+    .topMenuPanel a:hover{
+      opacity:.65;
+    }
+
     /* nav */
     .nav{
       position:fixed;
@@ -92,7 +153,7 @@
     .imageContainer{
       position:relative;
       max-width:70vw;
-      max-height:75vh;
+      max-height:70vh;
       display:flex;
       align-items:center;
       justify-content:center;
@@ -101,7 +162,7 @@
     /* 图片 - 快速干脆的过渡 */
     .imageContainer img{
       max-width:100%;
-      max-height:75vh;
+      max-height:70vh;
       display:block;
       opacity:0;
       transition: opacity 0.18s ease-out;
@@ -213,20 +274,18 @@
         --leftPad: 22px;
       }
       .brand{ top:22px; }
-      .navBtn{ font-size:14px; letter-spacing:.20em; }
 
-      /* 手机端：作品区域向右偏移，避开左侧按钮 */
-      .gallery{
-        justify-content: flex-end;
-        padding-right: 5vw;
-      }
+      /* 手机端：隐藏左侧导航，显示顶部菜单 */
+      .nav{ display: none; }
+      .menuToggle{ display: block; }
+      .topMenuPanel{ display: block; }
 
       .imageContainer{
         max-width:85vw;
-        max-height:70vh;
+        max-height:65vh;
       }
       .imageContainer img{
-        max-height:70vh;
+        max-height:65vh;
       }
 
       .bottomNav{
@@ -266,6 +325,22 @@
     <div class="navItem" data-menu="images"><button class="navBtn" type="button">IMAGES</button></div>
     <div class="navItem" data-menu="about"><button class="navBtn" type="button">ABOUT</button></div>
   </nav>
+
+  <!-- 顶部菜单按钮（手机端） -->
+  <button class="menuToggle" id="menuToggle" aria-label="Menu">
+    <svg viewBox="0 0 24 24">
+      <path d="M3 12h18M3 6h18M3 18h18"/>
+    </svg>
+  </button>
+
+  <!-- 顶部下拉菜单（手机端） -->
+  <div class="topMenuPanel" id="topMenuPanel">
+    <a href="../../">Home</a>
+    <a href="../yellow-river/">Yellow River (2025)</a>
+    <a href="../frontispiece/">Frontispiece (2024)</a>
+    <a href="../formless-buddha/">Formless Buddha (2023)</a>
+    <a href="../../about/">About</a>
+  </div>
 
   <div class="gallery">
     <div class="artworkWrapper">
@@ -430,6 +505,24 @@
         imgElement.classList.add('active');
       });
     };
+
+    // 顶部菜单控制（手机端）
+    const menuToggle = document.getElementById('menuToggle');
+    const topMenuPanel = document.getElementById('topMenuPanel');
+    const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+
+    if(isTouchDevice){
+      menuToggle.addEventListener('click', () => {
+        topMenuPanel.classList.toggle('is-open');
+      });
+
+      // 点击外部关闭菜单
+      document.addEventListener('touchstart', (e) => {
+        if(!e.target.closest('.menuToggle') && !e.target.closest('.topMenuPanel')){
+          topMenuPanel.classList.remove('is-open');
+        }
+      }, {passive: true});
+    }
   </script>
 
   <!-- 导航和面板逻辑 -->
