@@ -221,6 +221,7 @@
       display:flex;
       flex-direction:column;
       align-items:center;
+      margin-bottom: 60px;
     }
 
     /* 作品分隔线 */
@@ -228,13 +229,13 @@
       width: 60px;
       height:1px;
       background:var(--line);
-      margin-top:16px;
+      margin-top:20px;
     }
 
     /* 作品信息 - 下方居中 */
     .artworkInfo{
       text-align:center;
-      margin-top:16px;
+      margin-top:20px;
       pointer-events:none;
     }
     .artworkInfo .title{
@@ -588,14 +589,9 @@
     };
 
     // 顶部菜单控制（手机端）
-    // 使用 try-catch 防止错误导致页面崩溃
     try {
       const menuToggle = document.getElementById('menuToggle');
       const topMenuPanel = document.getElementById('topMenuPanel');
-      const mobileProjects = document.getElementById('mobileProjects');
-      const mobileImages = document.getElementById('mobileImages');
-      const projectsSubmenu = document.getElementById('projectsSubmenu');
-      const imagesSubmenu = document.getElementById('imagesSubmenu');
 
       // 只在元素存在时添加事件监听
       if(menuToggle && topMenuPanel){
@@ -605,33 +601,25 @@
         });
 
         // Projects 子菜单切换
+        const mobileProjects = document.getElementById('mobileProjects');
+        const projectsSubmenu = document.getElementById('projectsSubmenu');
         if(mobileProjects && projectsSubmenu){
           mobileProjects.addEventListener('click', (e) => {
             e.preventDefault();
-            e.stopPropagation();
             projectsSubmenu.classList.toggle('is-open');
-            imagesSubmenu?.classList.remove('is-open');
+            const imagesSubmenu = document.getElementById('imagesSubmenu');
+            if(imagesSubmenu) imagesSubmenu.classList.remove('is-open');
           });
         }
 
         // Images 子菜单切换
+        const mobileImages = document.getElementById('mobileImages');
+        const imagesSubmenu = document.getElementById('imagesSubmenu');
         if(mobileImages && imagesSubmenu){
           mobileImages.addEventListener('click', (e) => {
             e.preventDefault();
-            e.stopPropagation();
             imagesSubmenu.classList.toggle('is-open');
-            projectsSubmenu?.classList.remove('is-open');
-          });
-        }
-
-        // 点击其他菜单项关闭所有子菜单
-        const otherItems = topMenuPanel.querySelectorAll('.topMenuItem:not(.has-children)');
-        if(otherItems.length > 0){
-          otherItems.forEach(item => {
-            item.addEventListener('click', () => {
-              projectsSubmenu?.classList.remove('is-open');
-              imagesSubmenu?.classList.remove('is-open');
-            });
+            if(projectsSubmenu) projectsSubmenu.classList.remove('is-open');
           });
         }
 
@@ -639,8 +627,10 @@
         document.addEventListener('touchstart', (e) => {
           if(!e.target.closest('.menuToggle') && !e.target.closest('.topMenuPanel')){
             topMenuPanel.classList.remove('is-open');
-            projectsSubmenu?.classList.remove('is-open');
-            imagesSubmenu?.classList.remove('is-open');
+            const pSub = document.getElementById('projectsSubmenu');
+            const iSub = document.getElementById('imagesSubmenu');
+            if(pSub) pSub.classList.remove('is-open');
+            if(iSub) iSub.classList.remove('is-open');
           }
         }, {passive: true});
       }
