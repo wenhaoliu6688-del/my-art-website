@@ -513,10 +513,10 @@
       countEl.textContent = resonanceCount;
     }
 
-    // 新访客引导：5秒后停止呼吸效果
-    setTimeout(() => {
+    // 如果之前点击过（localStorage 有记录），就不再显示呼吸效果
+    if(savedCount){
       resonanceEl?.classList.remove("breathe");
-    }, 5000);
+    }
 
     // 点击增加计数
     resonanceEl?.addEventListener("click", (e) => {
@@ -526,6 +526,9 @@
       }
       // 保存到 localStorage（刷新后会保留，但只是本地）
       localStorage.setItem("harry6_resonance", resonanceCount);
+
+      // 点击后停止呼吸效果
+      resonanceEl?.classList.remove("breathe");
 
       // 数字跳动动画
       resonanceEl.classList.add("clicked");
