@@ -10,7 +10,11 @@
       "Bash(git branch:*)",
       "Bash(ping:*)",
       "Bash(git fetch:*)",
-      "Bash(copy:*)"
+      "Bash(copy:*)",
+      "Bash(ls:*)",
+      "Bash(ssh-keygen:*)",
+      "Bash(git remote set-url:*)",
+      "Bash(ssh:*)"
     ]
   }
 }

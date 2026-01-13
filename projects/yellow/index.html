@@ -1,0 +1,524 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Yellow (2021) — HARRY6</title>
+
+  <style>
+    :root{
+      --text:#111;
+      --muted: rgba(0,0,0,.48);
+      --muted2: rgba(0,0,0,.30);
+      --line: rgba(0,0,0,.10);
+      --leftPad: 56px;
+    }
+    *{ box-sizing:border-box; }
+    html, body{
+      height:100%;
+      margin:0;
+      background:#fff;
+      color:var(--text);
+      font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Arial, "PingFang SC","Microsoft YaHei", sans-serif;
+    }
+
+    /* brand */
+    .brand{
+      position:fixed;
+      top:44px;
+      left:var(--leftPad);
+      margin-left:-12px;
+      z-index:1000;
+      text-decoration:none;
+      color:var(--text);
+      font-weight:600;
+      font-size:18px;
+      letter-spacing:.10em;
+      text-transform:uppercase;
+      padding: 10px 14px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.85);
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+      transition: opacity .15s ease, box-shadow .15s ease;
+    }
+    .brand:hover{
+      opacity:.78;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+    }
+
+    /* 作品标题 */
+    .title{
+      position:fixed;
+      top:44px;
+      left:50%;
+      transform:translateX(-50%);
+      z-index:1000;
+      font-size:14px;
+      letter-spacing:.08em;
+      color:var(--muted);
+      text-align: center;
+      white-space: nowrap;
+    }
+
+    /* nav */
+    .nav{
+      position:fixed;
+      left:var(--leftPad);
+      top:50%;
+      transform:translateY(-50%);
+      z-index:1000;
+      user-select:none;
+    }
+    .navItem{ margin: 18px 0; }
+
+    .navBtn{
+      display:inline-block;
+      cursor:pointer;
+      border:none;
+      background: rgba(255,255,255,0.85);
+      padding: 10px 12px;
+      margin-left:-12px;
+      font-size:15px;
+      letter-spacing:.24em;
+      text-transform:uppercase;
+      color:var(--text);
+      border-radius: 999px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+    .navBtn:hover{
+      color:var(--text);
+      background: rgba(255,255,255,0.95);
+      box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+    }
+    .navBtn.is-active{ color:var(--text); }
+
+    /* 主容器 - 图片展示区 */
+    .gallery{
+      position:fixed;
+      inset:0;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      z-index:1;
+    }
+
+    /* 图片容器 */
+    .imageContainer{
+      position:relative;
+      max-width:90vw;
+      max-height:85vh;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+    }
+
+    /* 图片 */
+    .imageContainer img{
+      max-width:100%;
+      max-height:85vh;
+      display:block;
+      opacity:0;
+      transition: opacity .3s ease;
+    }
+    .imageContainer img.loaded{
+      opacity:1;
+    }
+
+    /* 导航按钮 - 极简设计 */
+    .navButton{
+      position:fixed;
+      top:50%;
+      transform:translateY(-50%);
+      width:48px;
+      height:48px;
+      border:none;
+      background: rgba(255,255,255,0.85);
+      border-radius:50%;
+      cursor:pointer;
+      z-index:100;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+      transition: all .15s ease;
+    }
+    .navButton:hover{
+      background: rgba(255,255,255,0.95);
+      box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+      transform:translateY(-50%) scale(1.08);
+    }
+    .navButton:active{
+      transform:translateY(-50%) scale(1);
+    }
+
+    .navButton.prev{
+      left: max(22px, calc((100vw - 900px) / 2 - 60px));
+    }
+    .navButton.next{
+      right: max(22px, calc((100vw - 900px) / 2 - 60px));
+    }
+
+    /* 按钮箭头 */
+    .navButton svg{
+      width:20px;
+      height:20px;
+      stroke:var(--text);
+      stroke-width:1.5;
+      fill:none;
+    }
+
+    /* 计数器 */
+    .counter{
+      position:fixed;
+      bottom:28px;
+      left:50%;
+      transform:translateX(-50%);
+      z-index:1000;
+      font-size:12px;
+      letter-spacing:.08em;
+      color:var(--muted2);
+    }
+
+    /* 小屏幕设备调整 */
+    @media (max-width: 1024px){
+      :root{
+        --leftPad: 22px;
+      }
+      .brand{ top:22px; }
+      .title{ top:22px; font-size:12px; }
+      .navBtn{ font-size:14px; letter-spacing:.20em; }
+
+      .navButton{
+        width:44px;
+        height:44px;
+      }
+      .navButton.prev{
+        left:12px;
+      }
+      .navButton.next{
+        right:12px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <a class="brand" href="../../">HARRY6</a>
+  <div class="title">Yellow (2021)</div>
+
+  <nav class="nav" aria-label="Primary">
+    <div class="navItem" data-menu="projects"><button class="navBtn" type="button">PROJECTS</button></div>
+    <div class="navItem" data-menu="images"><button class="navBtn" type="button">IMAGES</button></div>
+    <div class="navItem" data-menu="about"><button class="navBtn" type="button">ABOUT</button></div>
+  </nav>
+
+  <div class="gallery">
+    <div class="imageContainer">
+      <img id="currentImage" src="" alt="Yellow (2021)">
+    </div>
+  </div>
+
+  <button class="navButton prev" id="prevBtn" aria-label="上一张">
+    <svg viewBox="0 0 24 24">
+      <path d="M15 18l-6-6 6-6"/>
+    </svg>
+  </button>
+
+  <button class="navButton next" id="nextBtn" aria-label="下一张">
+    <svg viewBox="0 0 24 24">
+      <path d="M9 18l6-6-6-6"/>
+    </svg>
+  </button>
+
+  <div class="counter" id="counter">1 / 7</div>
+
+  <script>
+    // ===== 图片列表 =====
+    const images = [
+      'assets/1.JPG',
+      'assets/3.JPG',
+      'assets/8.JPG',
+      'assets/9.JPG',
+      'assets/16.JPG',
+      'assets/d8e7e702de978f3b7f82529947714713.jpg',
+      'assets/f273fae0ebb8f21b53aae141b62cab1b.jpg'
+    ];
+
+    let currentIndex = 0;
+    const imgElement = document.getElementById('currentImage');
+    const counterElement = document.getElementById('counter');
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+
+    // 显示当前图片
+    function showImage(index) {
+      imgElement.classList.remove('loaded');
+      imgElement.src = images[index];
+      imgElement.onload = () => {
+        imgElement.classList.add('loaded');
+      };
+      counterElement.textContent = `${index + 1} / ${images.length}`;
+    }
+
+    // 上一张
+    function showPrev() {
+      currentIndex = (currentIndex - 1 + images.length) % images.length;
+      showImage(currentIndex);
+    }
+
+    // 下一张
+    function showNext() {
+      currentIndex = (currentIndex + 1) % images.length;
+      showImage(currentIndex);
+    }
+
+    // 按钮事件
+    prevBtn.addEventListener('click', showPrev);
+    nextBtn.addEventListener('click', showNext);
+
+    // 键盘导航
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowLeft') showPrev();
+      if (e.key === 'ArrowRight') showNext();
+    });
+
+    // 触摸滑动支持
+    let touchStartX = 0;
+    let touchEndX = 0;
+
+    document.addEventListener('touchstart', (e) => {
+      touchStartX = e.changedTouches[0].screenX;
+    }, {passive: true});
+
+    document.addEventListener('touchend', (e) => {
+      touchEndX = e.changedTouches[0].screenX;
+      handleSwipe();
+    }, {passive: true});
+
+    function handleSwipe() {
+      const swipeThreshold = 50;
+      const diff = touchStartX - touchEndX;
+
+      if (Math.abs(diff) > swipeThreshold) {
+        if (diff > 0) {
+          showNext(); // 向左滑动，下一张
+        } else {
+          showPrev(); // 向右滑动，上一张
+        }
+      }
+    }
+
+    // 初始化显示第一张
+    showImage(0);
+  </script>
+
+  <!-- 导航和面板逻辑（从首页复制） -->
+  <script>
+    const REPO = location.pathname.split("/").filter(Boolean).length > 2 ? "/" + location.pathname.split("/")[1] + "/" : "/";
+    const BASE = REPO;
+
+    const PROJECTS = [
+      { title: "Yellow River", year: "2025", href: BASE + "projects/yellow-river/" },
+      { title: "Yellow", year: "2021", href: BASE + "projects/yellow/" },
+      { title: "Formless Buddha", year: "2023", href: BASE + "projects/formless-buddha/" },
+      { title: "Frontispiece", year: "2024", href: BASE + "projects/frontispiece/" }
+    ];
+
+    const IMAGES = [
+      { title: "Yellow River", year: "2025", href: BASE + "images/yellow-river/" }
+    ];
+
+    const ABOUT_HREF = BASE + "about/";
+
+    // 检测触摸设备
+    const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+
+    // 创建面板
+    const panel = document.createElement('div');
+    panel.className = 'panel';
+    panel.role = 'dialog';
+    panel.setAttribute('aria-hidden', 'true');
+    panel.innerHTML = '<ul class="panelList"></ul>';
+    document.body.appendChild(panel);
+
+    const panelList = panel.querySelector('.panelList');
+    const items = Array.from(document.querySelectorAll('.navItem'));
+    const btns = Array.from(document.querySelectorAll('.navBtn'));
+
+    let activeKey = null;
+    let closeTimer = null;
+
+    function setActiveButton(key){
+      btns.forEach(b => b.classList.remove('is-active'));
+      const item = items.find(i => i.dataset.menu === key);
+      if(item) item.querySelector('.navBtn').classList.add('is-active');
+    }
+
+    function renderList(list){
+      panelList.innerHTML = list.map(it => `
+        <li>
+          <a class="panelLink" href="${it.href}">
+            ${it.title} <span class="year">— ${it.year}</span>
+          </a>
+        </li>
+      `).join('');
+    }
+
+    function positionPanelNearButton(btn){
+      const r = btn.getBoundingClientRect();
+      const gap = 14;
+      let left = Math.round(r.right + gap);
+      let top = Math.round(r.top + r.height/2);
+
+      panel.style.top = `${top}px`;
+      panel.style.transform = 'translateY(-50%)';
+
+      const panelWidth = Math.min(panel.offsetWidth || 360, window.innerWidth - 24);
+      if(left + panelWidth + 12 > window.innerWidth){
+        left = Math.round(r.left - gap - panelWidth);
+      }
+      left = Math.max(12, left);
+      panel.style.left = `${left}px`;
+    }
+
+    function openPanelFor(key, btn){
+      clearTimeout(closeTimer);
+      activeKey = key;
+      setActiveButton(key);
+
+      if(key === 'projects') renderList(PROJECTS);
+      if(key === 'images') renderList(IMAGES);
+
+      panel.classList.add('is-open');
+      panel.setAttribute('aria-hidden','false');
+      requestAnimationFrame(() => positionPanelNearButton(btn));
+    }
+
+    function closePanel(){
+      activeKey = null;
+      btns.forEach(b => b.classList.remove('is-active'));
+      panel.classList.remove('is-open');
+      panel.setAttribute('aria-hidden','true');
+    }
+
+    function scheduleClose(){
+      clearTimeout(closeTimer);
+      closeTimer = setTimeout(closePanel, 220);
+    }
+
+    items.forEach(item => {
+      const key = item.dataset.menu;
+      const btn = item.querySelector('.navBtn');
+
+      if(!isTouchDevice && (key === 'projects' || key === 'images')){
+        item.addEventListener('mouseenter', () => openPanelFor(key, btn));
+        item.addEventListener('mouseleave', scheduleClose);
+      }
+
+      if(isTouchDevice){
+        btn.addEventListener('touchstart', (e) => {
+          if(key === 'about'){
+            window.location.href = ABOUT_HREF;
+            return;
+          }
+          if(panel.classList.contains('is-open') && activeKey === key){
+            closePanel();
+          }else{
+            openPanelFor(key, btn);
+          }
+        }, {passive: true});
+      }else{
+        btn.addEventListener('click', (e) => {
+          if(key === 'about'){
+            window.location.href = ABOUT_HREF;
+            e.preventDefault();
+            return;
+          }
+          if(panel.classList.contains('is-open') && activeKey === key){
+            closePanel();
+          }else{
+            openPanelFor(key, btn);
+          }
+          e.preventDefault();
+        });
+      }
+    });
+
+    if(!isTouchDevice){
+      panel.addEventListener('mouseenter', () => clearTimeout(closeTimer));
+      panel.addEventListener('mouseleave', scheduleClose);
+    }
+
+    if(isTouchDevice){
+      document.addEventListener('touchstart', (e) => {
+        const isNav = e.target.closest('.nav');
+        const isPanel = e.target.closest('.panel');
+        if(!isNav && !isPanel && panel.classList.contains('is-open')) closePanel();
+      });
+    }else{
+      document.addEventListener('mousedown', (e) => {
+        const isNav = e.target.closest('.nav');
+        const isPanel = e.target.closest('.panel');
+        if(!isNav && !isPanel && panel.classList.contains('is-open')) closePanel();
+      });
+    }
+
+    document.addEventListener('keydown', (e) => {
+      if(e.key === 'Escape' && panel.classList.contains('is-open')) closePanel();
+    });
+  </script>
+
+  <style>
+    /* 面板样式 */
+    .panel{
+      position:fixed;
+      width: 360px;
+      max-width: calc(100vw - 24px);
+      background:#fff;
+      border:1px solid var(--line);
+      padding: 18px;
+      z-index:1001;
+      opacity:0;
+      pointer-events:none;
+      transform: translateY(-8px);
+      transition: opacity .14s ease, transform .14s ease;
+    }
+    .panel.is-open{
+      opacity:1;
+      pointer-events:auto;
+      transform: translateY(0);
+    }
+    .panel::before{
+      content:"";
+      position:absolute;
+      left:-18px;
+      top:0;
+      width:18px;
+      height:100%;
+      background:transparent;
+    }
+    .panelList{ list-style:none; padding:0; margin:0; }
+    .panelList li{ margin: 10px 0; }
+    .panelLink{
+      text-decoration:none;
+      color:var(--text);
+      font-size:16px;
+      letter-spacing:.02em;
+      display:inline-block;
+      padding: 6px 4px;
+    }
+    .panelLink:hover{ opacity:.75; }
+    .panelLink .year{
+      color:var(--muted);
+      margin-left:.35em;
+      letter-spacing:.06em;
+    }
+
+    @media (max-width: 1024px){
+      .panel{ width: 320px; }
+    }
+  </style>
+
+</body>
+</html>
