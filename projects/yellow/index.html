@@ -91,33 +91,23 @@
     /* 图片容器 */
     .imageContainer{
       position:relative;
-      width: 70vw;
-      height: 75vh;
+      max-width:70vw;
+      max-height:75vh;
       display:flex;
       align-items:center;
       justify-content:center;
     }
 
-    /* 图片 - Scale + Fade 电影感转场 */
+    /* 图片 - 快速干脆的过渡 */
     .imageContainer img{
-      position:absolute;
-      top:50%;
-      left:50%;
-      transform: translate(-50%, -50%) scale(0.98);
       max-width:100%;
-      max-height:100%;
+      max-height:75vh;
       display:block;
       opacity:0;
-      transition: opacity 0.4s ease-out, transform 0.4s ease-out;
-      object-fit: contain;
+      transition: opacity 0.35s ease-out;
     }
     .imageContainer img.active{
       opacity:1;
-      transform: translate(-50%, -50%) scale(1);
-    }
-    .imageContainer img.leaving{
-      opacity:0;
-      transform: translate(-50%, -50%) scale(0.98);
     }
 
     /* 作品容器整体 */
@@ -274,8 +264,7 @@
   <div class="gallery">
     <div class="artworkWrapper">
       <div class="imageContainer">
-        <img id="imageA" class="active" src="" alt="Yellow (2021)">
-        <img id="imageB" src="" alt="">
+        <img id="currentImage" src="" alt="Yellow (2021)">
       </div>
       <div class="divider"></div>
       <div class="artworkInfo">
@@ -316,9 +305,7 @@
 
     let currentIndex = 0;
     let isAnimating = false;
-    let useImageA = true;
-    const imageA = document.getElementById('imageA');
-    const imageB = document.getElementById('imageB');
+    const imgElement = document.getElementById('currentImage');
     const prevBtn = document.getElementById('prevBtn');
     const nextBtn = document.getElementById('nextBtn');
     const dotsContainer = document.getElementById('dotsContainer');
@@ -348,30 +335,28 @@
       updateDots();
     }
 
-    // Scale + Fade 电影感切换
+    // 显示当前图片 - 快速干脆的过渡
     function showImage(index) {
       if(isAnimating) return;
       isAnimating = true;
 
-      const currentImg = useImageA ? imageA : imageB;
-      const nextImg = useImageA ? imageB : imageA;
+      // 淡出当前图片
+      imgElement.classList.remove('active');
 
-      // 设置新图片
-      nextImg.src = images[index];
-
-      // 交叉动画：当前缩小淡出，新图片放大淡入
-      requestAnimationFrame(() => {
-        nextImg.classList.add('active');
-        currentImg.classList.add('leaving');
-        currentImg.classList.remove('active');
-      });
-
-      // 动画完成后清理
       setTimeout(() => {
-        currentImg.classList.remove('leaving');
-        useImageA = !useImageA;
-        isAnimating = false;
-      }, 400);
+        // 更换图片
+        imgElement.src = images[index];
+
+        // 等待图片加载完成后淡入
+        imgElement.onload = () => {
+          requestAnimationFrame(() => {
+            imgElement.classList.add('active');
+            setTimeout(() => {
+              isAnimating = false;
+            }, 400);
+          });
+        };
+      }, 350);
     }
 
     // 上一张
@@ -426,7 +411,12 @@
 
     // 初始化
     createDots();
-    imageA.src = images[0];
+    imgElement.src = images[0];
+    imgElement.onload = () => {
+      requestAnimationFrame(() => {
+        imgElement.classList.add('active');
+      });
+    };
   </script>
 
   <!-- 导航和面板逻辑 -->
@@ -436,9 +426,9 @@
 
     const PROJECTS = [
       { title: "Yellow River", year: "2025", href: BASE + "projects/yellow-river/" },
-      { title: "Frontispiece", year: "2024", href: BASE + "projects/frontispiece/" },
+      { title: "Yellow", year: "2021", href: BASE + "projects/yellow/" },
       { title: "Formless Buddha", year: "2023", href: BASE + "projects/formless-buddha/" },
-      { title: "Yellow", year: "2021", href: BASE + "projects/yellow/" }
+      { title: "Frontispiece", year: "2024", href: BASE + "projects/frontispiece/" }
     ];
 
     const IMAGES = [
