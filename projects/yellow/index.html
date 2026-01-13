@@ -104,7 +104,7 @@
       max-height:75vh;
       display:block;
       opacity:0;
-      transition: opacity 0.35s ease-out;
+      transition: opacity 0.18s ease-out;
     }
     .imageContainer img.active{
       opacity:1;
@@ -343,7 +343,7 @@
       updateDots();
     }
 
-    // 显示当前图片 - 快速干脆的过渡
+    // 显示当前图片 - 图片已预加载，直接切换
     function showImage(index) {
       if(isAnimating) return;
       isAnimating = true;
@@ -352,19 +352,17 @@
       imgElement.classList.remove('active');
 
       setTimeout(() => {
-        // 更换图片
+        // 更换图片（已预加载，瞬间完成）
         imgElement.src = images[index];
 
-        // 等待图片加载完成后淡入
-        imgElement.onload = () => {
-          requestAnimationFrame(() => {
-            imgElement.classList.add('active');
-            setTimeout(() => {
-              isAnimating = false;
-            }, 400);
-          });
-        };
-      }, 350);
+        // 立即淡入
+        requestAnimationFrame(() => {
+          imgElement.classList.add('active');
+          setTimeout(() => {
+            isAnimating = false;
+          }, 200);
+        });
+      }, 150);
     }
 
     // 上一张
