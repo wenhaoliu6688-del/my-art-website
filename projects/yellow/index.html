@@ -46,20 +46,6 @@
       box-shadow: 0 2px 6px rgba(0,0,0,0.15);
     }
 
-    /* 作品标题 */
-    .title{
-      position:fixed;
-      top:44px;
-      left:50%;
-      transform:translateX(-50%);
-      z-index:1000;
-      font-size:14px;
-      letter-spacing:.08em;
-      color:var(--muted);
-      text-align: center;
-      white-space: nowrap;
-    }
-
     /* nav */
     .nav{
       position:fixed;
@@ -105,78 +91,91 @@
     /* 图片容器 */
     .imageContainer{
       position:relative;
-      max-width:90vw;
-      max-height:85vh;
+      max-width:70vw;
+      max-height:75vh;
       display:flex;
       align-items:center;
       justify-content:center;
     }
 
-    /* 图片 */
+    /* 图片 - 丝滑过渡 */
     .imageContainer img{
       max-width:100%;
-      max-height:85vh;
+      max-height:75vh;
       display:block;
       opacity:0;
-      transition: opacity .3s ease;
+      transform:scale(0.98);
+      transition: opacity 0.6s cubic-bezier(0.4, 0, 0.2, 1),
+                  transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
     }
-    .imageContainer img.loaded{
+    .imageContainer img.active{
       opacity:1;
+      transform:scale(1);
     }
 
-    /* 导航按钮 - 极简设计 */
-    .navButton{
+    /* 作品信息 - 右下角 */
+    .artworkInfo{
+      position:fixed;
+      bottom:32px;
+      right:32px;
+      z-index:100;
+      text-align:right;
+      pointer-events:none;
+    }
+    .artworkInfo .title{
+      font-size:13px;
+      font-weight:500;
+      letter-spacing:.06em;
+      color:var(--text);
+      margin-bottom:2px;
+    }
+    .artworkInfo .year{
+      font-size:11px;
+      letter-spacing:.08em;
+      color:var(--muted);
+      font-weight:400;
+    }
+
+    /* 导航箭头 - 极简设计，在屏幕外侧 */
+    .navArrow{
       position:fixed;
       top:50%;
       transform:translateY(-50%);
-      width:48px;
-      height:48px;
+      width:40px;
+      height:40px;
       border:none;
-      background: rgba(255,255,255,0.85);
-      border-radius:50%;
+      background: transparent;
       cursor:pointer;
       z-index:100;
       display:flex;
       align-items:center;
       justify-content:center;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-      transition: all .15s ease;
+      transition: opacity .2s ease, transform .2s ease;
+      padding:0;
+      margin:0;
     }
-    .navButton:hover{
-      background: rgba(255,255,255,0.95);
-      box-shadow: 0 2px 6px rgba(0,0,0,0.15);
-      transform:translateY(-50%) scale(1.08);
+    .navArrow:hover{
+      transform:translateY(-50%) scale(1.1);
     }
-    .navButton:active{
-      transform:translateY(-50%) scale(1);
-    }
-
-    .navButton.prev{
-      left: max(22px, calc((100vw - 900px) / 2 - 60px));
-    }
-    .navButton.next{
-      right: max(22px, calc((100vw - 900px) / 2 - 60px));
-    }
-
-    /* 按钮箭头 */
-    .navButton svg{
-      width:20px;
-      height:20px;
+    .navArrow svg{
+      width:24px;
+      height:24px;
       stroke:var(--text);
-      stroke-width:1.5;
+      stroke-width:1;
       fill:none;
+      opacity:0.3;
+      transition: opacity .2s ease, stroke .2s ease;
+    }
+    .navArrow:hover svg{
+      opacity:0.8;
+      stroke:var(--text);
     }
 
-    /* 计数器 */
-    .counter{
-      position:fixed;
-      bottom:28px;
-      left:50%;
-      transform:translateX(-50%);
-      z-index:1000;
-      font-size:12px;
-      letter-spacing:.08em;
-      color:var(--muted2);
+    .navArrow.prev{
+      left:8px;
+    }
+    .navArrow.next{
+      right:8px;
     }
 
     /* 小屏幕设备调整 */
@@ -185,18 +184,40 @@
         --leftPad: 22px;
       }
       .brand{ top:22px; }
-      .title{ top:22px; font-size:12px; }
       .navBtn{ font-size:14px; letter-spacing:.20em; }
 
-      .navButton{
-        width:44px;
-        height:44px;
+      .imageContainer{
+        max-width:85vw;
+        max-height:70vh;
       }
-      .navButton.prev{
-        left:12px;
+      .imageContainer img{
+        max-height:70vh;
       }
-      .navButton.next{
-        right:12px;
+
+      .artworkInfo{
+        bottom:24px;
+        right:24px;
+      }
+      .artworkInfo .title{
+        font-size:12px;
+      }
+      .artworkInfo .year{
+        font-size:10px;
+      }
+
+      .navArrow{
+        width:36px;
+        height:36px;
+      }
+      .navArrow.prev{
+        left:6px;
+      }
+      .navArrow.next{
+        right:6px;
+      }
+      .navArrow svg{
+        width:20px;
+        height:20px;
       }
     }
   </style>
@@ -205,7 +226,6 @@
 <body>
 
   <a class="brand" href="../../">HARRY6</a>
-  <div class="title">Yellow (2021)</div>
 
   <nav class="nav" aria-label="Primary">
     <div class="navItem" data-menu="projects"><button class="navBtn" type="button">PROJECTS</button></div>
@@ -219,19 +239,24 @@
     </div>
   </div>
 
-  <button class="navButton prev" id="prevBtn" aria-label="上一张">
+  <!-- 作品信息 -->
+  <div class="artworkInfo">
+    <div class="title">Yellow</div>
+    <div class="year">2021</div>
+  </div>
+
+  <!-- 导航箭头 -->
+  <button class="navArrow prev" id="prevBtn" aria-label="上一张">
     <svg viewBox="0 0 24 24">
       <path d="M15 18l-6-6 6-6"/>
     </svg>
   </button>
 
-  <button class="navButton next" id="nextBtn" aria-label="下一张">
+  <button class="navArrow next" id="nextBtn" aria-label="下一张">
     <svg viewBox="0 0 24 24">
       <path d="M9 18l6-6-6-6"/>
     </svg>
   </button>
-
-  <div class="counter" id="counter">1 / 7</div>
 
   <script>
     // ===== 图片列表 =====
@@ -246,19 +271,33 @@
     ];
 
     let currentIndex = 0;
+    let isAnimating = false;
     const imgElement = document.getElementById('currentImage');
-    const counterElement = document.getElementById('counter');
     const prevBtn = document.getElementById('prevBtn');
     const nextBtn = document.getElementById('nextBtn');
 
-    // 显示当前图片
+    // 显示当前图片 - 丝滑过渡
     function showImage(index) {
-      imgElement.classList.remove('loaded');
-      imgElement.src = images[index];
-      imgElement.onload = () => {
-        imgElement.classList.add('loaded');
-      };
-      counterElement.textContent = `${index + 1} / ${images.length}`;
+      if(isAnimating) return;
+      isAnimating = true;
+
+      // 淡出当前图片
+      imgElement.classList.remove('active');
+
+      setTimeout(() => {
+        // 更换图片
+        imgElement.src = images[index];
+
+        // 等待图片加载完成后淡入
+        imgElement.onload = () => {
+          requestAnimationFrame(() => {
+            imgElement.classList.add('active');
+            setTimeout(() => {
+              isAnimating = false;
+            }, 600);
+          });
+        };
+      }, 300);
     }
 
     // 上一张
@@ -279,8 +318,8 @@
 
     // 键盘导航
     document.addEventListener('keydown', (e) => {
-      if (e.key === 'ArrowLeft') showPrev();
-      if (e.key === 'ArrowRight') showNext();
+      if(e.key === 'ArrowLeft') showPrev();
+      if(e.key === 'ArrowRight') showNext();
     });
 
     // 触摸滑动支持
@@ -300,20 +339,25 @@
       const swipeThreshold = 50;
       const diff = touchStartX - touchEndX;
 
-      if (Math.abs(diff) > swipeThreshold) {
-        if (diff > 0) {
-          showNext(); // 向左滑动，下一张
+      if(Math.abs(diff) > swipeThreshold) {
+        if(diff > 0) {
+          showNext();
         } else {
-          showPrev(); // 向右滑动，上一张
+          showPrev();
         }
       }
     }
 
     // 初始化显示第一张
-    showImage(0);
+    imgElement.src = images[0];
+    imgElement.onload = () => {
+      requestAnimationFrame(() => {
+        imgElement.classList.add('active');
+      });
+    };
   </script>
 
-  <!-- 导航和面板逻辑（从首页复制） -->
+  <!-- 导航和面板逻辑 -->
   <script>
     const REPO = location.pathname.split("/").filter(Boolean).length > 2 ? "/" + location.pathname.split("/")[1] + "/" : "/";
     const BASE = REPO;
@@ -331,10 +375,8 @@
 
     const ABOUT_HREF = BASE + "about/";
 
-    // 检测触摸设备
     const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
 
-    // 创建面板
     const panel = document.createElement('div');
     panel.className = 'panel';
     panel.role = 'dialog';
@@ -470,7 +512,6 @@
   </script>
 
   <style>
-    /* 面板样式 */
     .panel{
       position:fixed;
       width: 360px;
