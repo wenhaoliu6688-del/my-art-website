@@ -389,6 +389,28 @@
         transform: translate(-50%, -120%) scale(1.2);
       }
     }
+
+    /* 版本标记（测试用，完成后删除） */
+    .version-marker{
+      position: absolute;
+      top: 100%;
+      left: 50%;
+      transform: translateX(-50%);
+      margin-top: 8px;
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.06em;
+      color: var(--muted);
+      pointer-events: none;
+    }
+
+    /* 小屏幕设备调整 */
+    @media (max-width: 1024px){
+      .version-marker{
+        font-size: 10px;
+        margin-top: 6px;
+      }
+    }
   </style>
 </head>
 
@@ -445,6 +467,7 @@
       <span class="label">共鸣</span>
       <span class="count">0</span>
     </div>
+    <div class="version-marker">v1.0</div>
   </div>
 
   <div id="stage"></div>

@@ -46,6 +46,27 @@
       box-shadow: 0 2px 6px rgba(0,0,0,0.15);
     }
 
+    /* 版本标记（测试用，完成后删除） */
+    .version-marker-inline{
+      position: fixed;
+      top: 44px;
+      left: calc(var(--leftPad) + 70px);
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.06em;
+      color: var(--muted);
+      pointer-events: none;
+    }
+
+    /* 小屏幕设备调整 */
+    @media (max-width: 1024px){
+      .version-marker-inline{
+        top: 22px;
+        left: calc(22px + 60px);
+        font-size: 10px;
+      }
+    }
+
     /* 顶部菜单按钮（手机端） */
     .menuToggle{
       display:none;
@@ -376,6 +397,7 @@
 <body>
 
   <a class="brand" href="../../">HARRY6</a>
+  <span class="version-marker-inline">v1.0</span>
 
   <nav class="nav" aria-label="Primary">
     <div class="navItem" data-menu="projects"><button class="navBtn" type="button">PROJECTS</button></div>
