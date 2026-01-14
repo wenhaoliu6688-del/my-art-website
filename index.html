@@ -252,6 +252,7 @@
     @media (max-width: 1024px){
       :root{ --leftPad: 22px; --panelW: 320px; }
       .brand{ top:22px; }
+      .menuToggle{ top:22px; }
 
       /* 手机端：隐藏左侧导航，显示顶部菜单 */
       .nav{ display: none; }
@@ -370,7 +371,7 @@
 <body>
 
   <a id="homeLink" class="brand" href="#">HARRY6</a>
-  <span class="mobile-version-marker">v1.7</span>
+  <span class="mobile-version-marker">v1.9</span>
 
   <nav class="nav" aria-label="Primary">
     <div class="navItem" data-menu="projects"><button class="navBtn" type="button">PROJECTS</button></div>
@@ -768,15 +769,6 @@
       menuCloseBtn.addEventListener('click', () => {
         fullscreenMenu.classList.remove('is-open');
         document.body.style.overflow = '';
-      });
-
-      // 点击作品链接后关闭菜单（让浏览器处理默认的链接跳转）
-      menuItems.forEach(item => {
-        item.addEventListener('click', (e) => {
-          // 关闭菜单，但不阻止默认行为（让链接跳转）
-          fullscreenMenu.classList.remove('is-open');
-          document.body.style.overflow = '';
-        });
       });
 
       // 点击菜单外部关闭
