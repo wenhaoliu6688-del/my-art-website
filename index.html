@@ -150,6 +150,11 @@
     .topMenuLevel2.is-open{
       display:block;
     }
+    .topMenuLevel2 li{
+      list-style: none;
+      margin: 0;
+      padding: 0;
+    }
     .topMenuLevel2 a{
       display:block;
       text-decoration:none;
@@ -281,7 +286,7 @@
     }
     /* 默认：触摸设备提示 */
     .touch-hint{
-      display: none;
+      display: block;
     }
     /* 非触摸设备：隐藏触摸提示，显示电脑端提示 */
     body:not(.is-touch-device) .touch-hint{
@@ -290,13 +295,10 @@
     body:not(.is-touch-device) .desktop-hint{
       display: block;
     }
-    /* iPad 端（768px-1024px）：显示滑动提示 */
-    @media (min-width: 768px) and (max-width: 1024px){
-      body.is-touch-device .touch-hint{
-        display: block;
-      }
+    /* 触摸设备：显示滑动提示，隐藏电脑端提示 */
+    body.is-touch-device .desktop-hint{
+      display: none;
     }
-    /* 手机端（小于 768px）：不显示任何提示 */
 
     .toast{
       position:absolute;
@@ -433,16 +435,16 @@
       <li>
         <a class="topMenuItem has-children" href="#" id="mobileProjects">Projects</a>
         <ul class="topMenuLevel2" id="projectsSubmenu">
-          <a href="projects/yellow-river/">Yellow River (2025)</a>
-          <a href="projects/frontispiece/">Frontispiece (2024)</a>
-          <a href="projects/formless-buddha/">Formless Buddha (2023)</a>
-          <a href="projects/yellow/">Yellow (2021)</a>
+          <li><a href="projects/yellow-river/">Yellow River (2025)</a></li>
+          <li><a href="projects/frontispiece/">Frontispiece (2024)</a></li>
+          <li><a href="projects/formless-buddha/">Formless Buddha (2023)</a></li>
+          <li><a href="projects/yellow/">Yellow (2021)</a></li>
         </ul>
       </li>
       <li>
         <a class="topMenuItem has-children" href="#" id="mobileImages">Images</a>
         <ul class="topMenuLevel2" id="imagesSubmenu">
-          <a href="images/yellow-river/">Yellow River</a>
+          <li><a href="images/yellow-river/">Yellow River</a></li>
         </ul>
       </li>
       <li><a class="topMenuItem" href="about/">About</a></li>

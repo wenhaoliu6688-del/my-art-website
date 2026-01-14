@@ -138,6 +138,11 @@
     .topMenuLevel2.is-open{
       display:block;
     }
+    .topMenuLevel2 li{
+      list-style: none;
+      margin: 0;
+      padding: 0;
+    }
     .topMenuLevel2 a{
       display:block;
       text-decoration:none;
@@ -383,7 +388,7 @@
       }
 
       .bottomNav{
-        bottom:48px;
+        bottom:100px;
       }
     }
   </style>
@@ -412,16 +417,16 @@
       <li>
         <a class="topMenuItem has-children" href="#" id="mobileProjects">Projects</a>
         <ul class="topMenuLevel2" id="projectsSubmenu">
-          <a href="../yellow-river/">Yellow River (2025)</a>
-          <a href="../frontispiece/">Frontispiece (2024)</a>
-          <a href="../formless-buddha/">Formless Buddha (2023)</a>
-          <a href="./">Yellow (2021)</a>
+          <li><a href="../yellow-river/">Yellow River (2025)</a></li>
+          <li><a href="../frontispiece/">Frontispiece (2024)</a></li>
+          <li><a href="../formless-buddha/">Formless Buddha (2023)</a></li>
+          <li><a href="./">Yellow (2021)</a></li>
         </ul>
       </li>
       <li>
         <a class="topMenuItem has-children" href="#" id="mobileImages">Images</a>
         <ul class="topMenuLevel2" id="imagesSubmenu">
-          <a href="../../images/yellow-river/">Yellow River</a>
+          <li><a href="../../images/yellow-river/">Yellow River</a></li>
         </ul>
       </li>
       <li><a class="topMenuItem" href="../../about/">About</a></li>
