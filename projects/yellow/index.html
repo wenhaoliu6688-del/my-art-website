@@ -156,7 +156,9 @@
       opacity:0;
       transition: opacity 0.18s ease-out;
     }
-
+    .imageContainer img.active{
+      opacity:1;
+    }
 
     /* 作品容器整体 */
     .artworkWrapper{
@@ -341,7 +343,6 @@
 <body>
 
   <a class="brand" href="../../">HARRY6</a>
-  <span class="version-marker-inline">v1.9</span>
 
   <nav class="nav" aria-label="Primary">
     <div class="navItem" data-menu="projects"><button class="navBtn" type="button">PROJECTS</button></div>
@@ -885,15 +886,6 @@
       menuCloseBtn.addEventListener('click', () => {
         fullscreenMenu.classList.remove('is-open');
         document.body.style.overflow = '';
-      });
-
-      // 点击作品链接后关闭
-      const menuItems = fullscreenMenu.querySelectorAll('.menuItem');
-      menuItems.forEach(item => {
-        item.addEventListener('click', () => {
-          fullscreenMenu.classList.remove('is-open');
-          document.body.style.overflow = '';
-        });
       });
 
       // 点击菜单外部关闭
