@@ -435,59 +435,42 @@
 
     /* 底部Tab栏（手机端） */
     .mobileTabBar{
-      display: none;  /* 默认隐藏 */
+      display: none;  /* 默认隐藏，只在手机端显示 */
       position: fixed;
       bottom: 0;
       left: 0;
       right: 0;
-      height: 60px;
-      background: rgba(255,255,255,0.95);
+      height: 52px;
+      background: #fff;
       border-top: 1px solid rgba(0,0,0,0.08);
       z-index: 999;
-      display: flex;
       justify-content: space-around;
       align-items: center;
-      padding: 0 24px;
+      padding: 0 32px;
     }
     .tabItem{
       flex: 1;
       text-align: center;
-      padding: 12px 0;
+      padding: 14px 0;
       text-decoration: none;
-      color: rgba(0,0,0,0.4);
-      font-size: 11px;
-      font-weight: 500;
-      letter-spacing: 0.15em;
+      color: rgba(0,0,0,0.35);
+      font-size: 10px;
+      font-weight: 400;
+      letter-spacing: 0.18em;
       text-transform: uppercase;
-      transition: all 0.2s ease;
-      position: relative;
+      transition: color 0.25s ease;
     }
     .tabItem.active{
       color: #000;
     }
+    /* 移除底部指示线 */
     .tabItem::after{
-      content: '';
-      position: absolute;
-      bottom: 0;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 20px;
-      height: 2px;
-      background: #000;
-      opacity: 0;
-      transition: opacity 0.2s ease;
+      display: none;
     }
-    .tabItem.active::after{
-      opacity: 1;
-    }
-    /* 只在手机端显示Tab栏，隐藏旧的折叠菜单 */
-    @media (max-width: 1024px){
+    /* 只在真正的手机端显示Tab栏（<768px） */
+    @media (max-width: 768px){
       .mobileTabBar{
         display: flex !important;
-      }
-      .menuToggle,
-      .topMenuPanel{
-        display: none !important;
       }
     }
   </style>
@@ -496,7 +479,7 @@
 <body>
 
   <a id="homeLink" class="brand" href="#">HARRY6</a>
-  <span class="mobile-version-marker">v1.3</span>
+  <span class="mobile-version-marker">v1.4</span>
 
   <nav class="nav" aria-label="Primary">
     <div class="navItem" data-menu="projects"><button class="navBtn" type="button">PROJECTS</button></div>
@@ -547,7 +530,7 @@
       <span class="label">共鸣</span>
       <span class="count">0</span>
     </div>
-    <div class="version-marker">v1.3</div>
+    <div class="version-marker">v1.4</div>
   </div>
 
   <div id="stage"></div>
@@ -1001,9 +984,9 @@
 
   <!-- 底部Tab栏（手机端） -->
   <nav class="mobileTabBar">
-    <a class="tabItem" href="#" data-tab="works">作品</a>
-    <a class="tabItem" href="images/" data-tab="images">图像</a>
-    <a class="tabItem" href="about/" data-tab="about">关于</a>
+    <a class="tabItem" href="#" data-tab="works">WORKS</a>
+    <a class="tabItem" href="images/" data-tab="images">IMAGES</a>
+    <a class="tabItem" href="about/" data-tab="about">ABOUT</a>
   </nav>
 
 </body>
