@@ -343,6 +343,7 @@
 <body>
 
   <a class="brand" href="../../">HARRY6</a>
+  <span class="version-marker-inline">v1.9.1</span>
 
   <nav class="nav" aria-label="Primary">
     <div class="navItem" data-menu="projects"><button class="navBtn" type="button">PROJECTS</button></div>
@@ -875,6 +876,20 @@
     const menuCloseBtn = document.getElementById('menuCloseBtn');
 
     if(menuToggle && fullscreenMenu){
+      // 动态设置BASE路径（与首页使用相同的逻辑）
+      const REPO = location.pathname.split("/").filter(Boolean).length > 2 ? "/" + location.pathname.split("/")[1] + "/" : "/";
+      const BASE = REPO;
+
+      // 动态设置菜单链接
+      const menuItems = fullscreenMenu.querySelectorAll('.menuItem');
+      menuItems.forEach(item => {
+        const currentHref = item.getAttribute('href');
+        // 只修复相对路径，不以/开头的
+        if (currentHref && !currentHref.startsWith('/')) {
+          item.setAttribute('href', BASE + currentHref);
+        }
+      });
+
       // 打开菜单
       menuToggle.addEventListener('click', (e) => {
         e.stopPropagation();
