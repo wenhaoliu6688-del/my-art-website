@@ -281,7 +281,7 @@
     }
     /* 默认：触摸设备提示 */
     .touch-hint{
-      display: block;
+      display: none;
     }
     /* 非触摸设备：隐藏触摸提示，显示电脑端提示 */
     body:not(.is-touch-device) .touch-hint{
@@ -305,11 +305,6 @@
       pointer-events:none;
     }
     .toast.show{ opacity:1; }
-
-    /* 触摸设备：显示提示文字 */
-    body.is-touch-device .hint{
-      display: block;
-    }
 
     /* 小屏幕设备（手机和部分平板）：调整布局 */
     @media (max-width: 1024px){
