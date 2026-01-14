@@ -146,6 +146,8 @@
       margin:0;
       background:#fafafa;
       border-top:1px solid var(--line);
+      position: relative;
+      z-index: 10;
     }
     .topMenuLevel2.is-open{
       display:block;
@@ -154,6 +156,7 @@
       list-style: none;
       margin: 0;
       padding: 0;
+      pointer-events: auto;
     }
     .topMenuLevel2 a{
       display:block;
@@ -772,7 +775,7 @@
         });
 
         // 点击外部关闭菜单
-        document.addEventListener('touchstart', (e) => {
+        document.addEventListener('click', (e) => {
           if(!e.target.closest('.menuToggle') && !e.target.closest('.topMenuPanel')){
             topMenuPanel.classList.remove('is-open');
             const pSub = document.getElementById('projectsSubmenu');
@@ -780,7 +783,7 @@
             if(pSub) pSub.classList.remove('is-open');
             if(iSub) iSub.classList.remove('is-open');
           }
-        }, {passive: true});
+        });
       }
     } catch(error) {
       console.error('Mobile menu error:', error);
