@@ -372,23 +372,42 @@
 
     /* iPad/平板设备专用调整（768px - 1024px） */
     @media (min-width: 768px) and (max-width: 1024px){
-      /* iPad：作品严格限制在上半部分 */
+      /* iPad：使用绝对定位严格控制区域，防止重叠 */
       .gallery{
-        align-items: flex-start;
-        padding-top: 8vh;
-        padding-bottom: 350px;  /* 大幅增加底部间距 */
+        padding-top: 0;
+        padding-bottom: 0;
+        min-height: 100vh;
       }
 
+      /* 图片区：绝对定位，严格限制在上半部分 */
       .imageContainer{
-        max-width:75vw;
-        max-height:30vh;  /* 大幅降低图片高度 */
+        position: absolute;
+        top: 12vh;
+        left: 50%;
+        transform: translateX(-50%);
+        max-width: 70vw;
+        max-height: 28vh;
+        width: auto;
       }
       .imageContainer img{
-        max-height:30vh;
+        max-height: 28vh;
       }
 
+      /* 作品信息：紧跟在图片下方 */
+      .artworkWrapper{
+        position: absolute;
+        top: 12vh;
+        left: 50%;
+        transform: translateX(-50%);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+
+      /* 底部导航：固定在底部上方 */
       .bottomNav{
-        bottom:120px;  /* 抬高底部导航 */
+        position: fixed;
+        bottom: 100px;
       }
     }
   </style>
@@ -397,7 +416,7 @@
 <body>
 
   <a class="brand" href="../../">HARRY6</a>
-  <span class="version-marker-inline">v1.2</span>
+  <span class="version-marker-inline">v1.3</span>
 
   <nav class="nav" aria-label="Primary">
     <div class="navItem" data-menu="projects"><button class="navBtn" type="button">PROJECTS</button></div>
