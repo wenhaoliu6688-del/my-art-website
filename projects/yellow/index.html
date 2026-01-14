@@ -885,8 +885,9 @@
       const menuItems = fullscreenMenu.querySelectorAll('.menuItem');
       menuItems.forEach(item => {
         const currentHref = item.getAttribute('href');
-        // 只修复相对路径，不以/开头的
-        if (currentHref && !currentHref.startsWith('/')) {
+        // 跳过相对父目录路径(../)和绝对路径(/)
+        // 只处理纯相对路径，如"projects/yellow/"
+        if (currentHref && !currentHref.startsWith('/') && !currentHref.startsWith('../')) {
           item.setAttribute('href', BASE + currentHref);
         }
       });
