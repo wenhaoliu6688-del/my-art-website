@@ -771,6 +771,17 @@
         document.body.style.overflow = '';
       });
 
+      // 点击作品链接后关闭菜单（让浏览器处理默认的链接跳转）
+      const menuItems = fullscreenMenu.querySelectorAll('.menuItem');
+      menuItems.forEach(item => {
+        item.addEventListener('click', (e) => {
+          // 不阻止默认行为，让链接正常跳转
+          // 只关闭菜单
+          fullscreenMenu.classList.remove('is-open');
+          document.body.style.overflow = '';
+        });
+      });
+
       // 点击菜单外部关闭
       fullscreenMenu.addEventListener('click', (e) => {
         if(e.target === fullscreenMenu){
