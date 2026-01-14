@@ -132,44 +132,6 @@
     .topMenuItem:hover{
       opacity:.65;
     }
-    .topMenuItem.has-children::after{
-      content:"›";
-      position:absolute;
-      right:16px;
-      font-size:18px;
-      opacity:0.5;
-    }
-    .topMenuLevel2{
-      display:none;
-      list-style:none;
-      padding:0;
-      margin:0;
-      background:#fafafa;
-      border-top:1px solid var(--line);
-      position: static;
-      z-index: auto;
-    }
-    .topMenuLevel2.is-open{
-      display:block;
-    }
-    .topMenuLevel2 li{
-      list-style: none;
-      margin: 0;
-      padding: 0;
-      pointer-events: auto;
-    }
-    .topMenuLevel2 a{
-      display:block;
-      text-decoration:none;
-      color:var(--text);
-      font-size:13px;
-      padding: 10px 16px 10px 28px;
-      white-space:nowrap;
-    }
-    .topMenuLevel2 a:hover{
-      opacity:.65;
-    }
-
     /* nav */
     .nav{
       position:fixed;
@@ -432,24 +394,14 @@
     </svg>
   </button>
 
-  <!-- 顶部下拉菜单（手机端） -->
+  <!-- 顶部下拉菜单（手机端）- 平铺导航 -->
   <div class="topMenuPanel" id="topMenuPanel">
     <ul class="topMenuLevel1">
-      <li>
-        <a class="topMenuItem has-children" href="#" id="mobileProjects">Projects</a>
-        <ul class="topMenuLevel2" id="projectsSubmenu">
-          <li><a href="projects/yellow-river/">Yellow River (2025)</a></li>
-          <li><a href="projects/frontispiece/">Frontispiece (2024)</a></li>
-          <li><a href="projects/formless-buddha/">Formless Buddha (2023)</a></li>
-          <li><a href="projects/yellow/">Yellow (2021)</a></li>
-        </ul>
-      </li>
-      <li>
-        <a class="topMenuItem has-children" href="#" id="mobileImages">Images</a>
-        <ul class="topMenuLevel2" id="imagesSubmenu">
-          <li><a href="images/yellow-river/">Yellow River</a></li>
-        </ul>
-      </li>
+      <li><a class="topMenuItem" href="projects/yellow-river/">Yellow River (2025)</a></li>
+      <li><a class="topMenuItem" href="projects/frontispiece/">Frontispiece (2024)</a></li>
+      <li><a class="topMenuItem" href="projects/formless-buddha/">Formless Buddha (2023)</a></li>
+      <li><a class="topMenuItem" href="projects/yellow/">Yellow (2021)</a></li>
+      <li><a class="topMenuItem" href="images/yellow-river/">Yellow River Images</a></li>
       <li><a class="topMenuItem" href="about/">About</a></li>
     </ul>
   </div>
@@ -714,7 +666,7 @@
   </script>
 
   <script>
-    // ===== 顶部菜单控制（手机端）=====
+    // ===== 顶部菜单控制（手机端）- 简化版 =====
     try {
       const menuToggle = document.getElementById('menuToggle');
       const topMenuPanel = document.getElementById('topMenuPanel');
@@ -727,62 +679,11 @@
           topMenuPanel.classList.toggle('is-open');
         });
 
-        // Projects 子菜单切换
-        const mobileProjects = document.getElementById('mobileProjects');
-        const projectsSubmenu = document.getElementById('projectsSubmenu');
-        if(mobileProjects && projectsSubmenu){
-          mobileProjects.addEventListener('click', (e) => {
-            e.preventDefault();
-            projectsSubmenu.classList.toggle('is-open');
-            const imagesSubmenu = document.getElementById('imagesSubmenu');
-            if(imagesSubmenu) imagesSubmenu.classList.remove('is-open');
-          });
-        }
-
-        // Images 子菜单切换
-        const mobileImages = document.getElementById('mobileImages');
-        const imagesSubmenu = document.getElementById('imagesSubmenu');
-        if(mobileImages && imagesSubmenu){
-          mobileImages.addEventListener('click', (e) => {
-            e.preventDefault();
-            // 关闭Projects子菜单
-            const projectsSubmenu = document.getElementById('projectsSubmenu');
-            if(projectsSubmenu) projectsSubmenu.classList.remove('is-open');
-            // 切换Images子菜单
-            imagesSubmenu.classList.toggle('is-open');
-          });
-        }
-
-        // 点击主菜单项（非子菜单链接）关闭所有子菜单
-        const allMenuItems = topMenuPanel.querySelectorAll('.topMenuItem');
-        allMenuItems.forEach(item => {
-          item.addEventListener('click', (e) => {
-            // 如果不是有子菜单的项目，关闭菜单
-            if(!item.classList.contains('has-children')){
-              topMenuPanel.classList.remove('is-open');
-            }
-          });
-        });
-
-        // 子菜单链接点击后关闭主菜单
-        const submenuLinks = topMenuPanel.querySelectorAll('.topMenuLevel2 a');
-        submenuLinks.forEach(link => {
-          // 使用 click 事件（Safari 兼容性最好）
-          link.addEventListener('click', (e) => {
-            e.preventDefault();
-
-            // 关闭菜单和所有子菜单
+        // 点击任意链接后关闭菜单
+        const allLinks = topMenuPanel.querySelectorAll('.topMenuItem');
+        allLinks.forEach(link => {
+          link.addEventListener('click', () => {
             topMenuPanel.classList.remove('is-open');
-            const pSub = document.getElementById('projectsSubmenu');
-            const iSub = document.getElementById('imagesSubmenu');
-            if(pSub) pSub.classList.remove('is-open');
-            if(iSub) iSub.classList.remove('is-open');
-
-            // 延迟跳转，确保菜单关闭动画完成
-            setTimeout(() => {
-              const href = link.getAttribute('href');
-              if(href) window.location.href = href;
-            }, 100);
           });
         });
 
@@ -790,10 +691,6 @@
         document.addEventListener('click', (e) => {
           if(!e.target.closest('.menuToggle') && !e.target.closest('.topMenuPanel')){
             topMenuPanel.classList.remove('is-open');
-            const pSub = document.getElementById('projectsSubmenu');
-            const iSub = document.getElementById('imagesSubmenu');
-            if(pSub) pSub.classList.remove('is-open');
-            if(iSub) iSub.classList.remove('is-open');
           }
         }, {passive: false});
       }
