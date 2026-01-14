@@ -134,7 +134,7 @@
       align-items:flex-start;
       justify-content:center;
       padding-top: 18vh;
-      padding-bottom: 120px;
+      padding-bottom: 180px;  /* 从120px增加到180px */
       z-index:1;
     }
 
@@ -314,17 +314,17 @@
       /* iPad：使用简单的相对定位和padding */
       .gallery{
         padding-top: 8vh;
-        padding-bottom: 150px;  /* 给底部导航留足够空间 */
+        padding-bottom: 180px;  /* 从150px增加到180px */
         min-height: 100vh;
       }
 
       .imageContainer{
         position: relative;  /* 改回相对定位 */
         max-width: 70vw;
-        max-height: 32vh;  /* 降低高度，确保不重叠 */
+        max-height: 28vh;  /* 从32vh降低到28vh */
       }
       .imageContainer img{
-        max-height: 32vh;
+        max-height: 28vh;  /* 从32vh降低到28vh */
       }
 
       /* artworkWrapper不需要绝对定位 */
@@ -343,7 +343,7 @@
 <body>
 
   <a class="brand" href="../../">HARRY6</a>
-  <span class="version-marker-inline">v1.6</span>
+  <span class="version-marker-inline">v1.7</span>
 
   <nav class="nav" aria-label="Primary">
     <div class="navItem" data-menu="projects"><button class="navBtn" type="button">PROJECTS</button></div>

@@ -59,12 +59,12 @@
       box-shadow: 0 2px 6px rgba(0,0,0,0.15);
     }
 
-    /* 版本标记（手机端首页，测试用，完成后删除） */
+    /* 版本标记（测试用，完成后删除） */
     .mobile-version-marker{
-      display: none;  /* 默认隐藏，只在手机端显示 */
+      display: block;  /* 改为始终显示 */
       position: fixed;
-      top: 22px;
-      left: calc(var(--leftPad) + 70px);  /* brand left + brand width */
+      top: 82px;  /* brand top(44px) + brand height(38px) ≈ 82px */
+      left: calc(var(--leftPad) + 12px);  /* 与brand左对齐 */
       font-size: 11px;
       font-weight: 500;
       letter-spacing: 0.06em;
@@ -73,10 +73,12 @@
       z-index: 1000;
     }
 
-    /* 只在手机端显示 */
+    /* 小屏幕设备调整 */
     @media (max-width: 1024px){
       .mobile-version-marker{
-        display: block;
+        top: 50px;  /* brand top(22px) + brand height(28px) ≈ 50px */
+        left: calc(22px + 12px);  /* 与手机端brand左对齐 */
+        font-size: 10px;
       }
     }
 
@@ -260,116 +262,10 @@
       :root{ --leftPad: 22px; --panelW: 320px; }
       .brand{ top:22px; }
 
-      /* 手机端：隐藏左侧导航和共鸣，显示顶部菜单 */
+      /* 手机端：隐藏左侧导航，显示顶部菜单 */
       .nav{ display: none; }
       .menuToggle{ display: block; }
       .topMenuPanel{ display: block; }
-      .resonanceWrap{ display: none; }
-    }
-
-    /* 共鸣计数器 */
-    .resonanceWrap{
-      position:fixed;
-      top:44px;
-      right:56px;
-      z-index:1000;
-    }
-    .resonanceCopy{
-      cursor:pointer;
-      padding: 12px 18px;
-      border-radius: 999px;
-      background: rgba(255,255,255,0.92);
-      box-shadow: 0 2px 8px rgba(0,0,0,0.12);
-      transition: all .2s ease;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      border: 1.5px solid rgba(0,0,0,0.06);
-    }
-    .resonanceCopy:hover{
-      transform: scale(1.08);
-      box-shadow: 0 4px 16px rgba(0,0,0,0.18);
-      background: rgba(255,255,255,0.98);
-      border-color: rgba(0,0,0,0.12);
-    }
-    .resonanceCopy .label{
-      color:var(--muted);
-      font-size:12px;
-      letter-spacing:.08em;
-      font-weight: 500;
-    }
-    .resonanceCopy .count{
-      color:var(--text);
-      font-weight:700;
-      font-size:18px;
-      min-width: 20px;
-      text-align: center;
-      transition: transform .15s ease;
-    }
-    /* 点击时数字跳动 */
-    .resonanceCopy.clicked .count{
-      animation: countBounce 0.4s ease;
-    }
-    @keyframes countBounce {
-      0% { transform: scale(1); }
-      50% { transform: scale(1.35); color: #000; }
-      100% { transform: scale(1); }
-    }
-    /* 呼吸动画 - 新访客引导 */
-    @keyframes breathe {
-      0%, 100% {
-        transform: scale(1);
-        box-shadow: 0 2px 8px rgba(0,0,0,0.12);
-      }
-      50% {
-        transform: scale(1.06);
-        box-shadow: 0 4px 20px rgba(0,0,0,0.2);
-        background: rgba(255,255,255,1);
-      }
-    }
-    .resonanceCopy.breathe{
-      animation: breathe 2.2s ease-in-out infinite;
-    }
-    /* +1 飘动动画 */
-    .plusOne{
-      position: absolute;
-      font-size: 20px;
-      font-weight: 700;
-      color: #000;
-      pointer-events: none;
-      animation: floatUp 1s ease-out forwards;
-    }
-    @keyframes floatUp {
-      0% {
-        opacity: 1;
-        transform: translate(-50%, -50%) scale(0.8);
-      }
-      100% {
-        opacity: 0;
-        transform: translate(-50%, -120%) scale(1.2);
-      }
-    }
-
-    /* 版本标记（测试用，完成后删除） */
-    .version-marker{
-      position: absolute;
-      top: 100%;
-      left: 50%;
-      transform: translateX(-50%);
-      margin-top: 8px;
-      font-size: 11px;
-      font-weight: 500;
-      letter-spacing: 0.06em;
-      color: var(--muted);
-      pointer-events: none;
-    }
-
-    /* 小屏幕设备调整 */
-    @media (max-width: 1024px){
-      .version-marker{
-        font-size: 10px;
-        margin-top: 6px;
-      }
     }
 
     /* 全屏菜单（手机端） */
@@ -483,7 +379,7 @@
 <body>
 
   <a id="homeLink" class="brand" href="#">HARRY6</a>
-  <span class="mobile-version-marker">v1.6</span>
+  <span class="mobile-version-marker">v1.7</span>
 
   <nav class="nav" aria-label="Primary">
     <div class="navItem" data-menu="projects"><button class="navBtn" type="button">PROJECTS</button></div>
@@ -508,14 +404,6 @@
     <div class="hint touch-hint">按住左右滑动·互动</div>
     <span id="emailCopy" class="emailCopy" title="Click to copy">wenhao_liu888@163.com</span>
     <span id="toast" class="toast">COPIED</span>
-  </div>
-
-  <div class="resonanceWrap">
-    <div id="resonanceClick" class="resonanceCopy breathe" title="点击参与共鸣">
-      <span class="label">共鸣</span>
-      <span class="count">0</span>
-    </div>
-    <div class="version-marker">v1.6</div>
   </div>
 
   <div id="stage"></div>
@@ -706,57 +594,6 @@
       toastTimer = setTimeout(()=>toast.classList.remove("show"), 900);
     }
     emailEl.addEventListener("click", copyEmail);
-
-    // 共鸣计数器
-    let resonanceCount = 0;
-    const resonanceEl = document.getElementById("resonanceClick");
-    const countEl = resonanceEl?.querySelector(".count");
-
-    // 从 localStorage 读取之前的计数（模拟数据）
-    const savedCount = localStorage.getItem("harry6_resonance");
-    if(savedCount){
-      resonanceCount = parseInt(savedCount) || 0;
-    }
-    if(countEl){
-      countEl.textContent = resonanceCount;
-    }
-
-    // 如果之前点击过（localStorage 有记录），就不再显示呼吸效果
-    if(savedCount){
-      resonanceEl?.classList.remove("breathe");
-    }
-
-    // 点击增加计数
-    resonanceEl?.addEventListener("click", (e) => {
-      resonanceCount++;
-      if(countEl){
-        countEl.textContent = resonanceCount;
-      }
-      // 保存到 localStorage（刷新后会保留，但只是本地）
-      localStorage.setItem("harry6_resonance", resonanceCount);
-
-      // 点击后停止呼吸效果
-      resonanceEl?.classList.remove("breathe");
-
-      // 数字跳动动画
-      resonanceEl.classList.add("clicked");
-      setTimeout(() => resonanceEl.classList.remove("clicked"), 400);
-
-      // +1 飘动动画
-      const plusOne = document.createElement("div");
-      plusOne.className = "plusOne";
-      plusOne.textContent = "+1";
-
-      const rect = resonanceEl.getBoundingClientRect();
-      plusOne.style.left = (rect.left + rect.width / 2) + "px";
-      plusOne.style.top = rect.top + "px";
-
-      document.body.appendChild(plusOne);
-
-      setTimeout(() => {
-        plusOne.remove();
-      }, 1000);
-    });
   </script>
 
 
@@ -895,17 +732,17 @@
   <div class="fullscreenMenu" id="fullscreenMenu">
     <button class="menuCloseBtn" id="menuCloseBtn" aria-label="Close menu">&times;</button>
 
-    <h2 class="menuCategoryTitle">WORKS</h2>
-    <a class="menuItem" href="projects/yellow-river/">Yellow River <span class="year">(2025)</span></a>
-    <a class="menuItem" href="projects/frontispiece/">Frontispiece <span class="year">(2024)</span></a>
-    <a class="menuItem" href="projects/formless-buddha/">Formless Buddha <span class="year">(2023)</span></a>
-    <a class="menuItem" href="projects/yellow/">Yellow <span class="year">(2021)</span></a>
+    <h2 class="menuCategoryTitle">PROJECTS</h2>
+    <a class="menuItem" data-href="projects/yellow-river/">Yellow River <span class="year">(2025)</span></a>
+    <a class="menuItem" data-href="projects/frontispiece/">Frontispiece <span class="year">(2024)</span></a>
+    <a class="menuItem" data-href="projects/formless-buddha/">Formless Buddha <span class="year">(2023)</span></a>
+    <a class="menuItem" data-href="projects/yellow/">Yellow <span class="year">(2021)</span></a>
 
     <h2 class="menuCategoryTitle">IMAGES</h2>
-    <a class="menuItem" href="images/yellow-river/">Yellow River</a>
+    <a class="menuItem" data-href="images/yellow-river/">Yellow River</a>
 
     <h2 class="menuCategoryTitle">ABOUT</h2>
-    <a class="menuItem" href="about/">About</a>
+    <a class="menuItem" data-href="about/">About</a>
   </div>
 
   <script>
@@ -913,6 +750,19 @@
     const menuToggle = document.getElementById('menuToggle');
     const fullscreenMenu = document.getElementById('fullscreenMenu');
     const menuCloseBtn = document.getElementById('menuCloseBtn');
+
+    // 动态设置BASE路径（与左侧导航使用相同的逻辑）
+    const REPO = location.pathname.split("/")[1];
+    const BASE = REPO ? `/${REPO}/` : "/";
+
+    // 动态设置菜单链接
+    const menuItems = fullscreenMenu.querySelectorAll('.menuItem');
+    menuItems.forEach(item => {
+      const href = item.getAttribute('data-href');
+      if (href) {
+        item.setAttribute('href', BASE + href);
+      }
+    });
 
     if(menuToggle && fullscreenMenu){
       // 打开菜单
