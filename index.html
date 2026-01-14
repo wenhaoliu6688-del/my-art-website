@@ -432,13 +432,71 @@
         margin-top: 6px;
       }
     }
+
+    /* 底部Tab栏（手机端） */
+    .mobileTabBar{
+      display: none;  /* 默认隐藏 */
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 60px;
+      background: rgba(255,255,255,0.95);
+      border-top: 1px solid rgba(0,0,0,0.08);
+      z-index: 999;
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      padding: 0 24px;
+    }
+    .tabItem{
+      flex: 1;
+      text-align: center;
+      padding: 12px 0;
+      text-decoration: none;
+      color: rgba(0,0,0,0.4);
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      transition: all 0.2s ease;
+      position: relative;
+    }
+    .tabItem.active{
+      color: #000;
+    }
+    .tabItem::after{
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 20px;
+      height: 2px;
+      background: #000;
+      opacity: 0;
+      transition: opacity 0.2s ease;
+    }
+    .tabItem.active::after{
+      opacity: 1;
+    }
+    /* 只在手机端显示Tab栏，隐藏旧的折叠菜单 */
+    @media (max-width: 1024px){
+      .mobileTabBar{
+        display: flex !important;
+      }
+      .menuToggle,
+      .topMenuPanel{
+        display: none !important;
+      }
+    }
   </style>
 </head>
 
 <body>
 
   <a id="homeLink" class="brand" href="#">HARRY6</a>
-  <span class="mobile-version-marker">v1.2</span>
+  <span class="mobile-version-marker">v1.3</span>
 
   <nav class="nav" aria-label="Primary">
     <div class="navItem" data-menu="projects"><button class="navBtn" type="button">PROJECTS</button></div>
@@ -489,7 +547,7 @@
       <span class="label">共鸣</span>
       <span class="count">0</span>
     </div>
-    <div class="version-marker">v1.2</div>
+    <div class="version-marker">v1.3</div>
   </div>
 
   <div id="stage"></div>
@@ -911,6 +969,42 @@
       });
     });
   </script>
+
+  <script>
+    // ===== 底部Tab栏高亮当前页（手机端）=====
+    document.addEventListener('DOMContentLoaded', function() {
+      const tabs = document.querySelectorAll('.tabItem');
+      const currentPath = window.location.pathname;
+
+      // 根据URL路径确定当前页
+      let activeTab = 'works';  // 默认为作品
+
+      if (currentPath === '/' || currentPath === '' || currentPath.endsWith('index.html')) {
+        activeTab = 'works';  // 首页
+      } else if (currentPath.includes('/images/')) {
+        activeTab = 'images';  // 图像页
+      } else if (currentPath.includes('/about/')) {
+        activeTab = 'about';  // 关于页
+      } else if (currentPath.includes('/projects/')) {
+        activeTab = 'works';  // 项目页也算作品
+      }
+
+      // 高亮对应的Tab
+      tabs.forEach(tab => {
+        const tabData = tab.getAttribute('data-tab');
+        if (tabData === activeTab) {
+          tab.classList.add('active');
+        }
+      });
+    });
+  </script>
+
+  <!-- 底部Tab栏（手机端） -->
+  <nav class="mobileTabBar">
+    <a class="tabItem" href="#" data-tab="works">作品</a>
+    <a class="tabItem" href="images/" data-tab="images">图像</a>
+    <a class="tabItem" href="about/" data-tab="about">关于</a>
+  </nav>
 
 </body>
 </html>
