@@ -371,7 +371,7 @@
 <body>
 
   <a id="homeLink" class="brand" href="#">HARRY6</a>
-  <span class="mobile-version-marker">v1.9.4</span>
+  <span class="mobile-version-marker">v1.9.5</span>
 
   <nav class="nav" aria-label="Primary">
     <div class="navItem" data-menu="projects"><button class="navBtn" type="button">PROJECTS</button></div>
@@ -769,16 +769,6 @@
       menuCloseBtn.addEventListener('click', () => {
         fullscreenMenu.classList.remove('is-open');
         document.body.style.overflow = '';
-      });
-
-      // 点击作品链接后关闭菜单（让浏览器处理默认的链接跳转）
-      menuItems.forEach(item => {
-        item.addEventListener('click', (e) => {
-          // 不阻止默认行为，让链接正常跳转
-          // 只关闭菜单
-          fullscreenMenu.classList.remove('is-open');
-          document.body.style.overflow = '';
-        });
       });
 
       // 点击菜单外部关闭
