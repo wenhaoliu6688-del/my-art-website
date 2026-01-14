@@ -656,17 +656,22 @@
         // 子菜单链接点击后关闭主菜单
         const submenuLinks = topMenuPanel.querySelectorAll('.topMenuLevel2 a');
         submenuLinks.forEach(link => {
-          // 移动设备：使用 touchend 提高响应速度
-          link.addEventListener('touchend', (e) => {
+          // 使用 click 事件（Safari 兼容性最好）
+          link.addEventListener('click', (e) => {
             e.preventDefault();
+
+            // 关闭菜单和所有子菜单
             topMenuPanel.classList.remove('is-open');
             const pSub = document.getElementById('projectsSubmenu');
             const iSub = document.getElementById('imagesSubmenu');
             if(pSub) pSub.classList.remove('is-open');
             if(iSub) iSub.classList.remove('is-open');
-            // 手动触发跳转
-            const href = link.getAttribute('href');
-            if(href) window.location.href = href;
+
+            // 延迟跳转，确保菜单关闭动画完成
+            setTimeout(() => {
+              const href = link.getAttribute('href');
+              if(href) window.location.href = href;
+            }, 100);
           });
         });
 
@@ -679,7 +684,7 @@
             if(pSub) pSub.classList.remove('is-open');
             if(iSub) iSub.classList.remove('is-open');
           }
-        });
+        }, {passive: false});
       }
     } catch(error) {
       console.error('Mobile menu error:', error);
