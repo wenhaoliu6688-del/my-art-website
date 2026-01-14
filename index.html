@@ -63,35 +63,21 @@
     .mobile-version-marker{
       display: block;
       position: fixed;
-      top: 52px;  /* brand top(44px) + brand height + margin */
-      left: calc(var(--leftPad) + 80px);  /* 在HARRY6按钮右侧 */
-      font-size: 9px;
-      font-weight: 400;
-      letter-spacing: 0.04em;
-      color: rgba(0,0,0,0.25);  /* 非常淡的颜色 */
+      bottom: 12px;
+      right: 12px;
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.06em;
+      color: rgba(0,0,0,0.4);
       pointer-events: none;
       z-index: 1000;
-      opacity: 0.6;
-      transition: opacity 0.2s ease;
-    }
-    .mobile-version-marker:hover{
-      opacity: 1;
     }
 
-    /* 小屏幕设备调整 */
-    @media (max-width: 1024px){
-      .mobile-version-marker{
-        top: 28px;  /* brand top(22px) + brand height + margin */
-        left: calc(22px + 65px);  /* 在HARRY6按钮右侧 */
-        font-size: 8px;
-      }
-    }
-
-    /* 顶部菜单按钮（手机端） */
+    /* 顶部菜单按钮（全平台） */
     .menuToggle{
       display:none;
       position:fixed;
-      top:22px;
+      top:44px;  /* 与HARRY6按钮对齐 */
       right:22px;
       width:44px;
       height:44px;
@@ -738,20 +724,20 @@
     <button class="menuCloseBtn" id="menuCloseBtn" aria-label="Close menu">&times;</button>
 
     <h2 class="menuCategoryTitle">PROJECTS</h2>
-    <a class="menuItem" data-href="projects/yellow-river/">Yellow River <span class="year">(2025)</span></a>
-    <a class="menuItem" data-href="projects/frontispiece/">Frontispiece <span class="year">(2024)</span></a>
-    <a class="menuItem" data-href="projects/formless-buddha/">Formless Buddha <span class="year">(2023)</span></a>
-    <a class="menuItem" data-href="projects/yellow/">Yellow <span class="year">(2021)</span></a>
+    <a class="menuItem" href="projects/yellow-river/">Yellow River <span class="year">(2025)</span></a>
+    <a class="menuItem" href="projects/frontispiece/">Frontispiece <span class="year">(2024)</span></a>
+    <a class="menuItem" href="projects/formless-buddha/">Formless Buddha <span class="year">(2023)</span></a>
+    <a class="menuItem" href="projects/yellow/">Yellow <span class="year">(2021)</span></a>
 
     <h2 class="menuCategoryTitle">IMAGES</h2>
-    <a class="menuItem" data-href="images/yellow-river/">Yellow River</a>
+    <a class="menuItem" href="images/yellow-river/">Yellow River</a>
 
     <h2 class="menuCategoryTitle">ABOUT</h2>
-    <a class="menuItem" data-href="about/">About</a>
+    <a class="menuItem" href="about/">About</a>
   </div>
 
   <script>
-    // ===== 全屏菜单控制（手机端）=====
+    // ===== 全屏菜单控制（全平台）=====
     const menuToggle = document.getElementById('menuToggle');
     const fullscreenMenu = document.getElementById('fullscreenMenu');
     const menuCloseBtn = document.getElementById('menuCloseBtn');
@@ -764,9 +750,10 @@
       // 动态设置菜单链接
       const menuItems = fullscreenMenu.querySelectorAll('.menuItem');
       menuItems.forEach(item => {
-        const href = item.getAttribute('data-href');
-        if (href) {
-          item.setAttribute('href', BASE + href);
+        const currentHref = item.getAttribute('href');
+        // 只修复相对路径，不以/开头的
+        if (currentHref && !currentHref.startsWith('/')) {
+          item.setAttribute('href', BASE + currentHref);
         }
       });
 
@@ -783,9 +770,10 @@
         document.body.style.overflow = '';
       });
 
-      // 点击作品链接后关闭
+      // 点击作品链接后关闭菜单（让浏览器处理默认的链接跳转）
       menuItems.forEach(item => {
-        item.addEventListener('click', () => {
+        item.addEventListener('click', (e) => {
+          // 关闭菜单，但不阻止默认行为（让链接跳转）
           fullscreenMenu.classList.remove('is-open');
           document.body.style.overflow = '';
         });

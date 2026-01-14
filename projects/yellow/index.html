@@ -134,8 +134,27 @@
       align-items:flex-start;
       justify-content:center;
       padding-top: 18vh;
-      padding-bottom: 180px;  /* 从120px增加到180px */
+      padding-bottom: 250px;  /* 大幅增加，确保永不撞车 */
       z-index:1;
+    }
+
+    /* 图片容器 */
+    .imageContainer{
+      position:relative;
+      max-width:70vw;
+      max-height:50vh;  /* 从65vh降低到50vh，确保有足够空间 */
+      display:flex;
+      align-items:center;
+      justify-content:center;
+    }
+
+    /* 图片 - 快速干脆的过渡 */
+    .imageContainer img{
+      max-width:100%;
+      max-height:50vh;  /* 从65vh降低到50vh */
+      display:block;
+      opacity:0;
+      transition: opacity 0.18s ease-out;
     }
 
     /* 图片容器 */
@@ -314,17 +333,17 @@
       /* iPad：使用简单的相对定位和padding */
       .gallery{
         padding-top: 8vh;
-        padding-bottom: 180px;  /* 从150px增加到180px */
+        padding-bottom: 220px;  /* 大幅增加，确保永不撞车 */
         min-height: 100vh;
       }
 
       .imageContainer{
         position: relative;  /* 改回相对定位 */
         max-width: 70vw;
-        max-height: 28vh;  /* 从32vh降低到28vh */
+        max-height: 25vh;  /* 从28vh进一步降低到25vh */
       }
       .imageContainer img{
-        max-height: 28vh;  /* 从32vh降低到28vh */
+        max-height: 25vh;  /* 从28vh进一步降低到25vh */
       }
 
       /* artworkWrapper不需要绝对定位 */
