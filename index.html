@@ -146,8 +146,8 @@
       margin:0;
       background:#fafafa;
       border-top:1px solid var(--line);
-      position: relative;
-      z-index: 10;
+      position: static;
+      z-index: auto;
     }
     .topMenuLevel2.is-open{
       display:block;
@@ -733,7 +733,6 @@
         if(mobileProjects && projectsSubmenu){
           mobileProjects.addEventListener('click', (e) => {
             e.preventDefault();
-            e.stopPropagation();
             projectsSubmenu.classList.toggle('is-open');
             const imagesSubmenu = document.getElementById('imagesSubmenu');
             if(imagesSubmenu) imagesSubmenu.classList.remove('is-open');
@@ -746,7 +745,6 @@
         if(mobileImages && imagesSubmenu){
           mobileImages.addEventListener('click', (e) => {
             e.preventDefault();
-            e.stopPropagation();
             // 关闭Projects子菜单
             const projectsSubmenu = document.getElementById('projectsSubmenu');
             if(projectsSubmenu) projectsSubmenu.classList.remove('is-open');
@@ -769,8 +767,17 @@
         // 子菜单链接点击后关闭主菜单
         const submenuLinks = topMenuPanel.querySelectorAll('.topMenuLevel2 a');
         submenuLinks.forEach(link => {
-          link.addEventListener('click', () => {
+          // 移动设备：使用 touchend 提高响应速度
+          link.addEventListener('touchend', (e) => {
+            e.preventDefault();
             topMenuPanel.classList.remove('is-open');
+            const pSub = document.getElementById('projectsSubmenu');
+            const iSub = document.getElementById('imagesSubmenu');
+            if(pSub) pSub.classList.remove('is-open');
+            if(iSub) iSub.classList.remove('is-open');
+            // 手动触发跳转
+            const href = link.getAttribute('href');
+            if(href) window.location.href = href;
           });
         });
 
