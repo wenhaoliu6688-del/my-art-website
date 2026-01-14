@@ -119,6 +119,21 @@
     .topMenuItem:hover{
       opacity:.65;
     }
+
+    /* 分类标题（不可点击的分隔符） */
+    .menu-section-title{
+      display: block;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--muted);
+      padding: 8px 16px 6px 16px;
+      margin: 0;
+      border: none;
+      pointer-events: none;  /* 确保不可点击 */
+    }
+
     /* nav */
     .nav{
       position:fixed;
@@ -375,14 +390,22 @@
     </svg>
   </button>
 
-  <!-- 顶部下拉菜单（手机端）- 平铺导航 -->
+  <!-- 顶部下拉菜单（手机端）- 平铺结构 + 分类标题 -->
   <div class="topMenuPanel" id="topMenuPanel">
     <ul class="topMenuLevel1">
+      <!-- 分类标题：Projects -->
+      <li class="menu-section-title">Projects</li>
+
       <li><a class="topMenuItem" href="../yellow-river/">Yellow River (2025)</a></li>
       <li><a class="topMenuItem" href="../frontispiece/">Frontispiece (2024)</a></li>
       <li><a class="topMenuItem" href="../formless-buddha/">Formless Buddha (2023)</a></li>
       <li><a class="topMenuItem" href="./">Yellow (2021)</a></li>
-      <li><a class="topMenuItem" href="../../images/yellow-river/">Yellow River Images</a></li>
+
+      <!-- 分类标题：Images -->
+      <li class="menu-section-title">Images</li>
+
+      <li><a class="topMenuItem" href="../../images/yellow-river/">Yellow River</a></li>
+
       <li><a class="topMenuItem" href="../../about/">About</a></li>
       <li><a class="topMenuItem" href="../../">Home</a></li>
     </ul>
