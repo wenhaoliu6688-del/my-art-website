@@ -376,15 +376,15 @@
       .gallery{
         align-items: flex-start;
         padding-top: 10vh;
-        padding-bottom: 260px;  /* 从 220px 增加到 260px */
+        padding-bottom: 280px;  /* 从 260px 增加到 280px（更激进） */
       }
 
       .imageContainer{
         max-width:80vw;
-        max-height:38vh;  /* 从 42vh 降低到 38vh */
+        max-height:36vh;  /* 从 38vh 降低到 36vh（更激进） */
       }
       .imageContainer img{
-        max-height:38vh;  /* 从 42vh 降低到 38vh */
+        max-height:36vh;  /* 从 38vh 降低到 36vh（更激进） */
       }
 
       .bottomNav{
@@ -625,9 +625,12 @@
 
         // 点击外部关闭菜单
         document.addEventListener('click', (e) => {
-          if(!e.target.closest('.menuToggle') && !e.target.closest('.topMenuPanel')){
-            topMenuPanel.classList.remove('is-open');
-          }
+          // 使用 setTimeout 延迟检查，避免阻止菜单按钮的点击事件
+          setTimeout(() => {
+            if(!e.target.closest('.menuToggle') && !e.target.closest('.topMenuPanel')){
+              topMenuPanel.classList.remove('is-open');
+            }
+          }, 0);
         }, {passive: false});
       }
     } catch(error) {

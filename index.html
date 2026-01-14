@@ -735,9 +735,12 @@
 
         // 点击外部关闭菜单
         document.addEventListener('click', (e) => {
-          if(!e.target.closest('.menuToggle') && !e.target.closest('.topMenuPanel')){
-            topMenuPanel.classList.remove('is-open');
-          }
+          // 使用 setTimeout 延迟检查，避免阻止菜单按钮的点击事件
+          setTimeout(() => {
+            if(!e.target.closest('.menuToggle') && !e.target.closest('.topMenuPanel')){
+              topMenuPanel.classList.remove('is-open');
+            }
+          }, 0);
         }, {passive: false});
       }
     } catch(error) {
