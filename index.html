@@ -438,7 +438,7 @@
 <body>
 
   <a id="homeLink" class="brand" href="#">HARRY6</a>
-  <span class="mobile-version-marker">v1.1</span>
+  <span class="mobile-version-marker">v1.2</span>
 
   <nav class="nav" aria-label="Primary">
     <div class="navItem" data-menu="projects"><button class="navBtn" type="button">PROJECTS</button></div>
@@ -489,7 +489,7 @@
       <span class="label">共鸣</span>
       <span class="count">0</span>
     </div>
-    <div class="version-marker">v1.1</div>
+    <div class="version-marker">v1.2</div>
   </div>
 
   <div id="stage"></div>
@@ -747,9 +747,20 @@
           topMenuPanel.classList.toggle('is-open');
         });
 
-        // 点击任意链接后关闭菜单
+        // 点击任意链接后关闭菜单（使用 touchend 提高移动端响应）
         const allLinks = topMenuPanel.querySelectorAll('.topMenuItem');
         allLinks.forEach(link => {
+          // 移动端：使用 touchend 事件
+          link.addEventListener('touchend', (e) => {
+            e.preventDefault(); // 阻止默认的300ms延迟
+            topMenuPanel.classList.remove('is-open');
+            // 手动触发导航
+            const href = link.getAttribute('href');
+            if(href) {
+              window.location.href = href;
+            }
+          });
+          // 桌面端：保留 click 事件
           link.addEventListener('click', () => {
             topMenuPanel.classList.remove('is-open');
           });

@@ -372,23 +372,23 @@
 
     /* iPad/平板设备专用调整（768px - 1024px） */
     @media (min-width: 768px) and (max-width: 1024px){
-      /* iPad：作品在上半部分，不跟底部导航重合 */
+      /* iPad：作品严格限制在上半部分 */
       .gallery{
         align-items: flex-start;
-        padding-top: 10vh;
-        padding-bottom: 280px;  /* 从 260px 增加到 280px（更激进） */
+        padding-top: 8vh;
+        padding-bottom: 350px;  /* 大幅增加底部间距 */
       }
 
       .imageContainer{
-        max-width:80vw;
-        max-height:36vh;  /* 从 38vh 降低到 36vh（更激进） */
+        max-width:75vw;
+        max-height:30vh;  /* 大幅降低图片高度 */
       }
       .imageContainer img{
-        max-height:36vh;  /* 从 38vh 降低到 36vh（更激进） */
+        max-height:30vh;
       }
 
       .bottomNav{
-        bottom:100px;
+        bottom:120px;  /* 抬高底部导航 */
       }
     }
   </style>
@@ -397,7 +397,7 @@
 <body>
 
   <a class="brand" href="../../">HARRY6</a>
-  <span class="version-marker-inline">v1.1</span>
+  <span class="version-marker-inline">v1.2</span>
 
   <nav class="nav" aria-label="Primary">
     <div class="navItem" data-menu="projects"><button class="navBtn" type="button">PROJECTS</button></div>
@@ -615,9 +615,20 @@
           topMenuPanel.classList.toggle('is-open');
         });
 
-        // 点击任意链接后关闭菜单
+        // 点击任意链接后关闭菜单（使用 touchend 提高移动端响应）
         const allLinks = topMenuPanel.querySelectorAll('.topMenuItem');
         allLinks.forEach(link => {
+          // 移动端：使用 touchend 事件
+          link.addEventListener('touchend', (e) => {
+            e.preventDefault(); // 阻止默认的300ms延迟
+            topMenuPanel.classList.remove('is-open');
+            // 手动触发导航
+            const href = link.getAttribute('href');
+            if(href) {
+              window.location.href = href;
+            }
+          });
+          // 桌面端：保留 click 事件
           link.addEventListener('click', () => {
             topMenuPanel.classList.remove('is-open');
           });
