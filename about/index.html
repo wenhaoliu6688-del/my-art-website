@@ -157,9 +157,39 @@
       margin-left: 0.5em;
     }
 
-    /* 只在手机端显示全屏菜单 */
-    @media (max-width: 768px){
+    /* 全平台统一全屏菜单 */
+    /* 桌面端（>1024px）显示menuToggle，隐藏左侧导航 */
+    @media (min-width: 1025px){
+      .menuToggle{
+        display: block !important;
+      }
+      .nav{
+        display: none !important;
+      }
       .fullscreenMenu{
+        display: block !important;
+      }
+    }
+
+    /* iPad端（768px-1024px）显示menuToggle，隐藏左侧导航 */
+    @media (min-width: 768px) and (max-width: 1024px){
+      .menuToggle{
+        display: block !important;
+      }
+      .nav{
+        display: none !important;
+      }
+      .fullscreenMenu{
+        display: block !important;
+      }
+    }
+
+    /* 手机端（<768px）显示menuToggle */
+    @media (max-width: 767px){
+      .fullscreenMenu{
+        display: block !important;
+      }
+      .menuToggle{
         display: block !important;
       }
     }
