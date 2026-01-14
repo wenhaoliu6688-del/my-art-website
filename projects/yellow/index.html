@@ -263,6 +263,7 @@
         --leftPad: 22px;
       }
       .brand{ top:22px; }
+      .menuToggle{ top:22px; }
 
       /* 手机端：隐藏左侧导航，显示顶部菜单 */
       .nav{ display: none; }
@@ -343,7 +344,7 @@
 <body>
 
   <a class="brand" href="../../">HARRY6</a>
-  <span class="version-marker-inline">v1.9.2</span>
+  <span class="version-marker-inline">v1.9.3</span>
 
   <nav class="nav" aria-label="Primary">
     <div class="navItem" data-menu="projects"><button class="navBtn" type="button">PROJECTS</button></div>
@@ -904,7 +905,6 @@
       });
 
       // 点击作品链接后关闭菜单（让浏览器处理默认的链接跳转）
-      const menuItems = fullscreenMenu.querySelectorAll('.menuItem');
       menuItems.forEach(item => {
         item.addEventListener('click', (e) => {
           // 不阻止默认行为，让链接正常跳转
