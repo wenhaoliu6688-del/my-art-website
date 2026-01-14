@@ -61,24 +61,29 @@
 
     /* 版本标记（测试用，完成后删除） */
     .mobile-version-marker{
-      display: block;  /* 改为始终显示 */
+      display: block;
       position: fixed;
-      top: 82px;  /* brand top(44px) + brand height(38px) ≈ 82px */
-      left: calc(var(--leftPad) + 12px);  /* 与brand左对齐 */
-      font-size: 11px;
-      font-weight: 500;
-      letter-spacing: 0.06em;
-      color: var(--muted);
+      top: 52px;  /* brand top(44px) + brand height + margin */
+      left: calc(var(--leftPad) + 80px);  /* 在HARRY6按钮右侧 */
+      font-size: 9px;
+      font-weight: 400;
+      letter-spacing: 0.04em;
+      color: rgba(0,0,0,0.25);  /* 非常淡的颜色 */
       pointer-events: none;
       z-index: 1000;
+      opacity: 0.6;
+      transition: opacity 0.2s ease;
+    }
+    .mobile-version-marker:hover{
+      opacity: 1;
     }
 
     /* 小屏幕设备调整 */
     @media (max-width: 1024px){
       .mobile-version-marker{
-        top: 50px;  /* brand top(22px) + brand height(28px) ≈ 50px */
-        left: calc(22px + 12px);  /* 与手机端brand左对齐 */
-        font-size: 10px;
+        top: 28px;  /* brand top(22px) + brand height + margin */
+        left: calc(22px + 65px);  /* 在HARRY6按钮右侧 */
+        font-size: 8px;
       }
     }
 
@@ -751,20 +756,20 @@
     const fullscreenMenu = document.getElementById('fullscreenMenu');
     const menuCloseBtn = document.getElementById('menuCloseBtn');
 
-    // 动态设置BASE路径（与左侧导航使用相同的逻辑）
-    const REPO = location.pathname.split("/")[1];
-    const BASE = REPO ? `/${REPO}/` : "/";
-
-    // 动态设置菜单链接
-    const menuItems = fullscreenMenu.querySelectorAll('.menuItem');
-    menuItems.forEach(item => {
-      const href = item.getAttribute('data-href');
-      if (href) {
-        item.setAttribute('href', BASE + href);
-      }
-    });
-
     if(menuToggle && fullscreenMenu){
+      // 动态设置BASE路径（与左侧导航使用相同的逻辑）
+      const REPO = location.pathname.split("/")[1];
+      const BASE = REPO ? `/${REPO}/` : "/";
+
+      // 动态设置菜单链接
+      const menuItems = fullscreenMenu.querySelectorAll('.menuItem');
+      menuItems.forEach(item => {
+        const href = item.getAttribute('data-href');
+        if (href) {
+          item.setAttribute('href', BASE + href);
+        }
+      });
+
       // 打开菜单
       menuToggle.addEventListener('click', (e) => {
         e.stopPropagation();
@@ -779,7 +784,6 @@
       });
 
       // 点击作品链接后关闭
-      const menuItems = fullscreenMenu.querySelectorAll('.menuItem');
       menuItems.forEach(item => {
         item.addEventListener('click', () => {
           fullscreenMenu.classList.remove('is-open');
