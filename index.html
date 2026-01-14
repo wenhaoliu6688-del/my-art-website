@@ -433,44 +433,82 @@
       }
     }
 
-    /* 底部Tab栏（手机端） */
-    .mobileTabBar{
-      display: none;  /* 默认隐藏，只在手机端显示 */
-      position: fixed;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      height: 52px;
-      background: #fff;
-      border-top: 1px solid rgba(0,0,0,0.08);
-      z-index: 999;
-      justify-content: space-around;
-      align-items: center;
-      padding: 0 32px;
-    }
-    .tabItem{
-      flex: 1;
-      text-align: center;
-      padding: 14px 0;
-      text-decoration: none;
-      color: rgba(0,0,0,0.35);
-      font-size: 10px;
-      font-weight: 400;
-      letter-spacing: 0.18em;
-      text-transform: uppercase;
-      transition: color 0.25s ease;
-    }
-    .tabItem.active{
-      color: #000;
-    }
-    /* 移除底部指示线 */
-    .tabItem::after{
+    /* 全屏菜单（手机端） */
+    .fullscreenMenu{
       display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: #fff;
+      z-index: 2000;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+      overflow-y: auto;
+      padding: 80px 32px 32px;
     }
-    /* 只在真正的手机端显示Tab栏（<768px） */
+    .fullscreenMenu.is-open{
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .menuCloseBtn{
+      position: absolute;
+      top: 32px;
+      right: 32px;
+      width: 44px;
+      height: 44px;
+      border: none;
+      background: none;
+      cursor: pointer;
+      font-size: 32px;
+      color: #000;
+      line-height: 1;
+      padding: 0;
+    }
+    .menuCloseBtn:hover{
+      opacity: 0.6;
+    }
+
+    .menuCategoryTitle{
+      font-size: 48px;
+      font-weight: 300;
+      letter-spacing: 0.02em;
+      color: #000;
+      padding: 32px 0 16px 0;
+      margin: 0;
+      border-bottom: 1px solid rgba(0,0,0,0.1);
+    }
+
+    .menuItem{
+      display: block;
+      font-size: 18px;
+      font-weight: 400;
+      letter-spacing: 0.04em;
+      color: rgba(0,0,0,0.7);
+      padding: 16px 0 16px 24px;
+      text-decoration: none;
+      transition: all 0.2s ease;
+    }
+    .menuItem:hover{
+      color: #000;
+      padding-left: 32px;
+    }
+    .menuItem .year{
+      color: rgba(0,0,0,0.4);
+      font-size: 14px;
+      margin-left: 0.5em;
+    }
+
+    /* 只在手机端显示全屏菜单 */
     @media (max-width: 768px){
-      .mobileTabBar{
-        display: flex !important;
+      .fullscreenMenu{
+        display: block !important;
+      }
+      .menuToggle{
+        display: block !important;
       }
     }
   </style>
@@ -479,7 +517,7 @@
 <body>
 
   <a id="homeLink" class="brand" href="#">HARRY6</a>
-  <span class="mobile-version-marker">v1.4</span>
+  <span class="mobile-version-marker">v1.5</span>
 
   <nav class="nav" aria-label="Primary">
     <div class="navItem" data-menu="projects"><button class="navBtn" type="button">PROJECTS</button></div>
@@ -530,7 +568,7 @@
       <span class="label">共鸣</span>
       <span class="count">0</span>
     </div>
-    <div class="version-marker">v1.4</div>
+    <div class="version-marker">v1.5</div>
   </div>
 
   <div id="stage"></div>
@@ -953,41 +991,61 @@
     });
   </script>
 
+  <!-- 全屏菜单（手机端） -->
+  <div class="fullscreenMenu" id="fullscreenMenu">
+    <button class="menuCloseBtn" id="menuCloseBtn" aria-label="Close menu">&times;</button>
+
+    <h2 class="menuCategoryTitle">WORKS</h2>
+    <a class="menuItem" href="projects/yellow-river/">Yellow River <span class="year">(2025)</span></a>
+    <a class="menuItem" href="projects/frontispiece/">Frontispiece <span class="year">(2024)</span></a>
+    <a class="menuItem" href="projects/formless-buddha/">Formless Buddha <span class="year">(2023)</span></a>
+    <a class="menuItem" href="projects/yellow/">Yellow <span class="year">(2021)</span></a>
+
+    <h2 class="menuCategoryTitle">IMAGES</h2>
+    <a class="menuItem" href="images/yellow-river/">Yellow River</a>
+
+    <h2 class="menuCategoryTitle">ABOUT</h2>
+    <a class="menuItem" href="about/">About</a>
+  </div>
+
   <script>
-    // ===== 底部Tab栏高亮当前页（手机端）=====
-    document.addEventListener('DOMContentLoaded', function() {
-      const tabs = document.querySelectorAll('.tabItem');
-      const currentPath = window.location.pathname;
+    // ===== 全屏菜单控制（手机端）=====
+    const menuToggle = document.getElementById('menuToggle');
+    const fullscreenMenu = document.getElementById('fullscreenMenu');
+    const menuCloseBtn = document.getElementById('menuCloseBtn');
 
-      // 根据URL路径确定当前页
-      let activeTab = 'works';  // 默认为作品
+    if(menuToggle && fullscreenMenu){
+      // 打开菜单
+      menuToggle.addEventListener('click', (e) => {
+        e.stopPropagation();
+        fullscreenMenu.classList.add('is-open');
+        document.body.style.overflow = 'hidden';  // 禁止背景滚动
+      });
 
-      if (currentPath === '/' || currentPath === '' || currentPath.endsWith('index.html')) {
-        activeTab = 'works';  // 首页
-      } else if (currentPath.includes('/images/')) {
-        activeTab = 'images';  // 图像页
-      } else if (currentPath.includes('/about/')) {
-        activeTab = 'about';  // 关于页
-      } else if (currentPath.includes('/projects/')) {
-        activeTab = 'works';  // 项目页也算作品
-      }
+      // 关闭按钮
+      menuCloseBtn.addEventListener('click', () => {
+        fullscreenMenu.classList.remove('is-open');
+        document.body.style.overflow = '';
+      });
 
-      // 高亮对应的Tab
-      tabs.forEach(tab => {
-        const tabData = tab.getAttribute('data-tab');
-        if (tabData === activeTab) {
-          tab.classList.add('active');
+      // 点击作品链接后关闭
+      const menuItems = fullscreenMenu.querySelectorAll('.menuItem');
+      menuItems.forEach(item => {
+        item.addEventListener('click', () => {
+          fullscreenMenu.classList.remove('is-open');
+          document.body.style.overflow = '';
+        });
+      });
+
+      // 点击菜单外部关闭
+      fullscreenMenu.addEventListener('click', (e) => {
+        if(e.target === fullscreenMenu){
+          fullscreenMenu.classList.remove('is-open');
+          document.body.style.overflow = '';
         }
       });
-    });
+    }
   </script>
-
-  <!-- 底部Tab栏（手机端） -->
-  <nav class="mobileTabBar">
-    <a class="tabItem" href="#" data-tab="works">WORKS</a>
-    <a class="tabItem" href="images/" data-tab="images">IMAGES</a>
-    <a class="tabItem" href="about/" data-tab="about">ABOUT</a>
-  </nav>
 
 </body>
 </html>
