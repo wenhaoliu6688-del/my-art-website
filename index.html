@@ -411,6 +411,27 @@
         margin-top: 6px;
       }
     }
+
+    /* 版本标记（手机端，测试用，完成后删除） */
+    .version-marker-mobile{
+      display: none;  /* 默认隐藏 */
+      position: fixed;
+      top: 31px;
+      right: 72px;
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.06em;
+      color: var(--muted);
+      pointer-events: none;
+      z-index: 1001;
+    }
+
+    /* 只在手机端显示 */
+    @media (max-width: 1024px){
+      .version-marker-mobile{
+        display: block;
+      }
+    }
   </style>
 </head>
 
@@ -430,6 +451,7 @@
       <path d="M3 12h18M3 6h18M3 18h18"/>
     </svg>
   </button>
+  <span class="version-marker-mobile">v1.0</span>
 
   <!-- 顶部下拉菜单（手机端）- 平铺结构 + 分类标题 -->
   <div class="topMenuPanel" id="topMenuPanel">
