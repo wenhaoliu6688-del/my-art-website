@@ -290,6 +290,13 @@
     body:not(.is-touch-device) .desktop-hint{
       display: block;
     }
+    /* iPad 端（768px-1024px）：显示滑动提示 */
+    @media (min-width: 768px) and (max-width: 1024px){
+      body.is-touch-device .touch-hint{
+        display: block;
+      }
+    }
+    /* 手机端（小于 768px）：不显示任何提示 */
 
     .toast{
       position:absolute;
