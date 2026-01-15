@@ -547,6 +547,7 @@
       { title: "Yellow River", year: "2025", href: BASE + "images/yellow-river/" }
     ];
 
+    const IMAGES_HREF = BASE + "images/";
     const ABOUT_HREF = BASE + "about/";
 
     const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
@@ -638,6 +639,11 @@
       // iPad和电脑端：使用click（更可靠）
       if(isIPad || !isTouchDevice){
         btn.addEventListener('click', (e) => {
+          if(key === 'images'){
+            window.location.href = IMAGES_HREF;
+            e.preventDefault();
+            return;
+          }
           if(key === 'about'){
             window.location.href = ABOUT_HREF;
             e.preventDefault();
@@ -653,6 +659,10 @@
       }else{
         // 手机端：使用touchstart
         btn.addEventListener('touchstart', (e) => {
+          if(key === 'images'){
+            window.location.href = IMAGES_HREF;
+            return;
+          }
           if(key === 'about'){
             window.location.href = ABOUT_HREF;
             return;

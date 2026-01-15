@@ -133,25 +133,23 @@
       padding: 0 40px;
     }
 
-    .galleryScroll img{
-      max-width: 70%;
+    /* 每张图下方的独立展签 */
+    .artworkItem{
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .artworkItem img{
+      max-width: 55%;
       height: auto;
       display: block;
     }
-
-    /* 右下角作品标签 */
-    .galleryScroll{
-      position: relative;
-    }
-    .artworkLabel{
-      position: fixed;
-      right: 40px;
-      bottom: 80px;
+    .artworkCaption{
+      margin-top: 16px;
       font-size: 12px;
-      font-weight: 500;
-      letter-spacing: .06em;
+      font-weight: 400;
+      letter-spacing: .08em;
       color: var(--muted);
-      z-index: 100;
     }
 
     /* email */
@@ -215,22 +213,14 @@
         padding: 0 20px;
         gap: 60px;
       }
-      .galleryScroll img{
-        max-width: 85%;
-      }
-      .artworkLabel{
-        right: 20px;
-        bottom: 70px;
-        font-size: 11px;
+      .artworkItem img{
+        max-width: 75%;
       }
     }
 
     @media (max-width: 600px){
-      .galleryScroll img{
-        max-width: 95%;
-      }
-      .artworkLabel{
-        display: none;
+      .artworkItem img{
+        max-width: 90%;
       }
     }
 
@@ -361,14 +351,20 @@
     </div>
 
     <div class="galleryScroll">
-      <img src="../../assets/yellow-river/01.jpg" alt="Yellow River No.1">
-      <img src="../../assets/yellow-river/02.jpg" alt="Yellow River No.2">
-      <img src="../../assets/yellow-river/03.jpg" alt="Yellow River No.3">
+      <div class="artworkItem">
+        <img src="../../assets/yellow-river/01.jpg" alt="Yellow River No.1">
+        <span class="artworkCaption">黄河一</span>
+      </div>
+      <div class="artworkItem">
+        <img src="../../assets/yellow-river/02.jpg" alt="Yellow River No.2">
+        <span class="artworkCaption">黄河二</span>
+      </div>
+      <div class="artworkItem">
+        <img src="../../assets/yellow-river/03.jpg" alt="Yellow River No.3">
+        <span class="artworkCaption">黄河三</span>
+      </div>
     </div>
   </div>
-
-  <!-- 右下角作品标签 -->
-  <div class="artworkLabel">Yellow River, 2025</div>
 
   <div class="emailWrap">
     <span id="emailCopy" class="emailCopy" title="Click to copy">wenhao_liu888@163.com</span>
@@ -390,6 +386,7 @@
       { title: "Yellow River", year: "2025", href: BASE + "images/" }
     ];
 
+    const IMAGES_HREF = BASE + "images/";
     const ABOUT_HREF = BASE + "about/";
 
     const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
@@ -478,6 +475,11 @@
 
       if(isIPad || !isTouchDevice){
         btn.addEventListener('click', (e) => {
+          if(key === 'images'){
+            window.location.href = IMAGES_HREF;
+            e.preventDefault();
+            return;
+          }
           if(key === 'about'){
             window.location.href = ABOUT_HREF;
             e.preventDefault();
@@ -492,6 +494,10 @@
         });
       }else{
         btn.addEventListener('touchstart', (e) => {
+          if(key === 'images'){
+            window.location.href = IMAGES_HREF;
+            return;
+          }
           if(key === 'about'){
             window.location.href = ABOUT_HREF;
             return;

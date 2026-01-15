@@ -105,7 +105,7 @@
 
     /* 主容器 */
     .container{
-      padding-top: 80px;
+      padding-top: 120px;
       padding-bottom: 120px;
       min-height: 100vh;
     }
@@ -113,7 +113,7 @@
     /* 系列标题 */
     .seriesHeader{
       text-align: center;
-      margin-bottom: 120px;
+      margin-bottom: 100px;
       padding: 0 40px;
     }
     .seriesHeader h1{
@@ -124,23 +124,56 @@
       color: var(--text);
     }
 
-    /* 垂直滚动布局 - 展览级留白 */
+    /* 杂志错落排版 */
     .magazineScroll{
-      max-width: 1000px;
+      max-width: 1200px;
       margin: 0 auto;
-    }
-
-    .magazineItem{
-      margin-bottom: 140px;
-      text-align: center;
       padding: 0 40px;
     }
 
-    .magazineItem img{
-      max-width: 75%;
+    .magazineItem{
+      margin-bottom: 100px;
+    }
+
+    /* 居中 */
+    .magazineItem.center{
+      text-align: center;
+    }
+    .magazineItem.center img{
+      max-width: 60%;
+      height: auto;
+      display: inline-block;
+    }
+
+    /* 左对齐 */
+    .magazineItem.left{
+      text-align: left;
+    }
+    .magazineItem.left img{
+      max-width: 45%;
       height: auto;
       display: block;
-      margin: 0 auto;
+    }
+
+    /* 右对齐 */
+    .magazineItem.right{
+      text-align: right;
+    }
+    .magazineItem.right img{
+      max-width: 45%;
+      height: auto;
+      display: block;
+      margin-left: auto;
+    }
+
+    /* 宽幅居中 */
+    .magazineItem.wide-center{
+      text-align: center;
+    }
+    .magazineItem.wide-center img{
+      max-width: 70%;
+      height: auto;
+      display: inline-block;
     }
 
     /* email */
@@ -193,25 +226,36 @@
       .menuToggle{ display: block; }
 
       .container{
-        padding-top: 60px;
+        padding-top: 80px;
         padding-bottom: 100px;
       }
       .seriesHeader{
         padding: 0 20px;
-        margin-bottom: 80px;
+        margin-bottom: 60px;
       }
-      .magazineItem{
-        margin-bottom: 100px;
+      .magazineScroll{
         padding: 0 20px;
       }
-      .magazineItem img{
-        max-width: 85%;
+      .magazineItem{
+        margin-bottom: 60px;
+        text-align: center;
+      }
+      .magazineItem.center img,
+      .magazineItem.left img,
+      .magazineItem.right img,
+      .magazineItem.wide-center img{
+        max-width: 75%;
+        margin: 0 auto;
+        display: block;
       }
     }
 
     @media (max-width: 600px){
-      .magazineItem img{
-        max-width: 95%;
+      .magazineItem.center img,
+      .magazineItem.left img,
+      .magazineItem.right img,
+      .magazineItem.wide-center img{
+        max-width: 90%;
       }
     }
 
@@ -342,19 +386,19 @@
     </div>
 
     <div class="magazineScroll">
-      <div class="magazineItem">
+      <div class="magazineItem center">
         <img src="../../assets/formless-buddha/01.jpg" alt="Formless Buddha No.1">
       </div>
 
-      <div class="magazineItem">
+      <div class="magazineItem left">
         <img src="../../assets/formless-buddha/02.jpg" alt="Formless Buddha No.2">
       </div>
 
-      <div class="magazineItem">
+      <div class="magazineItem right">
         <img src="../../assets/formless-buddha/03.jpg" alt="Formless Buddha No.3">
       </div>
 
-      <div class="magazineItem">
+      <div class="magazineItem wide-center">
         <img src="../../assets/formless-buddha/04.jpg" alt="Formless Buddha No.4">
       </div>
     </div>
@@ -380,6 +424,7 @@
       { title: "Yellow River", year: "2025", href: BASE + "images/" }
     ];
 
+    const IMAGES_HREF = BASE + "images/";
     const ABOUT_HREF = BASE + "about/";
 
     const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
@@ -468,6 +513,11 @@
 
       if(isIPad || !isTouchDevice){
         btn.addEventListener('click', (e) => {
+          if(key === 'images'){
+            window.location.href = IMAGES_HREF;
+            e.preventDefault();
+            return;
+          }
           if(key === 'about'){
             window.location.href = ABOUT_HREF;
             e.preventDefault();
@@ -482,6 +532,10 @@
         });
       }else{
         btn.addEventListener('touchstart', (e) => {
+          if(key === 'images'){
+            window.location.href = IMAGES_HREF;
+            return;
+          }
           if(key === 'about'){
             window.location.href = ABOUT_HREF;
             return;

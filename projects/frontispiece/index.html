@@ -113,7 +113,7 @@
     /* 系列标题 */
     .seriesHeader{
       text-align: center;
-      margin-bottom: 40px;
+      margin-bottom: 80px;
       padding: 0 40px;
     }
     .seriesHeader h1{
@@ -124,43 +124,56 @@
       color: var(--text);
     }
 
-    /* 瀑布流布局 - 保持原始比例 */
-    .waterfallContainer{
-      max-width: 1400px;
+    /* 杂志错落排版 */
+    .magazineScroll{
+      max-width: 1200px;
       margin: 0 auto;
       padding: 0 40px;
     }
 
-    .waterfallGrid{
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 30px;
-      grid-auto-rows: min-content;
+    .magazineItem{
+      margin-bottom: 80px;
     }
 
-    .waterfallItem{
-      position: relative;
-      background: transparent;
+    /* 居中 */
+    .magazineItem.center{
+      text-align: center;
+    }
+    .magazineItem.center img{
+      max-width: 60%;
+      height: auto;
+      display: inline-block;
     }
 
-    .waterfallItem img{
-      width: 100%;
+    /* 左对齐 */
+    .magazineItem.left{
+      text-align: left;
+    }
+    .magazineItem.left img{
+      max-width: 45%;
       height: auto;
       display: block;
     }
 
-    /* 不同尺寸的项目，创造自然错落感 */
-    .waterfallItem.span-2{
-      grid-column: span 2;
+    /* 右对齐 */
+    .magazineItem.right{
+      text-align: right;
     }
-    .waterfallItem.span-2-row{
-      grid-row: span 1;
+    .magazineItem.right img{
+      max-width: 45%;
+      height: auto;
+      display: block;
+      margin-left: auto;
     }
-    .waterfallItem.span-col{
-      grid-column: span 1;
+
+    /* 宽幅居中 */
+    .magazineItem.wide-center{
+      text-align: center;
     }
-    .waterfallItem.span-2-col{
-      grid-column: span 2;
+    .magazineItem.wide-center img{
+      max-width: 70%;
+      height: auto;
+      display: inline-block;
     }
 
     /* email */
@@ -218,32 +231,32 @@
       }
       .seriesHeader{
         padding: 0 20px;
-        margin-bottom: 30px;
+        margin-bottom: 60px;
       }
-      .waterfallContainer{
+      .magazineScroll{
         padding: 0 20px;
       }
-      .waterfallGrid{
-        grid-template-columns: repeat(2, 1fr);
-        gap: 20px;
+      .magazineItem{
+        margin-bottom: 60px;
+        text-align: center;
       }
-      .waterfallItem.span-2{
-        grid-column: span 1;
-      }
-      .waterfallItem.span-2-col{
-        grid-column: span 1;
+      .magazineItem.center img,
+      .magazineItem.left img,
+      .magazineItem.right img,
+      .magazineItem.wide-center img{
+        max-width: 75%;
+        margin: 0 auto;
+        display: block;
       }
     }
 
     /* 手机端 */
     @media (max-width: 600px){
-      .waterfallGrid{
-        grid-template-columns: 1fr;
-        gap: 30px;
-      }
-      .waterfallItem.span-2,
-      .waterfallItem.span-2-col{
-        grid-column: span 1;
+      .magazineItem.center img,
+      .magazineItem.left img,
+      .magazineItem.right img,
+      .magazineItem.wide-center img{
+        max-width: 90%;
       }
     }
 
@@ -373,17 +386,41 @@
       <h1>Frontispiece / 2024 / Photography</h1>
     </div>
 
-    <div class="waterfallContainer">
-      <div class="waterfallGrid">
-        <div class="waterfallItem"><img src="../../assets/frontispiece/01.jpg" alt="Frontispiece No.1"></div>
-        <div class="waterfallItem span-2"><img src="../../assets/frontispiece/02.jpg" alt="Frontispiece No.2"></div>
-        <div class="waterfallItem"><img src="../../assets/frontispiece/03.jpg" alt="Frontispiece No.3"></div>
-        <div class="waterfallItem span-2-row"><img src="../../assets/frontispiece/04.jpg" alt="Frontispiece No.4"></div>
-        <div class="waterfallItem"><img src="../../assets/frontispiece/05.jpg" alt="Frontispiece No.5"></div>
-        <div class="waterfallItem"><img src="../../assets/frontispiece/06.jpg" alt="Frontispiece No.6"></div>
-        <div class="waterfallItem span-2-col"><img src="../../assets/frontispiece/07.jpg" alt="Frontispiece No.7"></div>
-        <div class="waterfallItem"><img src="../../assets/frontispiece/08.jpg" alt="Frontispiece No.8"></div>
-        <div class="waterfallItem"><img src="../../assets/frontispiece/09.jpg" alt="Frontispiece No.9"></div>
+    <div class="magazineScroll">
+      <div class="magazineItem center">
+        <img src="../../assets/frontispiece/01.jpg" alt="Frontispiece No.1">
+      </div>
+
+      <div class="magazineItem left">
+        <img src="../../assets/frontispiece/02.jpg" alt="Frontispiece No.2">
+      </div>
+
+      <div class="magazineItem right">
+        <img src="../../assets/frontispiece/03.jpg" alt="Frontispiece No.3">
+      </div>
+
+      <div class="magazineItem center">
+        <img src="../../assets/frontispiece/04.jpg" alt="Frontispiece No.4">
+      </div>
+
+      <div class="magazineItem left">
+        <img src="../../assets/frontispiece/05.jpg" alt="Frontispiece No.5">
+      </div>
+
+      <div class="magazineItem right">
+        <img src="../../assets/frontispiece/06.jpg" alt="Frontispiece No.6">
+      </div>
+
+      <div class="magazineItem wide-center">
+        <img src="../../assets/frontispiece/07.jpg" alt="Frontispiece No.7">
+      </div>
+
+      <div class="magazineItem center">
+        <img src="../../assets/frontispiece/08.jpg" alt="Frontispiece No.8">
+      </div>
+
+      <div class="magazineItem center">
+        <img src="../../assets/frontispiece/09.jpg" alt="Frontispiece No.9">
       </div>
     </div>
   </div>
@@ -408,6 +445,7 @@
       { title: "Yellow River", year: "2025", href: BASE + "images/" }
     ];
 
+    const IMAGES_HREF = BASE + "images/";
     const ABOUT_HREF = BASE + "about/";
 
     const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
@@ -496,6 +534,11 @@
 
       if(isIPad || !isTouchDevice){
         btn.addEventListener('click', (e) => {
+          if(key === 'images'){
+            window.location.href = IMAGES_HREF;
+            e.preventDefault();
+            return;
+          }
           if(key === 'about'){
             window.location.href = ABOUT_HREF;
             e.preventDefault();
@@ -510,6 +553,10 @@
         });
       }else{
         btn.addEventListener('touchstart', (e) => {
+          if(key === 'images'){
+            window.location.href = IMAGES_HREF;
+            return;
+          }
           if(key === 'about'){
             window.location.href = ABOUT_HREF;
             return;

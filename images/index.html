@@ -108,60 +108,10 @@
     /* 主容器 */
     .container{
       display: flex;
+      flex-direction: column;
       min-height: 100vh;
       padding-top: 80px;
-      padding-bottom: 80px;
-    }
-
-    /* 左侧书签条 */
-    .bookmarkStrip{
-      width: 60px;
-      flex-shrink: 0;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 12px;
-      padding: 0 10px;
-      overflow-y: auto;
-      max-height: calc(100vh - 160px);
-      position: sticky;
-      top: 80px;
-    }
-
-    .bookmark{
-      width: 50px;
-      height: 75px;
-      background: #f5f5f5;
-      cursor: pointer;
-      position: relative;
-      transition: all .2s ease;
-      overflow: hidden;
-    }
-    .bookmark:hover{
-      background: #e8e8e8;
-    }
-    .bookmark.active{
-      background: var(--accent);
-      box-shadow: 0 2px 8px rgba(0,0,0,0.15);
-    }
-
-    .bookmark img{
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      display: block;
-    }
-
-    .bookmarkNum{
-      position: absolute;
-      bottom: 4px;
-      left: 0;
-      right: 0;
-      text-align: center;
-      font-size: 9px;
-      font-weight: 600;
-      letter-spacing: .02em;
-      color: rgba(0,0,0,.5);
+      padding-bottom: 120px;
     }
 
     /* 主展示区 */
@@ -171,7 +121,7 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      padding: 0 80px 0 40px;
+      padding: 0 40px;
     }
 
     .imageWrapper{
@@ -190,14 +140,50 @@
 
     /* 极简信息显示 */
     .imageInfo{
-      margin-top: 40px;
+      margin-top: 32px;
       text-align: center;
-      font-size: 13px;
-      letter-spacing: .08em;
+      font-size: 12px;
+      font-weight: 500;
+      letter-spacing: .12em;
       color: var(--muted);
     }
-    .imageInfo span{
-      margin: 0 8px;
+
+    /* 底部缩略图条 */
+    .thumbnailStrip{
+      display: flex;
+      justify-content: center;
+      gap: 16px;
+      padding: 0 40px;
+      overflow-x: auto;
+      margin-top: 40px;
+      scrollbar-width: none;
+    }
+    .thumbnailStrip::-webkit-scrollbar{
+      display: none;
+    }
+
+    .thumbnail{
+      width: 48px;
+      height: 72px;
+      flex-shrink: 0;
+      background: #f5f5f5;
+      cursor: pointer;
+      position: relative;
+      transition: all .2s ease;
+      overflow: hidden;
+    }
+    .thumbnail:hover{
+      opacity: 0.7;
+    }
+    .thumbnail.active{
+      box-shadow: 0 0 0 2px var(--text);
+    }
+
+    .thumbnail img{
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
     }
 
     /* email */
@@ -236,35 +222,24 @@
 
       .container{
         padding-top: 60px;
-        flex-direction: column;
-      }
-
-      .bookmarkStrip{
-        width: 100%;
-        flex-direction: row;
-        max-height: none;
-        position: relative;
-        top: 0;
-        padding: 0 20px;
-        gap: 8px;
-        overflow-x: auto;
-        order: 2;
-        margin-top: 20px;
-      }
-
-      .bookmark{
-        width: 45px;
-        height: 65px;
-        flex-shrink: 0;
+        padding-bottom: 100px;
       }
 
       .mainDisplay{
         padding: 0 20px;
-        order: 1;
       }
 
       .imageWrapper img{
         max-height: 55vh;
+      }
+
+      .thumbnailStrip{
+        padding: 0 20px;
+        gap: 12px;
+      }
+      .thumbnail{
+        width: 42px;
+        height: 63px;
       }
     }
 
@@ -390,19 +365,18 @@
   </button>
 
   <div class="container">
-    <!-- 左侧书签条 -->
-    <div class="bookmarkStrip" id="bookmarkStrip"></div>
-
     <!-- 主展示区 -->
     <div class="mainDisplay">
       <div class="imageWrapper">
         <img id="mainImage" src="" alt="">
       </div>
       <div class="imageInfo">
-        <span id="infoNum">001</span>
-        <span id="infoYear">2025</span>
+        <span id="infoLabel">001  2025</span>
       </div>
     </div>
+
+    <!-- 底部缩略图条 -->
+    <div class="thumbnailStrip" id="thumbnailStrip"></div>
   </div>
 
   <div class="emailWrap">
@@ -706,20 +680,18 @@
 
       let currentIndex = 0;
       const mainImage = document.getElementById('mainImage');
-      const infoNum = document.getElementById('infoNum');
-      const infoYear = document.getElementById('infoYear');
-      const bookmarkStrip = document.getElementById('bookmarkStrip');
+      const infoLabel = document.getElementById('infoLabel');
+      const thumbnailStrip = document.getElementById('thumbnailStrip');
 
-      function createBookmarks() {
+      function createThumbnails() {
         images.forEach((img, index) => {
-          const bookmark = document.createElement('div');
-          bookmark.className = 'bookmark' + (index === 0 ? ' active' : '');
-          bookmark.innerHTML = `
+          const thumbnail = document.createElement('div');
+          thumbnail.className = 'thumbnail' + (index === 0 ? ' active' : '');
+          thumbnail.innerHTML = `
             <img src="${img.thumb}" alt="${img.num}">
-            <div class="bookmarkNum">${img.num}</div>
           `;
-          bookmark.addEventListener('click', () => showImage(index));
-          bookmarkStrip.appendChild(bookmark);
+          thumbnail.addEventListener('click', () => showImage(index));
+          thumbnailStrip.appendChild(thumbnail);
         });
       }
 
@@ -728,12 +700,11 @@
         const img = images[index];
 
         mainImage.src = img.src;
-        infoNum.textContent = img.num;
-        infoYear.textContent = img.year;
+        infoLabel.textContent = `${img.num}  ${img.year}`;
 
-        const bookmarks = bookmarkStrip.querySelectorAll('.bookmark');
-        bookmarks.forEach((b, i) => {
-          b.classList.toggle('active', i === index);
+        const thumbnails = thumbnailStrip.querySelectorAll('.thumbnail');
+        thumbnails.forEach((t, i) => {
+          t.classList.toggle('active', i === index);
         });
       }
 
@@ -752,7 +723,7 @@
         if(e.key === 'ArrowRight') showNext();
       });
 
-      createBookmarks();
+      createThumbnails();
       showImage(0);
     });
   </script>
