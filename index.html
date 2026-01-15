@@ -424,10 +424,7 @@
       { title: "Yellow", year: "2021", href: BASE + "projects/yellow/" }
     ];
 
-    const IMAGES = [
-      { title: "Yellow River", year: "2025", href: BASE + "images/yellow-river/" }
-    ];
-
+    const IMAGES_HREF = BASE + "images/";
     const ABOUT_HREF = BASE + "about/";
 
     const panel = document.getElementById("panel");
@@ -477,7 +474,6 @@
       setActiveButton(key);
 
       if(key === "projects") renderList(PROJECTS);
-      if(key === "images") renderList(IMAGES);
 
       panel.classList.add("is-open");
       panel.setAttribute("aria-hidden","false");
@@ -501,7 +497,7 @@
       const btn = item.querySelector(".navBtn");
 
       // 电脑端和iPad：hover 效果
-      if((!isTouchDevice || isIPad) && (key === "projects" || key === "images")){
+      if((!isTouchDevice || isIPad) && key === "projects"){
         item.addEventListener("mouseenter", () => openPanelFor(key, btn));
         item.addEventListener("mouseleave", scheduleClose);
       }
@@ -509,6 +505,11 @@
       // iPad和电脑端：使用click（更可靠）
       if(isIPad || !isTouchDevice){
         btn.addEventListener("click", (e) => {
+          if(key === "images"){
+            window.location.href = IMAGES_HREF;
+            e.preventDefault();
+            return;
+          }
           if(key === "about"){
             window.location.href = ABOUT_HREF;
             e.preventDefault();
@@ -524,6 +525,10 @@
       }else{
         // 手机端：使用touchstart
         btn.addEventListener("touchstart", (e) => {
+          if(key === "images"){
+            window.location.href = IMAGES_HREF;
+            return;
+          }
           if(key === "about"){
             window.location.href = ABOUT_HREF;
             return;
@@ -731,7 +736,7 @@
     <a class="menuItem" href="projects/yellow/">Yellow <span class="year">(2021)</span></a>
 
     <h2 class="menuCategoryTitle">IMAGES</h2>
-    <a class="menuItem" href="images/yellow-river/">Yellow River</a>
+    <a class="menuItem" href="images/">Images</a>
 
     <h2 class="menuCategoryTitle">ABOUT</h2>
     <a class="menuItem" href="about/">About</a>

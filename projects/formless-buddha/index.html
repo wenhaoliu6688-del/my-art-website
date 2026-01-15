@@ -1,0 +1,673 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Formless Buddha (2023) — HARRY6</title>
+
+  <style>
+    :root{
+      --text:#111;
+      --muted: rgba(0,0,0,.48);
+      --line: rgba(0,0,0,.10);
+      --leftPad: 56px;
+    }
+    *{ box-sizing:border-box; }
+    html, body{
+      margin:0;
+      background:#fff;
+      color:var(--text);
+      font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Arial, "PingFang SC","Microsoft YaHei", sans-serif;
+    }
+
+    /* brand */
+    .brand{
+      position:fixed;
+      top:44px;
+      left:var(--leftPad);
+      margin-left:-12px;
+      z-index:1000;
+      text-decoration:none;
+      color:var(--text);
+      font-weight:600;
+      font-size:18px;
+      letter-spacing:.10em;
+      text-transform:uppercase;
+      padding: 10px 14px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.85);
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+      transition: opacity .15s ease, box-shadow .15s ease;
+    }
+    .brand:hover{
+      opacity:.78;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+    }
+
+    /* 顶部菜单按钮 */
+    .menuToggle{
+      display:none;
+      position:fixed;
+      top:44px;
+      right:22px;
+      width:44px;
+      height:44px;
+      border:none;
+      background: rgba(255,255,255,0.85);
+      border-radius: 999px;
+      cursor:pointer;
+      z-index:1001;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+      transition: opacity .15s ease;
+    }
+    .menuToggle:hover{
+      opacity:.75;
+    }
+    .menuToggle svg{
+      width:20px;
+      height:20px;
+      stroke:var(--text);
+      stroke-width:1.5;
+      fill:none;
+    }
+
+    /* nav */
+    .nav{
+      position:fixed;
+      left:var(--leftPad);
+      top:50%;
+      transform:translateY(-50%);
+      z-index:1000;
+      user-select:none;
+    }
+    .navItem{ margin: 18px 0; }
+
+    .navBtn{
+      display:inline-block;
+      cursor:pointer;
+      border:none;
+      background: rgba(255,255,255,0.85);
+      padding: 10px 12px;
+      margin-left:-12px;
+      font-size:15px;
+      letter-spacing:.24em;
+      text-transform:uppercase;
+      color:var(--text);
+      border-radius: 999px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+    .navBtn:hover{
+      color:var(--text);
+      background: rgba(255,255,255,0.95);
+      box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+    }
+    .navBtn.is-active{ color:var(--text); }
+
+    /* 主容器 */
+    .container{
+      padding-top: 80px;
+      padding-bottom: 120px;
+      min-height: 100vh;
+    }
+
+    /* 系列标题 */
+    .seriesHeader{
+      text-align: center;
+      margin-bottom: 100px;
+      padding: 0 40px;
+    }
+    .seriesHeader h1{
+      font-size: 15px;
+      font-weight: 500;
+      letter-spacing: .06em;
+      margin: 0;
+      color: var(--text);
+    }
+
+    /* 杂志感垂直滚动布局 */
+    .magazineScroll{
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
+    .magazineItem{
+      margin-bottom: 120px;
+    }
+
+    /* 图1：居中 */
+    .magazineItem.center{
+      text-align: center;
+    }
+    .magazineItem.center img{
+      max-width: 60%;
+    }
+
+    /* 图2：左对齐 */
+    .magazineItem.left{
+      text-align: left;
+      padding-left: 15%;
+    }
+    .magazineItem.left img{
+      max-width: 50%;
+    }
+
+    /* 图3：右对齐 */
+    .magazineItem.right{
+      text-align: right;
+      padding-right: 15%;
+    }
+    .magazineItem.right img{
+      max-width: 50%;
+    }
+
+    .magazineItem img{
+      height: auto;
+      display: block;
+    }
+
+    /* email */
+    .emailWrap{
+      position:fixed;
+      left:50%;
+      bottom:28px;
+      transform:translateX(-50%);
+      z-index:1000;
+      font-size:13px;
+      letter-spacing:.06em;
+      color:var(--muted);
+      text-align: center;
+    }
+    .emailCopy{
+      cursor:pointer;
+      padding: 6px 10px;
+      border:1px solid transparent;
+      border-radius:999px;
+      transition: border-color .15s ease, color .15s ease;
+    }
+    .emailCopy:hover{
+      border-color: var(--line);
+      color: var(--text);
+    }
+
+    .toast{
+      position:absolute;
+      left:100%;
+      top:50%;
+      transform: translate(10px,-50%);
+      font-size:12px;
+      color:rgba(0,0,0,.30);
+      letter-spacing:.18em;
+      text-transform:uppercase;
+      opacity:0;
+      transition: opacity .18s ease;
+      pointer-events:none;
+    }
+    .toast.show{ opacity:1; }
+
+    /* 小屏幕设备调整 */
+    @media (max-width: 1024px){
+      :root{
+        --leftPad: 22px;
+      }
+      .brand{ top:22px; }
+      .menuToggle{ top:22px; }
+      .nav{ display: none; }
+      .menuToggle{ display: block; }
+
+      .container{
+        padding-top: 60px;
+        padding-bottom: 100px;
+      }
+      .seriesHeader{
+        padding: 0 20px;
+        margin-bottom: 60px;
+      }
+      .magazineItem{
+        margin-bottom: 80px;
+      }
+      .magazineItem.center img,
+      .magazineItem.left img,
+      .magazineItem.right img{
+        max-width: 80%;
+      }
+      .magazineItem.left,
+      .magazineItem.right{
+        padding-left: 20px;
+        padding-right: 20px;
+        text-align: center;
+      }
+    }
+
+    /* 全屏菜单 */
+    .fullscreenMenu{
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: #fff;
+      z-index: 2000;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+      overflow-y: auto;
+      padding: 80px 32px 32px;
+    }
+    .fullscreenMenu.is-open{
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .menuCloseBtn{
+      position: absolute;
+      top: 32px;
+      right: 32px;
+      width: 44px;
+      height: 44px;
+      border: none;
+      background: none;
+      cursor: pointer;
+      font-size: 32px;
+      color: #000;
+      line-height: 1;
+      padding: 0;
+    }
+    .menuCloseBtn:hover{
+      opacity: 0.6;
+    }
+
+    .menuCategoryTitle{
+      font-size: 48px;
+      font-weight: 300;
+      letter-spacing: 0.02em;
+      color: #000;
+      padding: 32px 0 16px 0;
+      margin: 0;
+      border-bottom: 1px solid rgba(0,0,0,0.1);
+    }
+
+    .menuItem{
+      display: block;
+      font-size: 18px;
+      font-weight: 400;
+      letter-spacing: 0.04em;
+      color: rgba(0,0,0,0.7);
+      padding: 16px 0 16px 24px;
+      text-decoration: none;
+      transition: all 0.2s ease;
+    }
+    .menuItem:hover{
+      color: #000;
+      padding-left: 32px;
+    }
+    .menuItem .year{
+      color: rgba(0,0,0,0.4);
+      font-size: 14px;
+      margin-left: 0.5em;
+    }
+
+    /* 全平台统一全屏菜单 */
+    @media (min-width: 1025px){
+      .menuToggle{
+        display: block !important;
+      }
+      .nav{
+        display: none !important;
+      }
+      .fullscreenMenu{
+        display: block !important;
+      }
+    }
+
+    @media (min-width: 768px) and (max-width: 1024px){
+      .menuToggle{
+        display: block !important;
+      }
+      .nav{
+        display: none !important;
+      }
+      .fullscreenMenu{
+        display: block !important;
+      }
+    }
+
+    @media (max-width: 767px){
+      .fullscreenMenu{
+        display: block !important;
+      }
+      .menuToggle{
+        display: block !important;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <a class="brand" href="../../">HARRY6</a>
+
+  <nav class="nav" aria-label="Primary">
+    <div class="navItem" data-menu="projects"><button class="navBtn" type="button">PROJECTS</button></div>
+    <div class="navItem" data-menu="images"><button class="navBtn" type="button">IMAGES</button></div>
+    <div class="navItem" data-menu="about"><button class="navBtn" type="button">ABOUT</button></div>
+  </nav>
+
+  <button class="menuToggle" id="menuToggle" aria-label="Menu">
+    <svg viewBox="0 0 24 24">
+      <path d="M3 12h18M3 6h18M3 18h18"/>
+    </svg>
+  </button>
+
+  <div class="container">
+    <div class="seriesHeader">
+      <h1>Formless Buddha / 2023 / Installation</h1>
+    </div>
+
+    <div class="magazineScroll">
+      <!-- 图1：居中 -->
+      <div class="magazineItem center">
+        <img src="../../assets/formless-buddha/01.jpg" alt="Formless Buddha No.1">
+      </div>
+
+      <!-- 图2：左对齐 -->
+      <div class="magazineItem left">
+        <img src="../../assets/formless-buddha/02.jpg" alt="Formless Buddha No.2">
+      </div>
+
+      <!-- 图3：右对齐 -->
+      <div class="magazineItem right">
+        <img src="../../assets/formless-buddha/03.jpg" alt="Formless Buddha No.3">
+      </div>
+
+      <!-- 图4：居中 -->
+      <div class="magazineItem center">
+        <img src="../../assets/formless-buddha/04.jpg" alt="Formless Buddha No.4">
+      </div>
+    </div>
+  </div>
+
+  <div class="emailWrap">
+    <span id="emailCopy" class="emailCopy" title="Click to copy">wenhao_liu888@163.com</span>
+    <span id="toast" class="toast">COPIED</span>
+  </div>
+
+  <script>
+    const REPO = location.pathname.split("/").filter(Boolean).length > 2 ? "/" + location.pathname.split("/")[1] + "/" : "/";
+    const BASE = REPO;
+
+    const PROJECTS = [
+      { title: "Yellow River", year: "2025", href: BASE + "projects/yellow-river/" },
+      { title: "Frontispiece", year: "2024", href: BASE + "projects/frontispiece/" },
+      { title: "Formless Buddha", year: "2023", href: BASE + "projects/formless-buddha/" },
+      { title: "Yellow", year: "2021", href: BASE + "projects/yellow/" }
+    ];
+
+    const IMAGES = [
+      { title: "Yellow River", year: "2025", href: BASE + "images/" }
+    ];
+
+    const ABOUT_HREF = BASE + "about/";
+
+    const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+    const isIPad = window.innerWidth >= 768 && window.innerWidth <= 1024;
+
+    const panel = document.createElement('div');
+    panel.className = 'panel';
+    panel.role = 'dialog';
+    panel.setAttribute('aria-hidden', 'true');
+    panel.innerHTML = '<ul class="panelList"></ul>';
+    document.body.appendChild(panel);
+
+    const panelList = panel.querySelector('.panelList');
+    const items = Array.from(document.querySelectorAll('.navItem'));
+    const btns = Array.from(document.querySelectorAll('.navBtn'));
+
+    let activeKey = null;
+    let closeTimer = null;
+
+    function setActiveButton(key){
+      btns.forEach(b => b.classList.remove('is-active'));
+      const item = items.find(i => i.dataset.menu === key);
+      if(item) item.querySelector('.navBtn').classList.add('is-active');
+    }
+
+    function renderList(list){
+      panelList.innerHTML = list.map(it => `
+        <li>
+          <a class="panelLink" href="${it.href}">
+            ${it.title} <span class="year">— ${it.year}</span>
+          </a>
+        </li>
+      `).join('');
+    }
+
+    function positionPanelNearButton(btn){
+      const r = btn.getBoundingClientRect();
+      const gap = 14;
+      let left = Math.round(r.right + gap);
+      let top  = Math.round(r.top + r.height/2);
+
+      panel.style.top = `${top}px`;
+      panel.style.transform = 'translateY(-50%)';
+
+      const panelWidth = Math.min(panel.offsetWidth || 360, window.innerWidth - 24);
+      if(left + panelWidth + 12 > window.innerWidth){
+        left = Math.round(r.left - gap - panelWidth);
+      }
+      left = Math.max(12, left);
+      panel.style.left = `${left}px`;
+    }
+
+    function openPanelFor(key, btn){
+      clearTimeout(closeTimer);
+      activeKey = key;
+      setActiveButton(key);
+
+      if(key === 'projects') renderList(PROJECTS);
+      if(key === 'images') renderList(IMAGES);
+
+      panel.classList.add('is-open');
+      panel.setAttribute('aria-hidden','false');
+      requestAnimationFrame(() => positionPanelNearButton(btn));
+    }
+
+    function closePanel(){
+      activeKey = null;
+      btns.forEach(b => b.classList.remove('is-active'));
+      panel.classList.remove('is-open');
+      panel.setAttribute('aria-hidden','true');
+    }
+
+    function scheduleClose(){
+      clearTimeout(closeTimer);
+      closeTimer = setTimeout(closePanel, 220);
+    }
+
+    items.forEach(item => {
+      const key = item.dataset.menu;
+      const btn = item.querySelector('.navBtn');
+
+      if((!isTouchDevice || isIPad) && (key === 'projects' || key === 'images')){
+        item.addEventListener('mouseenter', () => openPanelFor(key, btn));
+        item.addEventListener('mouseleave', scheduleClose);
+      }
+
+      if(isIPad || !isTouchDevice){
+        btn.addEventListener('click', (e) => {
+          if(key === 'about'){
+            window.location.href = ABOUT_HREF;
+            e.preventDefault();
+            return;
+          }
+          if(panel.classList.contains('is-open') && activeKey === key){
+            closePanel();
+          }else{
+            openPanelFor(key, btn);
+          }
+          e.preventDefault();
+        });
+      }else{
+        btn.addEventListener('touchstart', (e) => {
+          if(key === 'about'){
+            window.location.href = ABOUT_HREF;
+            return;
+          }
+          if(panel.classList.contains('is-open') && activeKey === key){
+            closePanel();
+          }else{
+            openPanelFor(key, btn);
+          }
+        }, {passive: true});
+      }
+    });
+
+    if(!isTouchDevice || isIPad){
+      panel.addEventListener('mouseenter', () => clearTimeout(closeTimer));
+      panel.addEventListener('mouseleave', scheduleClose);
+    }
+
+    if(isTouchDevice && !isIPad){
+      document.addEventListener('touchstart', (e) => {
+        const isNav = e.target.closest('.nav');
+        const isPanel = e.target.closest('.panel');
+        if(!isNav && !isPanel && panel.classList.contains('is-open')) closePanel();
+      });
+    }else{
+      document.addEventListener('mousedown', (e) => {
+        const isNav = e.target.closest('.nav');
+        const isPanel = e.target.closest('.panel');
+        if(!isNav && !isPanel && panel.classList.contains('is-open')) closePanel();
+      });
+    }
+
+    document.addEventListener('keydown', (e) => {
+      if(e.key === 'Escape' && panel.classList.contains('is-open')) closePanel();
+    });
+
+    // 邮箱复制
+    const emailEl = document.getElementById('emailCopy');
+    const toast = document.getElementById('toast');
+    let toastTimer = null;
+
+    async function copyEmail(){
+      const text = emailEl.textContent.trim();
+      try{
+        await navigator.clipboard.writeText(text);
+      }catch(err){
+        const ta = document.createElement('textarea');
+        ta.value = text;
+        document.body.appendChild(ta);
+        ta.select();
+        document.execCommand('copy');
+        document.body.removeChild(ta);
+      }
+      toast.classList.add('show');
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(()=>toast.classList.remove('show'), 900);
+    }
+    emailEl.addEventListener('click', copyEmail);
+  </script>
+
+  <style>
+    .panel{
+      position:fixed;
+      width: 360px;
+      max-width: calc(100vw - 24px);
+      background:#fff;
+      border:1px solid var(--line);
+      padding: 18px;
+      z-index:1001;
+      opacity:0;
+      pointer-events:none;
+      transform: translateY(-8px);
+      transition: opacity .14s ease, transform .14s ease;
+    }
+    .panel.is-open{
+      opacity:1;
+      pointer-events:auto;
+      transform: translateY(0);
+    }
+    .panel::before{
+      content:"";
+      position:absolute;
+      left:-18px;
+      top:0;
+      width:18px;
+      height:100%;
+      background:transparent;
+    }
+    .panelList{ list-style:none; padding:0; margin:0; }
+    .panelList li{ margin: 10px 0; }
+    .panelLink{
+      text-decoration:none;
+      color:var(--text);
+      font-size:16px;
+      letter-spacing:.02em;
+      display:inline-block;
+      padding: 6px 4px;
+    }
+    .panelLink:hover{ opacity:.75; }
+    .panelLink .year{
+      color:var(--muted);
+      margin-left:.35em;
+      letter-spacing:.06em;
+    }
+  </style>
+
+  <!-- 全屏菜单 -->
+  <div class="fullscreenMenu" id="fullscreenMenu">
+    <button class="menuCloseBtn" id="menuCloseBtn" aria-label="Close menu">&times;</button>
+
+    <h2 class="menuCategoryTitle">PROJECTS</h2>
+    <a class="menuItem" href="../../projects/yellow-river/">Yellow River <span class="year">(2025)</span></a>
+    <a class="menuItem" href="../../projects/frontispiece/">Frontispiece <span class="year">(2024)</span></a>
+    <a class="menuItem" href="../../projects/formless-buddha/">Formless Buddha <span class="year">(2023)</span></a>
+    <a class="menuItem" href="../../projects/yellow/">Yellow <span class="year">(2021)</span></a>
+
+    <h2 class="menuCategoryTitle">IMAGES</h2>
+    <a class="menuItem" href="../../images/">Images</a>
+
+    <h2 class="menuCategoryTitle">ABOUT</h2>
+    <a class="menuItem" href="../../about/">About</a>
+  </div>
+
+  <script>
+    const menuToggle = document.getElementById('menuToggle');
+    const fullscreenMenu = document.getElementById('fullscreenMenu');
+    const menuCloseBtn = document.getElementById('menuCloseBtn');
+
+    if(menuToggle && fullscreenMenu){
+      const REPO = location.pathname.split("/").filter(Boolean).length > 2 ? "/" + location.pathname.split("/")[1] + "/" : "/";
+      const BASE = REPO;
+
+      const menuItems = fullscreenMenu.querySelectorAll('.menuItem');
+      menuItems.forEach(item => {
+        const currentHref = item.getAttribute('href');
+        if (currentHref && !currentHref.startsWith('/') && !currentHref.startsWith('../')) {
+          item.setAttribute('href', BASE + currentHref);
+        }
+      });
+
+      menuToggle.addEventListener('click', (e) => {
+        e.stopPropagation();
+        fullscreenMenu.classList.add('is-open');
+        document.body.style.overflow = 'hidden';
+      });
+
+      menuCloseBtn.addEventListener('click', () => {
+        fullscreenMenu.classList.remove('is-open');
+        document.body.style.overflow = '';
+      });
+
+      fullscreenMenu.addEventListener('click', (e) => {
+        if(e.target === fullscreenMenu){
+          fullscreenMenu.classList.remove('is-open');
+          document.body.style.overflow = '';
+        }
+      });
+    }
+  </script>
+
+</body>
+</html>

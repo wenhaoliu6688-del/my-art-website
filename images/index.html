@@ -1,0 +1,771 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Images — HARRY6</title>
+
+  <style>
+    :root{
+      --text:#111;
+      --muted: rgba(0,0,0,.48);
+      --line: rgba(0,0,0,.10);
+      --leftPad: 56px;
+      --brandYellow: #F5C746;
+    }
+    *{ box-sizing:border-box; }
+    html, body{
+      margin:0;
+      background:#fff;
+      color:var(--text);
+      font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Arial, "PingFang SC","Microsoft YaHei", sans-serif;
+      min-height: 100vh;
+    }
+
+    /* brand */
+    .brand{
+      position:fixed;
+      top:44px;
+      left:var(--leftPad);
+      margin-left:-12px;
+      z-index:1000;
+      text-decoration:none;
+      color:var(--text);
+      font-weight:600;
+      font-size:18px;
+      letter-spacing:.10em;
+      text-transform:uppercase;
+      padding: 10px 14px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.85);
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+      transition: opacity .15s ease, box-shadow .15s ease;
+    }
+    .brand:hover{
+      opacity:.78;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+    }
+
+    /* 顶部菜单按钮 */
+    .menuToggle{
+      display:none;
+      position:fixed;
+      top:44px;
+      right:22px;
+      width:44px;
+      height:44px;
+      border:none;
+      background: rgba(255,255,255,0.85);
+      border-radius: 999px;
+      cursor:pointer;
+      z-index:1001;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+      transition: opacity .15s ease;
+    }
+    .menuToggle:hover{
+      opacity:.75;
+    }
+    .menuToggle svg{
+      width:20px;
+      height:20px;
+      stroke:var(--text);
+      stroke-width:1.5;
+      fill:none;
+    }
+
+    /* nav */
+    .nav{
+      position:fixed;
+      left:var(--leftPad);
+      top:50%;
+      transform:translateY(-50%);
+      z-index:1000;
+      user-select:none;
+    }
+    .navItem{ margin: 18px 0; }
+
+    .navBtn{
+      display:inline-block;
+      cursor:pointer;
+      border:none;
+      background: rgba(255,255,255,0.85);
+      padding: 10px 12px;
+      margin-left:-12px;
+      font-size:15px;
+      letter-spacing:.24em;
+      text-transform:uppercase;
+      color:var(--text);
+      border-radius: 999px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+    .navBtn:hover{
+      color:var(--text);
+      background: rgba(255,255,255,0.95);
+      box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+    }
+    .navBtn.is-active{ color:var(--text); }
+
+    /* 主容器 */
+    .container{
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+      padding-top: 100px;
+      padding-bottom: 140px;
+    }
+
+    /* 大图展示区 */
+    .mainDisplay{
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 60px;
+      padding: 0 60px;
+    }
+
+    .imageWrapper{
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      max-width: 60%;
+    }
+
+    .imageWrapper img{
+      max-width: 100%;
+      max-height: 60vh;
+      height: auto;
+      display: block;
+    }
+
+    /* 档案信息 */
+    .archiveInfo{
+      width: 200px;
+      flex-shrink: 0;
+    }
+    .archiveInfo .label{
+      font-size: 11px;
+      letter-spacing: .08em;
+      color: var(--muted);
+      margin-bottom: 4px;
+    }
+    .archiveInfo .value{
+      font-size: 14px;
+      font-weight: 500;
+      letter-spacing: .04em;
+      margin-bottom: 20px;
+    }
+
+    /* 档案袋条 */
+    .pocketStrip{
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 15px;
+      padding: 0 40px;
+      margin-bottom: 30px;
+    }
+
+    .pocket{
+      width: 80px;
+      height: 100px;
+      background: #f8f8f8;
+      border-radius: 2px;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 8px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+      transition: all .2s ease;
+    }
+    .pocket:hover{
+      box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+    }
+    .pocket.active{
+      background: var(--brandYellow);
+      box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+    }
+
+    .pocketNum{
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: .04em;
+      margin-bottom: 6px;
+    }
+
+    .pocketThumb{
+      width: 100%;
+      height: 60px;
+      object-fit: cover;
+      background: #e5e5e5;
+    }
+
+    /* email */
+    .emailWrap{
+      text-align: center;
+      padding-bottom: 20px;
+    }
+    .emailCopy{
+      font-size:13px;
+      letter-spacing:.06em;
+      color:var(--muted);
+      cursor:pointer;
+      padding: 6px 10px;
+      border:1px solid transparent;
+      border-radius:999px;
+      transition: border-color .15s ease, color .15s ease;
+    }
+    .emailCopy:hover{
+      border-color: var(--line);
+      color: var(--text);
+    }
+
+    /* 小屏幕设备调整 */
+    @media (max-width: 1024px){
+      :root{
+        --leftPad: 22px;
+      }
+      .brand{ top:22px; }
+      .menuToggle{ top:22px; }
+      .nav{ display: none; }
+      .menuToggle{ display: block; }
+
+      .container{
+        padding-top: 70px;
+        padding-bottom: 20px;
+      }
+      .mainDisplay{
+        flex-direction: column;
+        padding: 0 20px;
+        gap: 20px;
+      }
+      .imageWrapper{
+        max-width: 100%;
+      }
+      .archiveInfo{
+        width: 100%;
+        text-align: center;
+      }
+      .pocketStrip{
+        gap: 10px;
+        padding: 0 10px;
+      }
+      .pocket{
+        width: 60px;
+        height: 80px;
+      }
+      .pocketThumb{
+        height: 50px;
+      }
+    }
+
+    /* 全屏菜单 */
+    .fullscreenMenu{
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: #fff;
+      z-index: 2000;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+      overflow-y: auto;
+      padding: 80px 32px 32px;
+    }
+    .fullscreenMenu.is-open{
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .menuCloseBtn{
+      position: absolute;
+      top: 32px;
+      right: 32px;
+      width: 44px;
+      height: 44px;
+      border: none;
+      background: none;
+      cursor: pointer;
+      font-size: 32px;
+      color: #000;
+      line-height: 1;
+      padding: 0;
+    }
+    .menuCloseBtn:hover{
+      opacity: 0.6;
+    }
+
+    .menuCategoryTitle{
+      font-size: 48px;
+      font-weight: 300;
+      letter-spacing: 0.02em;
+      color: #000;
+      padding: 32px 0 16px 0;
+      margin: 0;
+      border-bottom: 1px solid rgba(0,0,0,0.1);
+    }
+
+    .menuItem{
+      display: block;
+      font-size: 18px;
+      font-weight: 400;
+      letter-spacing: 0.04em;
+      color: rgba(0,0,0,0.7);
+      padding: 16px 0 16px 24px;
+      text-decoration: none;
+      transition: all 0.2s ease;
+    }
+    .menuItem:hover{
+      color: #000;
+      padding-left: 32px;
+    }
+    .menuItem .year{
+      color: rgba(0,0,0,0.4);
+      font-size: 14px;
+      margin-left: 0.5em;
+    }
+
+    /* 全平台统一全屏菜单 */
+    @media (min-width: 1025px){
+      .menuToggle{
+        display: block !important;
+      }
+      .nav{
+        display: none !important;
+      }
+      .fullscreenMenu{
+        display: block !important;
+      }
+    }
+
+    @media (min-width: 768px) and (max-width: 1024px){
+      .menuToggle{
+        display: block !important;
+      }
+      .nav{
+        display: none !important;
+      }
+      .fullscreenMenu{
+        display: block !important;
+      }
+    }
+
+    @media (max-width: 767px){
+      .fullscreenMenu{
+        display: block !important;
+      }
+      .menuToggle{
+        display: block !important;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <a class="brand" href="./">HARRY6</a>
+
+  <nav class="nav" aria-label="Primary">
+    <div class="navItem" data-menu="projects"><button class="navBtn" type="button">PROJECTS</button></div>
+    <div class="navItem" data-menu="images"><button class="navBtn" type="button">IMAGES</button></div>
+    <div class="navItem" data-menu="about"><button class="navBtn" type="button">ABOUT</button></div>
+  </nav>
+
+  <button class="menuToggle" id="menuToggle" aria-label="Menu">
+    <svg viewBox="0 0 24 24">
+      <path d="M3 12h18M3 6h18M3 18h18"/>
+    </svg>
+  </button>
+
+  <div class="container">
+    <!-- 大图展示区 -->
+    <div class="mainDisplay">
+      <div class="imageWrapper">
+        <img id="mainImage" src="" alt="">
+      </div>
+      <div class="archiveInfo">
+        <div class="label">NO.</div>
+        <div class="value" id="infoNum">001</div>
+        <div class="label">TIME</div>
+        <div class="value" id="infoTime">21:15:11</div>
+        <div class="label">YEAR</div>
+        <div class="value" id="infoYear">2025</div>
+        <div class="label">MEDIUM</div>
+        <div class="value" id="infoMedium">Digital Art</div>
+      </div>
+    </div>
+
+    <!-- 档案袋条 -->
+    <div class="pocketStrip" id="pocketStrip"></div>
+
+    <!-- 邮箱 -->
+    <div class="emailWrap">
+      <span id="emailCopy" class="emailCopy" title="Click to copy">wenhao_liu888@163.com</span>
+    </div>
+  </div>
+
+  <script>
+    const REPO = location.pathname.split("/").filter(Boolean).length > 1 ? "/" + location.pathname.split("/")[1] + "/" : "/";
+    const BASE = REPO;
+
+    const PROJECTS = [
+      { title: "Yellow River", year: "2025", href: BASE + "projects/yellow-river/" },
+      { title: "Frontispiece", year: "2024", href: BASE + "projects/frontispiece/" },
+      { title: "Formless Buddha", year: "2023", href: BASE + "projects/formless-buddha/" },
+      { title: "Yellow", year: "2021", href: BASE + "projects/yellow/" }
+    ];
+
+    const IMAGES_HREF = BASE + "images/";
+    const ABOUT_HREF = BASE + "about/";
+
+    const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+    const isIPad = window.innerWidth >= 768 && window.innerWidth <= 1024;
+
+    const panel = document.createElement('div');
+    panel.className = 'panel';
+    panel.role = 'dialog';
+    panel.setAttribute('aria-hidden', 'true');
+    panel.innerHTML = '<ul class="panelList"></ul>';
+    document.body.appendChild(panel);
+
+    const panelList = panel.querySelector('.panelList');
+    const items = Array.from(document.querySelectorAll('.navItem'));
+    const btns = Array.from(document.querySelectorAll('.navBtn'));
+
+    let activeKey = null;
+    let closeTimer = null;
+
+    function setActiveButton(key){
+      btns.forEach(b => b.classList.remove('is-active'));
+      const item = items.find(i => i.dataset.menu === key);
+      if(item) item.querySelector('.navBtn').classList.add('is-active');
+    }
+
+    function renderList(list){
+      panelList.innerHTML = list.map(it => `
+        <li>
+          <a class="panelLink" href="${it.href}">
+            ${it.title} <span class="year">— ${it.year}</span>
+          </a>
+        </li>
+      `).join('');
+    }
+
+    function positionPanelNearButton(btn){
+      const r = btn.getBoundingClientRect();
+      const gap = 14;
+      let left = Math.round(r.right + gap);
+      let top  = Math.round(r.top + r.height/2);
+
+      panel.style.top = `${top}px`;
+      panel.style.transform = 'translateY(-50%)';
+
+      const panelWidth = Math.min(panel.offsetWidth || 360, window.innerWidth - 24);
+      if(left + panelWidth + 12 > window.innerWidth){
+        left = Math.round(r.left - gap - panelWidth);
+      }
+      left = Math.max(12, left);
+      panel.style.left = `${left}px`;
+    }
+
+    function openPanelFor(key, btn){
+      clearTimeout(closeTimer);
+      activeKey = key;
+      setActiveButton(key);
+
+      if(key === 'projects') renderList(PROJECTS);
+
+      panel.classList.add('is-open');
+      panel.setAttribute('aria-hidden','false');
+      requestAnimationFrame(() => positionPanelNearButton(btn));
+    }
+
+    function closePanel(){
+      activeKey = null;
+      btns.forEach(b => b.classList.remove('is-active'));
+      panel.classList.remove('is-open');
+      panel.setAttribute('aria-hidden','true');
+    }
+
+    function scheduleClose(){
+      clearTimeout(closeTimer);
+      closeTimer = setTimeout(closePanel, 220);
+    }
+
+    items.forEach(item => {
+      const key = item.dataset.menu;
+      const btn = item.querySelector('.navBtn');
+
+      if((!isTouchDevice || isIPad) && (key === 'projects' || key === 'images')){
+        item.addEventListener('mouseenter', () => openPanelFor(key, btn));
+        item.addEventListener('mouseleave', scheduleClose);
+      }
+
+      if(isIPad || !isTouchDevice){
+        btn.addEventListener('click', (e) => {
+          if(key === 'images'){
+            window.location.href = IMAGES_HREF;
+            e.preventDefault();
+            return;
+          }
+          if(key === 'about'){
+            window.location.href = ABOUT_HREF;
+            e.preventDefault();
+            return;
+          }
+          if(panel.classList.contains('is-open') && activeKey === key){
+            closePanel();
+          }else{
+            openPanelFor(key, btn);
+          }
+          e.preventDefault();
+        });
+      }else{
+        btn.addEventListener('touchstart', (e) => {
+          if(key === 'images'){
+            window.location.href = IMAGES_HREF;
+            return;
+          }
+          if(key === 'about'){
+            window.location.href = ABOUT_HREF;
+            return;
+          }
+          if(panel.classList.contains('is-open') && activeKey === key){
+            closePanel();
+          }else{
+            openPanelFor(key, btn);
+          }
+        }, {passive: true});
+      }
+    });
+
+    if(!isTouchDevice || isIPad){
+      panel.addEventListener('mouseenter', () => clearTimeout(closeTimer));
+      panel.addEventListener('mouseleave', scheduleClose);
+    }
+
+    if(isTouchDevice && !isIPad){
+      document.addEventListener('touchstart', (e) => {
+        const isNav = e.target.closest('.nav');
+        const isPanel = e.target.closest('.panel');
+        if(!isNav && !isPanel && panel.classList.contains('is-open')) closePanel();
+      });
+    }else{
+      document.addEventListener('mousedown', (e) => {
+        const isNav = e.target.closest('.nav');
+        const isPanel = e.target.closest('.panel');
+        if(!isNav && !isPanel && panel.classList.contains('is-open')) closePanel();
+      });
+    }
+
+    document.addEventListener('keydown', (e) => {
+      if(e.key === 'Escape' && panel.classList.contains('is-open')) closePanel();
+    });
+
+    // 邮箱复制
+    const emailEl = document.getElementById('emailCopy');
+    let toastTimer = null;
+
+    async function copyEmail(){
+      const text = emailEl.textContent.trim();
+      try{
+        await navigator.clipboard.writeText(text);
+      }catch(err){
+        const ta = document.createElement('textarea');
+        ta.value = text;
+        document.body.appendChild(ta);
+        ta.select();
+        document.execCommand('copy');
+        document.body.removeChild(ta);
+      }
+      emailEl.textContent = 'COPIED!';
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(()=>emailEl.textContent = 'wenhao_liu888@163.com', 900);
+    }
+    emailEl.addEventListener('click', copyEmail);
+  </script>
+
+  <style>
+    .panel{
+      position:fixed;
+      width: 360px;
+      max-width: calc(100vw - 24px);
+      background:#fff;
+      border:1px solid var(--line);
+      padding: 18px;
+      z-index:1001;
+      opacity:0;
+      pointer-events:none;
+      transform: translateY(-8px);
+      transition: opacity .14s ease, transform .14s ease;
+    }
+    .panel.is-open{
+      opacity:1;
+      pointer-events:auto;
+      transform: translateY(0);
+    }
+    .panel::before{
+      content:"";
+      position:absolute;
+      left:-18px;
+      top:0;
+      width:18px;
+      height:100%;
+      background:transparent;
+    }
+    .panelList{ list-style:none; padding:0; margin:0; }
+    .panelList li{ margin: 10px 0; }
+    .panelLink{
+      text-decoration:none;
+      color:var(--text);
+      font-size:16px;
+      letter-spacing:.02em;
+      display:inline-block;
+      padding: 6px 4px;
+    }
+    .panelLink:hover{ opacity:.75; }
+    .panelLink .year{
+      color:var(--muted);
+      margin-left:.35em;
+      letter-spacing:.06em;
+    }
+  </style>
+
+  <!-- 档案袋数据 -->
+  <script>
+    const images = [
+      { num: '001', time: '21:15:11', year: '2025', medium: 'Digital Art', src: './assets/001.jpg', thumb: './assets/thumbs/001.jpg' },
+      { num: '002', time: '00:06:12', year: '2025', medium: 'Digital Art', src: './assets/002.jpg', thumb: './assets/thumbs/002.jpg' },
+      { num: '003', time: '18:11:58', year: '2025', medium: 'Digital Art', src: './assets/003.jpg', thumb: './assets/thumbs/003.jpg' },
+      { num: '004', time: '22:58:27', year: '2025', medium: 'Digital Art', src: './assets/004.jpg', thumb: './assets/thumbs/004.jpg' },
+      { num: '005', time: '02:06:58', year: '2025', medium: 'Digital Art', src: './assets/005.jpg', thumb: './assets/thumbs/005.jpg' },
+      { num: '006', time: '02:06:59', year: '2025', medium: 'Digital Art', src: './assets/006.jpg', thumb: './assets/thumbs/006.jpg' },
+      { num: '007', time: '21:15:11', year: '2025', medium: 'Digital Art', src: './assets/007.jpg', thumb: './assets/thumbs/007.jpg' },
+      { num: '008', time: '00:06:12', year: '2025', medium: 'Digital Art', src: './assets/008.jpg', thumb: './assets/thumbs/008.jpg' },
+      { num: '009', time: '18:11:58', year: '2025', medium: 'Digital Art', src: './assets/009.jpg', thumb: './assets/thumbs/009.jpg' }
+    ];
+
+    let currentIndex = 0;
+    const mainImage = document.getElementById('mainImage');
+    const infoNum = document.getElementById('infoNum');
+    const infoTime = document.getElementById('infoTime');
+    const infoYear = document.getElementById('infoYear');
+    const infoMedium = document.getElementById('infoMedium');
+    const pocketStrip = document.getElementById('pocketStrip');
+
+    // 创建档案袋
+    function createPockets() {
+      images.forEach((img, index) => {
+        const pocket = document.createElement('div');
+        pocket.className = 'pocket' + (index === 0 ? ' active' : '');
+        pocket.innerHTML = `
+          <div class="pocketNum">${img.num}</div>
+          <img class="pocketThumb" src="${img.thumb}" alt="${img.num}">
+        `;
+        pocket.addEventListener('click', () => showImage(index));
+        pocketStrip.appendChild(pocket);
+      });
+    }
+
+    // 显示指定图片
+    function showImage(index) {
+      currentIndex = index;
+      const img = images[index];
+
+      mainImage.src = img.src;
+      infoNum.textContent = img.num;
+      infoTime.textContent = img.time;
+      infoYear.textContent = img.year;
+      infoMedium.textContent = img.medium;
+
+      // 更新档案袋高亮
+      const pockets = pocketStrip.querySelectorAll('.pocket');
+      pockets.forEach((p, i) => {
+        p.classList.toggle('active', i === index);
+      });
+    }
+
+    // 上一张
+    function showPrev() {
+      currentIndex = (currentIndex - 1 + images.length) % images.length;
+      showImage(currentIndex);
+    }
+
+    // 下一张
+    function showNext() {
+      currentIndex = (currentIndex + 1) % images.length;
+      showImage(currentIndex);
+    }
+
+    // 键盘导航
+    document.addEventListener('keydown', (e) => {
+      if(e.key === 'ArrowLeft') showPrev();
+      if(e.key === 'ArrowRight') showNext();
+    });
+
+    // 初始化
+    createPockets();
+    showImage(0);
+  </script>
+
+  <!-- 全屏菜单 -->
+  <div class="fullscreenMenu" id="fullscreenMenu">
+    <button class="menuCloseBtn" id="menuCloseBtn" aria-label="Close menu">&times;</button>
+
+    <h2 class="menuCategoryTitle">PROJECTS</h2>
+    <a class="menuItem" href="projects/yellow-river/">Yellow River <span class="year">(2025)</span></a>
+    <a class="menuItem" href="projects/frontispiece/">Frontispiece <span class="year">(2024)</span></a>
+    <a class="menuItem" href="projects/formless-buddha/">Formless Buddha <span class="year">(2023)</span></a>
+    <a class="menuItem" href="projects/yellow/">Yellow <span class="year">(2021)</span></a>
+
+    <h2 class="menuCategoryTitle">IMAGES</h2>
+    <a class="menuItem" href="images/">Images</a>
+
+    <h2 class="menuCategoryTitle">ABOUT</h2>
+    <a class="menuItem" href="about/">About</a>
+  </div>
+
+  <script>
+    const menuToggle = document.getElementById('menuToggle');
+    const fullscreenMenu = document.getElementById('fullscreenMenu');
+    const menuCloseBtn = document.getElementById('menuCloseBtn');
+
+    if(menuToggle && fullscreenMenu){
+      const REPO = location.pathname.split("/").filter(Boolean).length > 1 ? "/" + location.pathname.split("/")[1] + "/" : "/";
+      const BASE = REPO;
+
+      const menuItems = fullscreenMenu.querySelectorAll('.menuItem');
+      menuItems.forEach(item => {
+        const currentHref = item.getAttribute('href');
+        if (currentHref && !currentHref.startsWith('/') && !currentHref.startsWith('../')) {
+          item.setAttribute('href', BASE + currentHref);
+        }
+      });
+
+      menuToggle.addEventListener('click', (e) => {
+        e.stopPropagation();
+        fullscreenMenu.classList.add('is-open');
+        document.body.style.overflow = 'hidden';
+      });
+
+      menuCloseBtn.addEventListener('click', () => {
+        fullscreenMenu.classList.remove('is-open');
+        document.body.style.overflow = '';
+      });
+
+      fullscreenMenu.addEventListener('click', (e) => {
+        if(e.target === fullscreenMenu){
+          fullscreenMenu.classList.remove('is-open');
+          document.body.style.overflow = '';
+        }
+      });
+    }
+  </script>
+
+</body>
+</html>
