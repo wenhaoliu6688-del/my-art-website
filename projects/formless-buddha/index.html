@@ -113,7 +113,7 @@
     /* 系列标题 */
     .seriesHeader{
       text-align: center;
-      margin-bottom: 100px;
+      margin-bottom: 120px;
       padding: 0 40px;
     }
     .seriesHeader h1{
@@ -124,45 +124,23 @@
       color: var(--text);
     }
 
-    /* 杂志感垂直滚动布局 */
+    /* 垂直滚动布局 - 展览级留白 */
     .magazineScroll{
-      max-width: 1400px;
+      max-width: 1000px;
       margin: 0 auto;
     }
 
     .magazineItem{
-      margin-bottom: 120px;
-    }
-
-    /* 图1：居中 */
-    .magazineItem.center{
+      margin-bottom: 140px;
       text-align: center;
-    }
-    .magazineItem.center img{
-      max-width: 60%;
-    }
-
-    /* 图2：左对齐 */
-    .magazineItem.left{
-      text-align: left;
-      padding-left: 15%;
-    }
-    .magazineItem.left img{
-      max-width: 50%;
-    }
-
-    /* 图3：右对齐 */
-    .magazineItem.right{
-      text-align: right;
-      padding-right: 15%;
-    }
-    .magazineItem.right img{
-      max-width: 50%;
+      padding: 0 40px;
     }
 
     .magazineItem img{
+      max-width: 75%;
       height: auto;
       display: block;
+      margin: 0 auto;
     }
 
     /* email */
@@ -220,21 +198,20 @@
       }
       .seriesHeader{
         padding: 0 20px;
-        margin-bottom: 60px;
-      }
-      .magazineItem{
         margin-bottom: 80px;
       }
-      .magazineItem.center img,
-      .magazineItem.left img,
-      .magazineItem.right img{
-        max-width: 80%;
+      .magazineItem{
+        margin-bottom: 100px;
+        padding: 0 20px;
       }
-      .magazineItem.left,
-      .magazineItem.right{
-        padding-left: 20px;
-        padding-right: 20px;
-        text-align: center;
+      .magazineItem img{
+        max-width: 85%;
+      }
+    }
+
+    @media (max-width: 600px){
+      .magazineItem img{
+        max-width: 95%;
       }
     }
 
@@ -365,23 +342,19 @@
     </div>
 
     <div class="magazineScroll">
-      <!-- 图1：居中 -->
-      <div class="magazineItem center">
+      <div class="magazineItem">
         <img src="../../assets/formless-buddha/01.jpg" alt="Formless Buddha No.1">
       </div>
 
-      <!-- 图2：左对齐 -->
-      <div class="magazineItem left">
+      <div class="magazineItem">
         <img src="../../assets/formless-buddha/02.jpg" alt="Formless Buddha No.2">
       </div>
 
-      <!-- 图3：右对齐 -->
-      <div class="magazineItem right">
+      <div class="magazineItem">
         <img src="../../assets/formless-buddha/03.jpg" alt="Formless Buddha No.3">
       </div>
 
-      <!-- 图4：居中 -->
-      <div class="magazineItem center">
+      <div class="magazineItem">
         <img src="../../assets/formless-buddha/04.jpg" alt="Formless Buddha No.4">
       </div>
     </div>
