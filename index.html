@@ -195,6 +195,13 @@
       letter-spacing:.06em;
       color:var(--muted);
       text-align: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+    }
+    .emailWrap.visible{
+      opacity: 1;
+      pointer-events: auto;
     }
     .emailCopy{
       cursor:pointer;
@@ -443,11 +450,30 @@
     function renderList(list){
       panelList.innerHTML = list.map(it => `
         <li>
-          <a class="panelLink" href="${it.href}">
+          <a class="panelLink" href="${it.href}" data-href="${it.href}">
             ${it.title} <span class="year">— ${it.year}</span>
           </a>
         </li>
       `).join("");
+
+      // 为panel内的链接添加点击处理，确保手机端也能正常跳转
+      const links = panelList.querySelectorAll('.panelLink');
+      links.forEach(link => {
+        link.addEventListener('touchend', (e) => {
+          e.preventDefault();
+          const href = link.getAttribute('data-href') || link.getAttribute('href');
+          if(href) window.location.href = href;
+        });
+        link.addEventListener('click', (e) => {
+          if(!isTouchDevice || isIPad){
+            const href = link.getAttribute('data-href') || link.getAttribute('href');
+            if(href && !e.ctrlKey && !e.metaKey){
+              e.preventDefault();
+              window.location.href = href;
+            }
+          }
+        });
+      });
     }
 
     function positionPanelNearButton(btn){
@@ -590,6 +616,24 @@
       toastTimer = setTimeout(()=>toast.classList.remove("show"), 900);
     }
     emailEl.addEventListener("click", copyEmail);
+
+    // 邮箱隐藏 - 滚到底部显示
+    const emailWrap = document.querySelector('.emailWrap');
+    if(emailWrap){
+      const trigger = document.createElement('div');
+      trigger.className = 'footer-trigger';
+      trigger.style.height = '1px';
+      document.body.appendChild(trigger);
+
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if(entry.isIntersecting){
+            emailWrap.classList.add('visible');
+          }
+        });
+      }, { threshold: 0.1 });
+      observer.observe(trigger);
+    }
   </script>
 
 

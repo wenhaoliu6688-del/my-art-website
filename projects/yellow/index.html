@@ -46,25 +46,9 @@
       box-shadow: 0 2px 6px rgba(0,0,0,0.15);
     }
 
-    /* 版本标记（测试用，完成后删除） */
-    .version-marker-inline{
-      position: fixed;
-      top: 44px;
-      left: calc(var(--leftPad) + 70px);
-      font-size: 11px;
-      font-weight: 500;
-      letter-spacing: 0.06em;
-      color: var(--muted);
-      pointer-events: none;
-    }
-
     /* 小屏幕设备调整 */
     @media (max-width: 1024px){
-      .version-marker-inline{
-        top: 22px;
-        left: calc(22px + 60px);
-        font-size: 10px;
-      }
+
     }
 
     /* 顶部菜单按钮（手机端） */
@@ -133,7 +117,7 @@
       display:flex;
       align-items:flex-start;
       justify-content:center;
-      padding-top: 18vh;
+      padding-top: 22vh;
       padding-bottom: 250px;  /* 大幅增加，确保永不撞车 */
       z-index:1;
     }
@@ -344,7 +328,6 @@
 <body>
 
   <a class="brand" href="../../">HARRY6</a>
-  <span class="version-marker-inline">v1.9.6</span>
 
   <nav class="nav" aria-label="Primary">
     <div class="navItem" data-menu="projects"><button class="navBtn" type="button">PROJECTS</button></div>
@@ -543,10 +526,6 @@
       { title: "Yellow", year: "2021", href: BASE + "projects/yellow/" }
     ];
 
-    const IMAGES = [
-      { title: "Yellow River", year: "2025", href: BASE + "images/yellow-river/" }
-    ];
-
     const IMAGES_HREF = BASE + "images/";
     const ABOUT_HREF = BASE + "about/";
 
@@ -607,7 +586,6 @@
       setActiveButton(key);
 
       if(key === 'projects') renderList(PROJECTS);
-      if(key === 'images') renderList(IMAGES);
 
       panel.classList.add('is-open');
       panel.setAttribute('aria-hidden','false');
@@ -869,12 +847,12 @@
 
     <h2 class="menuCategoryTitle">WORKS</h2>
     <a class="menuItem" href="../../projects/yellow-river/">Yellow River <span class="year">(2025)</span></a>
-    <a class="menuItem" href="../../projects/frontispiece/">Frontispiece <span class="year">(2024)</span></a>
+    <a class="menuItem" href="../../projects/formispiece/">Frontispiece <span class="year">(2024)</span></a>
     <a class="menuItem" href="../../projects/formless-buddha/">Formless Buddha <span class="year">(2023)</span></a>
     <a class="menuItem" href="../../">Yellow <span class="year">(2021)</span></a>
 
     <h2 class="menuCategoryTitle">IMAGES</h2>
-    <a class="menuItem" href="../../images/yellow-river/">Yellow River</a>
+    <a class="menuItem" href="../../images/">Images</a>
 
     <h2 class="menuCategoryTitle">ABOUT</h2>
     <a class="menuItem" href="../../about/">About</a>

@@ -170,6 +170,13 @@
       letter-spacing:.06em;
       color:var(--muted);
       text-align: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+    }
+    .emailWrap.visible{
+      opacity: 1;
+      pointer-events: auto;
     }
     .emailCopy{
       cursor:pointer;
@@ -552,6 +559,24 @@
     }
     emailEl.addEventListener('click', copyEmail);
     emailLink.addEventListener('click', copyEmail);
+
+    // 邮箱隐藏 - 滚到底部显示
+    const emailWrap = document.querySelector('.emailWrap');
+    if(emailWrap){
+      const trigger = document.createElement('div');
+      trigger.className = 'footer-trigger';
+      trigger.style.height = '1px';
+      document.body.appendChild(trigger);
+
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if(entry.isIntersecting){
+            emailWrap.classList.add('visible');
+          }
+        });
+      }, { threshold: 0.1 });
+      observer.observe(trigger);
+    }
   </script>
 
   <style>

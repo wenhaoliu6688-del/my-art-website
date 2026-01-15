@@ -11,7 +11,6 @@
       --muted: rgba(0,0,0,.48);
       --line: rgba(0,0,0,.10);
       --leftPad: 56px;
-      --accent: #F5C746;
     }
     *{ box-sizing:border-box; }
     html, body{
@@ -110,80 +109,104 @@
       display: flex;
       flex-direction: column;
       min-height: 100vh;
-      padding-top: 80px;
-      padding-bottom: 120px;
+      padding: 100px 40px 160px;
     }
 
     /* 主展示区 */
     .mainDisplay{
       flex: 1;
       display: flex;
-      flex-direction: column;
       align-items: center;
       justify-content: center;
-      padding: 0 40px;
+      padding: 0 100px 0 40px;
+      position: relative;
     }
 
     .imageWrapper{
-      max-width: 100%;
-      max-height: 70vh;
+      max-height: 65vh;
       display: flex;
       align-items: center;
       justify-content: center;
     }
     .imageWrapper img{
+      max-height: 65vh;
       max-width: 100%;
-      max-height: 70vh;
-      height: auto;
+      object-fit: contain;
       display: block;
     }
 
-    /* 极简信息显示 */
+    /* 右侧极简信息 */
     .imageInfo{
-      margin-top: 32px;
-      text-align: center;
-      font-size: 12px;
-      font-weight: 500;
-      letter-spacing: .12em;
-      color: var(--muted);
+      position: absolute;
+      right: 60px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 11px;
+      font-weight: 400;
+      letter-spacing: 0.12em;
+      color: rgba(0,0,0,0.5);
+      text-align: right;
+      line-height: 1.8;
     }
 
-    /* 底部缩略图条 */
-    .thumbnailStrip{
+    /* 底部档案池 - 书签式缩略图 */
+    .archivePool{
       display: flex;
       justify-content: center;
-      gap: 16px;
-      padding: 0 40px;
+      gap: 6px;
+      padding: 40px 40px 20px;
       overflow-x: auto;
-      margin-top: 40px;
       scrollbar-width: none;
     }
-    .thumbnailStrip::-webkit-scrollbar{
+    .archivePool::-webkit-scrollbar{
       display: none;
     }
 
-    .thumbnail{
-      width: 48px;
-      height: 72px;
+    .archiveBookmark{
+      width: 32px;
+      height: 48px;
       flex-shrink: 0;
-      background: #f5f5f5;
+      background: #f0f0f0;
       cursor: pointer;
       position: relative;
-      transition: all .2s ease;
+      transition: all 0.2s ease;
       overflow: hidden;
     }
-    .thumbnail:hover{
-      opacity: 0.7;
+    .archiveBookmark:hover{
+      background: #e0e0e0;
     }
-    .thumbnail.active{
-      box-shadow: 0 0 0 2px var(--text);
+    .archiveBookmark.active{
+      background: var(--text);
     }
 
-    .thumbnail img{
+    .archiveBookmark img{
       width: 100%;
       height: 100%;
       object-fit: cover;
       display: block;
+      filter: grayscale(100%);
+      transition: filter 0.2s ease;
+    }
+    .archiveBookmark.active img,
+    .archiveBookmark:hover img{
+      filter: grayscale(0%);
+    }
+    .archiveBookmark.active img{
+      opacity: 0.7;
+    }
+
+    .archiveBookmark .bookmarkNum{
+      position: absolute;
+      bottom: 2px;
+      left: 0;
+      right: 0;
+      text-align: center;
+      font-size: 8px;
+      color: rgba(0,0,0,0.4);
+      letter-spacing: 0.05em;
+    }
+    .archiveBookmark.active .bookmarkNum{
+      color: rgba(255,255,255,0.7);
     }
 
     /* email */
@@ -197,6 +220,13 @@
       letter-spacing:.06em;
       color:var(--muted);
       text-align: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+    }
+    .emailWrap.visible{
+      opacity: 1;
+      pointer-events: auto;
     }
     .emailCopy{
       cursor:pointer;
@@ -221,8 +251,7 @@
       .menuToggle{ display: block; }
 
       .container{
-        padding-top: 60px;
-        padding-bottom: 100px;
+        padding: 80px 20px 140px;
       }
 
       .mainDisplay{
@@ -230,16 +259,24 @@
       }
 
       .imageWrapper img{
-        max-height: 55vh;
+        max-height: 50vh;
       }
 
-      .thumbnailStrip{
-        padding: 0 20px;
-        gap: 12px;
+      .imageInfo{
+        position: static;
+        transform: none;
+        text-align: center;
+        margin-top: 20px;
+        right: auto;
       }
-      .thumbnail{
-        width: 42px;
-        height: 63px;
+
+      .archivePool{
+        padding: 20px;
+        gap: 4px;
+      }
+      .archiveBookmark{
+        width: 28px;
+        height: 42px;
       }
     }
 
@@ -370,13 +407,14 @@
       <div class="imageWrapper">
         <img id="mainImage" src="" alt="">
       </div>
-      <div class="imageInfo">
-        <span id="infoLabel">001  2025</span>
+      <div class="imageInfo" id="imageInfo">
+        <span id="infoCode"></span><br>
+        <span id="infoDetail"></span>
       </div>
     </div>
 
-    <!-- 底部缩略图条 -->
-    <div class="thumbnailStrip" id="thumbnailStrip"></div>
+    <!-- 底部档案池 -->
+    <div class="archivePool" id="archivePool"></div>
   </div>
 
   <div class="emailWrap">
@@ -562,6 +600,24 @@
       toastTimer = setTimeout(()=>emailEl.textContent = 'wenhao_liu888@163.com', 900);
     }
     emailEl.addEventListener('click', copyEmail);
+
+    // 邮箱隐藏 - 滚到底部显示
+    const emailWrap = document.querySelector('.emailWrap');
+    if(emailWrap){
+      const trigger = document.createElement('div');
+      trigger.className = 'footer-trigger';
+      trigger.style.height = '1px';
+      document.body.appendChild(trigger);
+
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if(entry.isIntersecting){
+            emailWrap.classList.add('visible');
+          }
+        });
+      }, { threshold: 0.1 });
+      observer.observe(trigger);
+    }
   </script>
 
   <style>
@@ -667,31 +723,33 @@
   <!-- 档案数据 -->
   <script>
     document.addEventListener('DOMContentLoaded', () => {
-      // 使用 Yellow River 项目图片作为示例
       const images = [
-        { num: '001', year: '2025', src: '../assets/yellow-river/01.jpg', thumb: '../assets/yellow-river/01.jpg' },
-        { num: '002', year: '2025', src: '../assets/yellow-river/02.jpg', thumb: '../assets/yellow-river/02.jpg' },
-        { num: '003', year: '2025', src: '../assets/yellow-river/03.jpg', thumb: '../assets/yellow-river/03.jpg' },
-        { num: '004', year: '2024', src: '../assets/frontispiece/01.jpg', thumb: '../assets/frontispiece/01.jpg' },
-        { num: '005', year: '2024', src: '../assets/frontispiece/02.jpg', thumb: '../assets/frontispiece/02.jpg' },
-        { num: '006', year: '2023', src: '../assets/formless-buddha/01.jpg', thumb: '../assets/formless-buddha/01.jpg' },
-        { num: '007', year: '2023', src: '../assets/formless-buddha/02.jpg', thumb: '../assets/formless-buddha/02.jpg' }
+        { code: '001', year: '2025', medium: 'Digital Art', src: '../assets/yellow-river/01.jpg', thumb: '../assets/yellow-river/01.jpg' },
+        { code: '002', year: '2025', medium: 'Digital Art', src: '../assets/yellow-river/02.jpg', thumb: '../assets/yellow-river/02.jpg' },
+        { code: '003', year: '2025', medium: 'Digital Art', src: '../assets/yellow-river/03.jpg', thumb: '../assets/yellow-river/03.jpg' },
+        { code: '004', year: '2024', medium: 'Photography', src: '../assets/frontispiece/01.jpg', thumb: '../assets/frontispiece/01.jpg' },
+        { code: '005', year: '2024', medium: 'Photography', src: '../assets/frontispiece/02.jpg', thumb: '../assets/frontispiece/02.jpg' },
+        { code: '006', year: '2023', medium: 'Installation', src: '../assets/formless-buddha/01.jpg', thumb: '../assets/formless-buddha/01.jpg' },
+        { code: '007', year: '2023', medium: 'Installation', src: '../assets/formless-buddha/02.jpg', thumb: '../assets/formless-buddha/02.jpg' },
+        { code: '008', year: '2023', medium: 'Installation', src: '../assets/formless-buddha/03.jpg', thumb: '../assets/formless-buddha/03.jpg' }
       ];
 
       let currentIndex = 0;
       const mainImage = document.getElementById('mainImage');
-      const infoLabel = document.getElementById('infoLabel');
-      const thumbnailStrip = document.getElementById('thumbnailStrip');
+      const infoCode = document.getElementById('infoCode');
+      const infoDetail = document.getElementById('infoDetail');
+      const archivePool = document.getElementById('archivePool');
 
-      function createThumbnails() {
+      function createBookmarks() {
         images.forEach((img, index) => {
-          const thumbnail = document.createElement('div');
-          thumbnail.className = 'thumbnail' + (index === 0 ? ' active' : '');
-          thumbnail.innerHTML = `
-            <img src="${img.thumb}" alt="${img.num}">
+          const bookmark = document.createElement('div');
+          bookmark.className = 'archiveBookmark' + (index === 0 ? ' active' : '');
+          bookmark.innerHTML = `
+            <img src="${img.thumb}" alt="${img.code}">
+            <span class="bookmarkNum">${img.code}</span>
           `;
-          thumbnail.addEventListener('click', () => showImage(index));
-          thumbnailStrip.appendChild(thumbnail);
+          bookmark.addEventListener('click', () => showImage(index));
+          archivePool.appendChild(bookmark);
         });
       }
 
@@ -700,11 +758,12 @@
         const img = images[index];
 
         mainImage.src = img.src;
-        infoLabel.textContent = `${img.num}  ${img.year}`;
+        infoCode.textContent = img.code;
+        infoDetail.textContent = `${img.year}  ${img.medium}`;
 
-        const thumbnails = thumbnailStrip.querySelectorAll('.thumbnail');
-        thumbnails.forEach((t, i) => {
-          t.classList.toggle('active', i === index);
+        const bookmarks = archivePool.querySelectorAll('.archiveBookmark');
+        bookmarks.forEach((b, i) => {
+          b.classList.toggle('active', i === index);
         });
       }
 
@@ -723,7 +782,7 @@
         if(e.key === 'ArrowRight') showNext();
       });
 
-      createThumbnails();
+      createBookmarks();
       showImage(0);
     });
   </script>

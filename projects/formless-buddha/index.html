@@ -150,9 +150,19 @@
       text-align: left;
     }
     .magazineItem.left img{
-      max-width: 45%;
+      max-width: 42%;
       height: auto;
       display: block;
+    }
+
+    /* 中等居中 */
+    .magazineItem.center-medium{
+      text-align: center;
+    }
+    .magazineItem.center-medium img{
+      max-width: 58%;
+      height: auto;
+      display: inline-block;
     }
 
     /* 右对齐 */
@@ -160,7 +170,7 @@
       text-align: right;
     }
     .magazineItem.right img{
-      max-width: 45%;
+      max-width: 42%;
       height: auto;
       display: block;
       margin-left: auto;
@@ -187,6 +197,13 @@
       letter-spacing:.06em;
       color:var(--muted);
       text-align: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+    }
+    .emailWrap.visible{
+      opacity: 1;
+      pointer-events: auto;
     }
     .emailCopy{
       cursor:pointer;
@@ -241,6 +258,7 @@
         text-align: center;
       }
       .magazineItem.center img,
+      .magazineItem.center-medium img,
       .magazineItem.left img,
       .magazineItem.right img,
       .magazineItem.wide-center img{
@@ -252,6 +270,7 @@
 
     @media (max-width: 600px){
       .magazineItem.center img,
+      .magazineItem.center-medium img,
       .magazineItem.left img,
       .magazineItem.right img,
       .magazineItem.wide-center img{
@@ -394,11 +413,11 @@
         <img src="../../assets/formless-buddha/02.jpg" alt="Formless Buddha No.2">
       </div>
 
-      <div class="magazineItem right">
+      <div class="magazineItem center-medium">
         <img src="../../assets/formless-buddha/03.jpg" alt="Formless Buddha No.3">
       </div>
 
-      <div class="magazineItem wide-center">
+      <div class="magazineItem right">
         <img src="../../assets/formless-buddha/04.jpg" alt="Formless Buddha No.4">
       </div>
     </div>
@@ -594,6 +613,24 @@
       toastTimer = setTimeout(()=>toast.classList.remove('show'), 900);
     }
     emailEl.addEventListener('click', copyEmail);
+
+    // 邮箱隐藏 - 滚到底部显示
+    const emailWrap = document.querySelector('.emailWrap');
+    if(emailWrap){
+      const trigger = document.createElement('div');
+      trigger.className = 'footer-trigger';
+      trigger.style.height = '1px';
+      document.body.appendChild(trigger);
+
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if(entry.isIntersecting){
+            emailWrap.classList.add('visible');
+          }
+        });
+      }, { threshold: 0.1 });
+      observer.observe(trigger);
+    }
   </script>
 
   <style>
