@@ -15,7 +15,15 @@
       "Bash(ssh-keygen:*)",
       "Bash(git remote set-url:*)",
       "Bash(ssh:*)",
-      "mcp__web-search-prime__webSearchPrime"
+      "mcp__web-search-prime__webSearchPrime",
+      "Bash(find:*)",
+      "Bash(git remote add:*)",
+      "mcp__zai-mcp-server__extract_text_from_screenshot",
+      "Bash(git stash:*)",
+      "mcp__zai-mcp-server__analyze_image",
+      "Bash(dir:*)",
+      "Bash(powershell -Command \"''{0:N2} MB'' -f \\(\\(Get-ChildItem -Path ''C:\\\\Users\\\\31925\\\\Desktop\\\\我的艺术网站\\\\my-art-website-main\\\\my-art-website-main\\\\projects\\\\digital-strata'' -Recurse | Measure-Object -Property Length -Sum\\).Sum / 1MB\\)\")",
+      "Bash(tree:*)"
     ]
   }
 }
