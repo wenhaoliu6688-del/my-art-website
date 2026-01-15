@@ -314,6 +314,11 @@
       padding: 32px 0 16px 0;
       margin: 0;
       border-bottom: 1px solid rgba(0,0,0,0.1);
+      text-decoration: none;
+      display: block;
+    }
+    .menuCategoryTitle:hover{
+      opacity: 0.7;
     }
 
     .menuItem{
@@ -456,21 +461,14 @@
         </li>
       `).join("");
 
-      // 为panel内的链接添加点击处理，确保手机端也能正常跳转
+      // 为panel内的链接添加点击处理，确保所有设备都能正常跳转
       const links = panelList.querySelectorAll('.panelLink');
       links.forEach(link => {
-        link.addEventListener('touchend', (e) => {
-          e.preventDefault();
-          const href = link.getAttribute('data-href') || link.getAttribute('href');
-          if(href) window.location.href = href;
-        });
         link.addEventListener('click', (e) => {
-          if(!isTouchDevice || isIPad){
-            const href = link.getAttribute('data-href') || link.getAttribute('href');
-            if(href && !e.ctrlKey && !e.metaKey){
-              e.preventDefault();
-              window.location.href = href;
-            }
+          const href = link.getAttribute('data-href') || link.getAttribute('href');
+          if(href && !e.ctrlKey && !e.metaKey){
+            e.preventDefault();
+            window.location.href = href;
           }
         });
       });
@@ -629,6 +627,8 @@
         entries.forEach(entry => {
           if(entry.isIntersecting){
             emailWrap.classList.add('visible');
+          } else {
+            emailWrap.classList.remove('visible');
           }
         });
       }, { threshold: 0.1 });
@@ -778,11 +778,9 @@
     <a class="menuItem" href="projects/formless-buddha/">Formless Buddha <span class="year">(2023)</span></a>
     <a class="menuItem" href="projects/yellow/">Yellow <span class="year">(2021)</span></a>
 
-    <h2 class="menuCategoryTitle">IMAGES</h2>
-    <a class="menuItem" href="images/">Images</a>
+    <a class="menuCategoryTitle" href="images/">IMAGES</a>
 
-    <h2 class="menuCategoryTitle">ABOUT</h2>
-    <a class="menuItem" href="about/">About</a>
+    <a class="menuCategoryTitle" href="about/">ABOUT</a>
   </div>
 
   <script>

@@ -105,7 +105,7 @@
 
     /* 主容器 */
     .container{
-      padding-top: 80px;
+      padding-top: 120px;
       padding-bottom: 120px;
       min-height: 100vh;
     }
@@ -124,7 +124,7 @@
       color: var(--text);
     }
 
-    /* 杂志错落排版 */
+    /* 自由散落式排版 */
     .magazineScroll{
       max-width: 1200px;
       margin: 0 auto;
@@ -132,49 +132,27 @@
     }
 
     .magazineItem{
-      margin-bottom: 80px;
-    }
-
-    /* 居中 */
-    .magazineItem.center{
+      margin-bottom: 100px;
       text-align: center;
     }
-    .magazineItem.center img{
-      max-width: 60%;
-      height: auto;
-      display: inline-block;
-    }
 
-    /* 左对齐 */
-    .magazineItem.left{
-      text-align: left;
-    }
-    .magazineItem.left img{
-      max-width: 45%;
+    .magazineItem img{
+      width: 100%;
       height: auto;
       display: block;
+      margin: 0 auto;
     }
 
-    /* 右对齐 */
-    .magazineItem.right{
-      text-align: right;
-    }
-    .magazineItem.right img{
-      max-width: 45%;
-      height: auto;
-      display: block;
-      margin-left: auto;
-    }
-
-    /* 宽幅居中 */
-    .magazineItem.wide-center{
-      text-align: center;
-    }
-    .magazineItem.wide-center img{
-      max-width: 70%;
-      height: auto;
-      display: inline-block;
-    }
+    /* 9张图不同宽度 */
+    .magazineItem:nth-child(1) img{ width: 55%; }
+    .magazineItem:nth-child(2) img{ width: 35%; }
+    .magazineItem:nth-child(3) img{ width: 65%; }
+    .magazineItem:nth-child(4) img{ width: 40%; }
+    .magazineItem:nth-child(5) img{ width: 70%; }
+    .magazineItem:nth-child(6) img{ width: 45%; }
+    .magazineItem:nth-child(7) img{ width: 30%; }
+    .magazineItem:nth-child(8) img{ width: 60%; }
+    .magazineItem:nth-child(9) img{ width: 50%; }
 
     /* email */
     .emailWrap{
@@ -233,7 +211,7 @@
       .menuToggle{ display: block; }
 
       .container{
-        padding-top: 60px;
+        padding-top: 80px;
         padding-bottom: 100px;
       }
       .seriesHeader{
@@ -245,25 +223,17 @@
       }
       .magazineItem{
         margin-bottom: 60px;
-        text-align: center;
       }
-      .magazineItem.center img,
-      .magazineItem.left img,
-      .magazineItem.right img,
-      .magazineItem.wide-center img{
-        max-width: 75%;
-        margin: 0 auto;
-        display: block;
+      /* 小屏幕统一宽度 */
+      .magazineItem img{
+        width: 75% !important;
       }
     }
 
     /* 手机端 */
     @media (max-width: 600px){
-      .magazineItem.center img,
-      .magazineItem.left img,
-      .magazineItem.right img,
-      .magazineItem.wide-center img{
-        max-width: 90%;
+      .magazineItem img{
+        width: 85% !important;
       }
     }
 
@@ -314,6 +284,11 @@
       padding: 32px 0 16px 0;
       margin: 0;
       border-bottom: 1px solid rgba(0,0,0,0.1);
+      text-decoration: none;
+      display: block;
+    }
+    .menuCategoryTitle:hover{
+      opacity: 0.7;
     }
 
     .menuItem{
@@ -394,39 +369,39 @@
     </div>
 
     <div class="magazineScroll">
-      <div class="magazineItem center">
+      <div class="magazineItem">
         <img src="../../assets/frontispiece/01.jpg" alt="Frontispiece No.1">
       </div>
 
-      <div class="magazineItem left">
+      <div class="magazineItem">
         <img src="../../assets/frontispiece/02.jpg" alt="Frontispiece No.2">
       </div>
 
-      <div class="magazineItem right">
+      <div class="magazineItem">
         <img src="../../assets/frontispiece/03.jpg" alt="Frontispiece No.3">
       </div>
 
-      <div class="magazineItem center">
+      <div class="magazineItem">
         <img src="../../assets/frontispiece/04.jpg" alt="Frontispiece No.4">
       </div>
 
-      <div class="magazineItem left">
+      <div class="magazineItem">
         <img src="../../assets/frontispiece/05.jpg" alt="Frontispiece No.5">
       </div>
 
-      <div class="magazineItem right">
+      <div class="magazineItem">
         <img src="../../assets/frontispiece/06.jpg" alt="Frontispiece No.6">
       </div>
 
-      <div class="magazineItem wide-center">
+      <div class="magazineItem">
         <img src="../../assets/frontispiece/07.jpg" alt="Frontispiece No.7">
       </div>
 
-      <div class="magazineItem center">
+      <div class="magazineItem">
         <img src="../../assets/frontispiece/08.jpg" alt="Frontispiece No.8">
       </div>
 
-      <div class="magazineItem center">
+      <div class="magazineItem">
         <img src="../../assets/frontispiece/09.jpg" alt="Frontispiece No.9">
       </div>
     </div>
@@ -511,7 +486,6 @@
       setActiveButton(key);
 
       if(key === 'projects') renderList(PROJECTS);
-      if(key === 'images') renderList(IMAGES);
 
       panel.classList.add('is-open');
       panel.setAttribute('aria-hidden','false');
@@ -534,7 +508,7 @@
       const key = item.dataset.menu;
       const btn = item.querySelector('.navBtn');
 
-      if((!isTouchDevice || isIPad) && (key === 'projects' || key === 'images')){
+      if((!isTouchDevice || isIPad) && key === 'projects'){
         item.addEventListener('mouseenter', () => openPanelFor(key, btn));
         item.addEventListener('mouseleave', scheduleClose);
       }
@@ -635,6 +609,8 @@
         entries.forEach(entry => {
           if(entry.isIntersecting){
             emailWrap.classList.add('visible');
+          } else {
+            emailWrap.classList.remove('visible');
           }
         });
       }, { threshold: 0.1 });
@@ -698,11 +674,9 @@
     <a class="menuItem" href="projects/formless-buddha/">Formless Buddha <span class="year">(2023)</span></a>
     <a class="menuItem" href="projects/yellow/">Yellow <span class="year">(2021)</span></a>
 
-    <h2 class="menuCategoryTitle">IMAGES</h2>
-    <a class="menuItem" href="images/">Images</a>
+    <a class="menuCategoryTitle" href="../../images/">IMAGES</a>
 
-    <h2 class="menuCategoryTitle">ABOUT</h2>
-    <a class="menuItem" href="about/">About</a>
+    <a class="menuCategoryTitle" href="../../about/">ABOUT</a>
   </div>
 
   <script>

@@ -124,66 +124,24 @@
       color: var(--text);
     }
 
-    /* 杂志错落排版 */
+    /* 画册翻页式排版 */
     .magazineScroll{
-      max-width: 1200px;
+      max-width: 1400px;
       margin: 0 auto;
       padding: 0 40px;
     }
 
     .magazineItem{
-      margin-bottom: 100px;
-    }
-
-    /* 居中 */
-    .magazineItem.center{
+      margin-bottom: 200px;
       text-align: center;
     }
-    .magazineItem.center img{
-      max-width: 60%;
-      height: auto;
-      display: inline-block;
-    }
 
-    /* 左对齐 */
-    .magazineItem.left{
-      text-align: left;
-    }
-    .magazineItem.left img{
-      max-width: 42%;
-      height: auto;
+    .magazineItem img{
+      width: 90%;
+      height: 80vh;
+      object-fit: contain;
       display: block;
-    }
-
-    /* 中等居中 */
-    .magazineItem.center-medium{
-      text-align: center;
-    }
-    .magazineItem.center-medium img{
-      max-width: 58%;
-      height: auto;
-      display: inline-block;
-    }
-
-    /* 右对齐 */
-    .magazineItem.right{
-      text-align: right;
-    }
-    .magazineItem.right img{
-      max-width: 42%;
-      height: auto;
-      display: block;
-      margin-left: auto;
-    }
-
-    /* 宽幅居中 */
-    .magazineItem.wide-center{
-      text-align: center;
-    }
-    .magazineItem.wide-center img{
-      max-width: 70%;
-      height: auto;
-      display: inline-block;
+      margin: 0 auto;
     }
 
     /* email */
@@ -254,27 +212,21 @@
         padding: 0 20px;
       }
       .magazineItem{
-        margin-bottom: 60px;
-        text-align: center;
+        margin-bottom: 120px;
       }
-      .magazineItem.center img,
-      .magazineItem.center-medium img,
-      .magazineItem.left img,
-      .magazineItem.right img,
-      .magazineItem.wide-center img{
-        max-width: 75%;
-        margin: 0 auto;
-        display: block;
+      .magazineItem img{
+        width: 95%;
+        height: 70vh;
       }
     }
 
     @media (max-width: 600px){
-      .magazineItem.center img,
-      .magazineItem.center-medium img,
-      .magazineItem.left img,
-      .magazineItem.right img,
-      .magazineItem.wide-center img{
-        max-width: 90%;
+      .magazineItem{
+        margin-bottom: 80px;
+      }
+      .magazineItem img{
+        width: 100%;
+        height: 60vh;
       }
     }
 
@@ -325,6 +277,11 @@
       padding: 32px 0 16px 0;
       margin: 0;
       border-bottom: 1px solid rgba(0,0,0,0.1);
+      text-decoration: none;
+      display: block;
+    }
+    .menuCategoryTitle:hover{
+      opacity: 0.7;
     }
 
     .menuItem{
@@ -405,19 +362,19 @@
     </div>
 
     <div class="magazineScroll">
-      <div class="magazineItem center">
+      <div class="magazineItem">
         <img src="../../assets/formless-buddha/01.jpg" alt="Formless Buddha No.1">
       </div>
 
-      <div class="magazineItem left">
+      <div class="magazineItem">
         <img src="../../assets/formless-buddha/02.jpg" alt="Formless Buddha No.2">
       </div>
 
-      <div class="magazineItem center-medium">
+      <div class="magazineItem">
         <img src="../../assets/formless-buddha/03.jpg" alt="Formless Buddha No.3">
       </div>
 
-      <div class="magazineItem right">
+      <div class="magazineItem">
         <img src="../../assets/formless-buddha/04.jpg" alt="Formless Buddha No.4">
       </div>
     </div>
@@ -502,7 +459,6 @@
       setActiveButton(key);
 
       if(key === 'projects') renderList(PROJECTS);
-      if(key === 'images') renderList(IMAGES);
 
       panel.classList.add('is-open');
       panel.setAttribute('aria-hidden','false');
@@ -525,7 +481,7 @@
       const key = item.dataset.menu;
       const btn = item.querySelector('.navBtn');
 
-      if((!isTouchDevice || isIPad) && (key === 'projects' || key === 'images')){
+      if((!isTouchDevice || isIPad) && key === 'projects'){
         item.addEventListener('mouseenter', () => openPanelFor(key, btn));
         item.addEventListener('mouseleave', scheduleClose);
       }
@@ -626,6 +582,8 @@
         entries.forEach(entry => {
           if(entry.isIntersecting){
             emailWrap.classList.add('visible');
+          } else {
+            emailWrap.classList.remove('visible');
           }
         });
       }, { threshold: 0.1 });
@@ -689,11 +647,9 @@
     <a class="menuItem" href="projects/formless-buddha/">Formless Buddha <span class="year">(2023)</span></a>
     <a class="menuItem" href="projects/yellow/">Yellow <span class="year">(2021)</span></a>
 
-    <h2 class="menuCategoryTitle">IMAGES</h2>
-    <a class="menuItem" href="images/">Images</a>
+    <a class="menuCategoryTitle" href="../../images/">IMAGES</a>
 
-    <h2 class="menuCategoryTitle">ABOUT</h2>
-    <a class="menuItem" href="about/">About</a>
+    <a class="menuCategoryTitle" href="../../about/">ABOUT</a>
   </div>
 
   <script>

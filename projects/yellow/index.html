@@ -609,7 +609,7 @@
       const btn = item.querySelector('.navBtn');
 
       // 电脑端和iPad：hover效果
-      if((!isTouchDevice || isIPad) && (key === 'projects' || key === 'images')){
+      if((!isTouchDevice || isIPad) && key === 'projects'){
         item.addEventListener('mouseenter', () => openPanelFor(key, btn));
         item.addEventListener('mouseleave', scheduleClose);
       }
@@ -781,6 +781,11 @@
       padding: 32px 0 16px 0;
       margin: 0;
       border-bottom: 1px solid rgba(0,0,0,0.1);
+      text-decoration: none;
+      display: block;
+    }
+    .menuCategoryTitle:hover{
+      opacity: 0.7;
     }
 
     .menuItem{
@@ -845,17 +850,15 @@
   <div class="fullscreenMenu" id="fullscreenMenu">
     <button class="menuCloseBtn" id="menuCloseBtn" aria-label="Close menu">&times;</button>
 
-    <h2 class="menuCategoryTitle">WORKS</h2>
+    <h2 class="menuCategoryTitle">PROJECTS</h2>
     <a class="menuItem" href="../../projects/yellow-river/">Yellow River <span class="year">(2025)</span></a>
-    <a class="menuItem" href="../../projects/formispiece/">Frontispiece <span class="year">(2024)</span></a>
+    <a class="menuItem" href="../../projects/frontispiece/">Frontispiece <span class="year">(2024)</span></a>
     <a class="menuItem" href="../../projects/formless-buddha/">Formless Buddha <span class="year">(2023)</span></a>
     <a class="menuItem" href="../../">Yellow <span class="year">(2021)</span></a>
 
-    <h2 class="menuCategoryTitle">IMAGES</h2>
-    <a class="menuItem" href="../../images/">Images</a>
+    <a class="menuCategoryTitle" href="../../images/">IMAGES</a>
 
-    <h2 class="menuCategoryTitle">ABOUT</h2>
-    <a class="menuItem" href="../../about/">About</a>
+    <a class="menuCategoryTitle" href="../../about/">ABOUT</a>
   </div>
 
   <script>
