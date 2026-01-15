@@ -23,7 +23,10 @@
       "mcp__zai-mcp-server__analyze_image",
       "Bash(dir:*)",
       "Bash(powershell -Command \"''{0:N2} MB'' -f \\(\\(Get-ChildItem -Path ''C:\\\\Users\\\\31925\\\\Desktop\\\\我的艺术网站\\\\my-art-website-main\\\\my-art-website-main\\\\projects\\\\digital-strata'' -Recurse | Measure-Object -Property Length -Sum\\).Sum / 1MB\\)\")",
-      "Bash(tree:*)"
+      "Bash(tree:*)",
+      "Bash(node scripts/nav.cjs:*)",
+      "Bash(node scripts/screenshot.cjs:*)",
+      "Bash(node:*)"
     ]
   }
 }

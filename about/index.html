@@ -330,7 +330,7 @@
 
 <body>
 
-  <a class="brand" href="./">HARRY6</a>
+  <a class="brand" href="/">HARRY6</a>
 
   <nav class="nav" aria-label="Primary">
     <div class="navItem" data-menu="projects"><button class="navBtn" type="button">PROJECTS</button></div>
@@ -623,13 +623,15 @@
     const menuCloseBtn = document.getElementById('menuCloseBtn');
 
     if(menuToggle && fullscreenMenu){
-      const REPO = location.pathname.split("/").filter(Boolean).length > 1 ? "/" + location.pathname.split("/")[1] + "/" : "/";
-      const BASE = REPO;
+      // 获取网站根目录
+      const pathParts = location.pathname.split("/").filter(Boolean);
+      const BASE = pathParts.length > 0 ? "/" + pathParts[0] + "/" : "/";
 
       const menuItems = fullscreenMenu.querySelectorAll('.menuItem');
       menuItems.forEach(item => {
         const currentHref = item.getAttribute('href');
-        if (currentHref && !currentHref.startsWith('/') && !currentHref.startsWith('../')) {
+        // 修复所有相对路径
+        if (currentHref && !currentHref.startsWith('/')) {
           item.setAttribute('href', BASE + currentHref);
         }
       });
