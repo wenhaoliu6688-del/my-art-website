@@ -11,7 +11,7 @@
       --muted: rgba(0,0,0,.48);
       --line: rgba(0,0,0,.10);
       --leftPad: 56px;
-      --brandYellow: #F5C746;
+      --accent: #F5C746;
     }
     *{ box-sizing:border-box; }
     html, body{
@@ -108,109 +108,111 @@
     /* 主容器 */
     .container{
       display: flex;
-      flex-direction: column;
       min-height: 100vh;
-      padding-top: 100px;
-      padding-bottom: 140px;
+      padding-top: 80px;
+      padding-bottom: 80px;
     }
 
-    /* 大图展示区 */
+    /* 左侧书签条 */
+    .bookmarkStrip{
+      width: 60px;
+      flex-shrink: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+      padding: 0 10px;
+      overflow-y: auto;
+      max-height: calc(100vh - 160px);
+      position: sticky;
+      top: 80px;
+    }
+
+    .bookmark{
+      width: 50px;
+      height: 75px;
+      background: #f5f5f5;
+      cursor: pointer;
+      position: relative;
+      transition: all .2s ease;
+      overflow: hidden;
+    }
+    .bookmark:hover{
+      background: #e8e8e8;
+    }
+    .bookmark.active{
+      background: var(--accent);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    }
+
+    .bookmark img{
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .bookmarkNum{
+      position: absolute;
+      bottom: 4px;
+      left: 0;
+      right: 0;
+      text-align: center;
+      font-size: 9px;
+      font-weight: 600;
+      letter-spacing: .02em;
+      color: rgba(0,0,0,.5);
+    }
+
+    /* 主展示区 */
     .mainDisplay{
       flex: 1;
       display: flex;
+      flex-direction: column;
       align-items: center;
       justify-content: center;
-      gap: 60px;
-      padding: 0 60px;
+      padding: 0 80px 0 40px;
     }
 
     .imageWrapper{
-      flex: 1;
+      max-width: 100%;
+      max-height: 70vh;
       display: flex;
       align-items: center;
       justify-content: center;
-      max-width: 60%;
     }
-
     .imageWrapper img{
       max-width: 100%;
-      max-height: 60vh;
+      max-height: 70vh;
       height: auto;
       display: block;
     }
 
-    /* 档案信息 */
-    .archiveInfo{
-      width: 200px;
-      flex-shrink: 0;
-    }
-    .archiveInfo .label{
-      font-size: 11px;
+    /* 极简信息显示 */
+    .imageInfo{
+      margin-top: 40px;
+      text-align: center;
+      font-size: 13px;
       letter-spacing: .08em;
       color: var(--muted);
-      margin-bottom: 4px;
     }
-    .archiveInfo .value{
-      font-size: 14px;
-      font-weight: 500;
-      letter-spacing: .04em;
-      margin-bottom: 20px;
-    }
-
-    /* 档案袋条 */
-    .pocketStrip{
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 15px;
-      padding: 0 40px;
-      margin-bottom: 30px;
-    }
-
-    .pocket{
-      width: 80px;
-      height: 100px;
-      background: #f8f8f8;
-      border-radius: 2px;
-      cursor: pointer;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding: 8px;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-      transition: all .2s ease;
-    }
-    .pocket:hover{
-      box-shadow: 0 2px 6px rgba(0,0,0,0.15);
-    }
-    .pocket.active{
-      background: var(--brandYellow);
-      box-shadow: 0 3px 10px rgba(0,0,0,0.2);
-    }
-
-    .pocketNum{
-      font-size: 10px;
-      font-weight: 600;
-      letter-spacing: .04em;
-      margin-bottom: 6px;
-    }
-
-    .pocketThumb{
-      width: 100%;
-      height: 60px;
-      object-fit: cover;
-      background: #e5e5e5;
+    .imageInfo span{
+      margin: 0 8px;
     }
 
     /* email */
     .emailWrap{
-      text-align: center;
-      padding-bottom: 20px;
-    }
-    .emailCopy{
+      position: fixed;
+      left: 50%;
+      bottom: 28px;
+      transform: translateX(-50%);
+      z-index:1000;
       font-size:13px;
       letter-spacing:.06em;
       color:var(--muted);
+      text-align: center;
+    }
+    .emailCopy{
       cursor:pointer;
       padding: 6px 10px;
       border:1px solid transparent;
@@ -233,31 +235,36 @@
       .menuToggle{ display: block; }
 
       .container{
-        padding-top: 70px;
-        padding-bottom: 20px;
-      }
-      .mainDisplay{
+        padding-top: 60px;
         flex-direction: column;
-        padding: 0 20px;
-        gap: 20px;
       }
-      .imageWrapper{
-        max-width: 100%;
-      }
-      .archiveInfo{
+
+      .bookmarkStrip{
         width: 100%;
-        text-align: center;
+        flex-direction: row;
+        max-height: none;
+        position: relative;
+        top: 0;
+        padding: 0 20px;
+        gap: 8px;
+        overflow-x: auto;
+        order: 2;
+        margin-top: 20px;
       }
-      .pocketStrip{
-        gap: 10px;
-        padding: 0 10px;
+
+      .bookmark{
+        width: 45px;
+        height: 65px;
+        flex-shrink: 0;
       }
-      .pocket{
-        width: 60px;
-        height: 80px;
+
+      .mainDisplay{
+        padding: 0 20px;
+        order: 1;
       }
-      .pocketThumb{
-        height: 50px;
+
+      .imageWrapper img{
+        max-height: 55vh;
       }
     }
 
@@ -383,30 +390,23 @@
   </button>
 
   <div class="container">
-    <!-- 大图展示区 -->
+    <!-- 左侧书签条 -->
+    <div class="bookmarkStrip" id="bookmarkStrip"></div>
+
+    <!-- 主展示区 -->
     <div class="mainDisplay">
       <div class="imageWrapper">
         <img id="mainImage" src="" alt="">
       </div>
-      <div class="archiveInfo">
-        <div class="label">NO.</div>
-        <div class="value" id="infoNum">001</div>
-        <div class="label">TIME</div>
-        <div class="value" id="infoTime">21:15:11</div>
-        <div class="label">YEAR</div>
-        <div class="value" id="infoYear">2025</div>
-        <div class="label">MEDIUM</div>
-        <div class="value" id="infoMedium">Digital Art</div>
+      <div class="imageInfo">
+        <span id="infoNum">001</span>
+        <span id="infoYear">2025</span>
       </div>
     </div>
+  </div>
 
-    <!-- 档案袋条 -->
-    <div class="pocketStrip" id="pocketStrip"></div>
-
-    <!-- 邮箱 -->
-    <div class="emailWrap">
-      <span id="emailCopy" class="emailCopy" title="Click to copy">wenhao_liu888@163.com</span>
-    </div>
+  <div class="emailWrap">
+    <span id="emailCopy" class="emailCopy" title="Click to copy">wenhao_liu888@163.com</span>
   </div>
 
   <script>
@@ -659,14 +659,12 @@
     const menuCloseBtn = document.getElementById('menuCloseBtn');
 
     if(menuToggle && fullscreenMenu){
-      // 获取网站根目录
       const pathParts = location.pathname.split("/").filter(Boolean);
       const BASE = pathParts.length > 0 ? "/" + pathParts[0] + "/" : "/";
 
       const menuItems = fullscreenMenu.querySelectorAll('.menuItem');
       menuItems.forEach(item => {
         const currentHref = item.getAttribute('href');
-        // 修复所有相对路径
         if (currentHref && !currentHref.startsWith('/')) {
           item.setAttribute('href', BASE + currentHref);
         }
@@ -692,81 +690,69 @@
     }
   </script>
 
-  <!-- 档案袋数据 -->
+  <!-- 档案数据 -->
   <script>
     document.addEventListener('DOMContentLoaded', () => {
+      // 使用 Yellow River 项目图片作为示例
       const images = [
-        { num: '001', time: '21:15:11', year: '2025', medium: 'Digital Art', src: './assets/001.jpg', thumb: './assets/thumbs/001.jpg' },
-        { num: '002', time: '00:06:12', year: '2025', medium: 'Digital Art', src: './assets/002.jpg', thumb: './assets/thumbs/002.jpg' },
-        { num: '003', time: '18:11:58', year: '2025', medium: 'Digital Art', src: './assets/003.jpg', thumb: './assets/thumbs/003.jpg' },
-        { num: '004', time: '22:58:27', year: '2025', medium: 'Digital Art', src: './assets/004.jpg', thumb: './assets/thumbs/004.jpg' },
-        { num: '005', time: '02:06:58', year: '2025', medium: 'Digital Art', src: './assets/005.jpg', thumb: './assets/thumbs/005.jpg' },
-        { num: '006', time: '02:06:59', year: '2025', medium: 'Digital Art', src: './assets/006.jpg', thumb: './assets/thumbs/006.jpg' },
-        { num: '007', time: '21:15:11', year: '2025', medium: 'Digital Art', src: './assets/007.jpg', thumb: './assets/thumbs/007.jpg' },
-        { num: '008', time: '00:06:12', year: '2025', medium: 'Digital Art', src: './assets/008.jpg', thumb: './assets/thumbs/008.jpg' },
-        { num: '009', time: '18:11:58', year: '2025', medium: 'Digital Art', src: './assets/009.jpg', thumb: './assets/thumbs/009.jpg' }
+        { num: '001', year: '2025', src: '../assets/yellow-river/01.jpg', thumb: '../assets/yellow-river/01.jpg' },
+        { num: '002', year: '2025', src: '../assets/yellow-river/02.jpg', thumb: '../assets/yellow-river/02.jpg' },
+        { num: '003', year: '2025', src: '../assets/yellow-river/03.jpg', thumb: '../assets/yellow-river/03.jpg' },
+        { num: '004', year: '2024', src: '../assets/frontispiece/01.jpg', thumb: '../assets/frontispiece/01.jpg' },
+        { num: '005', year: '2024', src: '../assets/frontispiece/02.jpg', thumb: '../assets/frontispiece/02.jpg' },
+        { num: '006', year: '2023', src: '../assets/formless-buddha/01.jpg', thumb: '../assets/formless-buddha/01.jpg' },
+        { num: '007', year: '2023', src: '../assets/formless-buddha/02.jpg', thumb: '../assets/formless-buddha/02.jpg' }
       ];
 
       let currentIndex = 0;
       const mainImage = document.getElementById('mainImage');
       const infoNum = document.getElementById('infoNum');
-      const infoTime = document.getElementById('infoTime');
       const infoYear = document.getElementById('infoYear');
-      const infoMedium = document.getElementById('infoMedium');
-      const pocketStrip = document.getElementById('pocketStrip');
+      const bookmarkStrip = document.getElementById('bookmarkStrip');
 
-      // 创建档案袋
-      function createPockets() {
+      function createBookmarks() {
         images.forEach((img, index) => {
-          const pocket = document.createElement('div');
-          pocket.className = 'pocket' + (index === 0 ? ' active' : '');
-          pocket.innerHTML = `
-            <div class="pocketNum">${img.num}</div>
-            <img class="pocketThumb" src="${img.thumb}" alt="${img.num}">
+          const bookmark = document.createElement('div');
+          bookmark.className = 'bookmark' + (index === 0 ? ' active' : '');
+          bookmark.innerHTML = `
+            <img src="${img.thumb}" alt="${img.num}">
+            <div class="bookmarkNum">${img.num}</div>
           `;
-          pocket.addEventListener('click', () => showImage(index));
-          pocketStrip.appendChild(pocket);
+          bookmark.addEventListener('click', () => showImage(index));
+          bookmarkStrip.appendChild(bookmark);
         });
       }
 
-      // 显示指定图片
       function showImage(index) {
         currentIndex = index;
         const img = images[index];
 
         mainImage.src = img.src;
         infoNum.textContent = img.num;
-        infoTime.textContent = img.time;
         infoYear.textContent = img.year;
-        infoMedium.textContent = img.medium;
 
-        // 更新档案袋高亮
-        const pockets = pocketStrip.querySelectorAll('.pocket');
-        pockets.forEach((p, i) => {
-          p.classList.toggle('active', i === index);
+        const bookmarks = bookmarkStrip.querySelectorAll('.bookmark');
+        bookmarks.forEach((b, i) => {
+          b.classList.toggle('active', i === index);
         });
       }
 
-      // 上一张
       function showPrev() {
         currentIndex = (currentIndex - 1 + images.length) % images.length;
         showImage(currentIndex);
       }
 
-      // 下一张
       function showNext() {
         currentIndex = (currentIndex + 1) % images.length;
         showImage(currentIndex);
       }
 
-      // 键盘导航
       document.addEventListener('keydown', (e) => {
         if(e.key === 'ArrowLeft') showPrev();
         if(e.key === 'ArrowRight') showNext();
       });
 
-      // 初始化
-      createPockets();
+      createBookmarks();
       showImage(0);
     });
   </script>
