@@ -4,133 +4,224 @@
 
 ---
 
-## 最新状态（2025-01-16 晚）
+## 最新状态（2025-01-17 晚）
 
-### 最新完成 - v1.9.7-d
+### 最新完成 - v5
 
 | 问题 | 方案 | 状态 |
 |------|------|------|
-| 手机端导航失灵 | DOMContentLoaded + toUpperCase | ✅ |
-| Images 页面布局 | 缩略图 45×6px，作品绝对居中 | ✅ |
+| 手机端导航失灵（第8次尝试） | 最原始JS方法：onclick + getElementsByTagName + window.location | ✅ 已推送 |
+| Images页面缩略图不流畅 | 添加图片预加载功能 | ✅ |
+| Images页面布局 | 70px对称padding，12×45px缩略图，3px间距 | ✅ |
+| 图片编号设计 | 9组独特数字（X·Y·Z·W格式，四个不同） | ✅ |
 
-**Git 提交：** `15d53d2`
+**Git 提交：** `b2b9f1f`
 
 **测试地址：** https://wenhaoliu6688-del.github.io/my-art-website/
 
 ---
 
-## 完整讨论过程与方案（2025-01-16）
+## 2025-01-17 完整修复过程
 
-### 第 1 轮讨论 - Images 页面布局
+### 问题1：Images 页面布局和编号设计
 
-**用户原始反馈：**
-- 作品完全没有居中
-- 缩略图太高
-- 如果移到左边，应该横着往下排
-- "左侧竖着排太丑了"
+**用户需求：**
+- 作品必须居中，左右对称
+- 缩略图要"条形码一样的小小的"
+- 缩略图上移除编号显示
+- 右侧信息栏保留编号，但要重新设计
 
-**讨论过程：**
-1. 提出方案 A（左侧单列横条）、B（左侧网格）、C（保持底部）
-2. 用户选择 A
-3. 用户要求"作品绝对居中，两边都不会侵占作品"
-4. 缩略图尺寸讨论：
-   - 50×4px → "太长了"
-   - 42×6px vs 43×6px → 选 42×6
-   - 40×5px → "再宽一点高一点"
-   - 42×6px vs 40×5px → 对比后用户选 45×6
+**缩略图尺寸讨论：**
+- 20×36px → 太高
+- 12×45px → 用户确认
 
-**最终确定方案：**
+**数字编号规则（永久）：**
+1. 格式：`A·B·C·D`，用间隔号·分隔
+2. 四个数字必须都不相同
+3. 要有数学美感（斐波那契、质数等）
+4. 整体要有递进的节奏感
+
+**最终确定的9组编号：**
 ```
-┌────┬──────────────────────────┬────┐
-│缩略│      [作品绝对居中]      │信息│
-│45px│      (flex: 1)          │    │
-│    │                          │    │
-└────┴──────────────────────────┴────┘
+001: 1·2·3·5  (斐波那契开头)
+002: 2·3·5·8  (斐波那契继续)
+003: 1·4·6·9  (递增节奏)
+004: 2·5·7·11 (质数混合)
+005: 3·4·8·12 (倍数关系)
+006: 1·6·9·14 (更大跨度)
+007: 2·7·11·16 (递进感)
+008: 3·8·13·18 (继续递进)
+009: 4·9·14·21 (完整收尾)
 ```
 
-### 第 2 轮讨论 - 缩略图尺寸
+**将来添加图片时继续按此规律设计！**
 
-**用户要求：** "条形码一样的小小的"
+---
 
-**讨论过程：**
-- 当前 40×25 → 用户说太高
-- 50×4 → "太长了"
-- 42×6, 43×6 → 用户问 40×5
-- 40×5 → "再宽一点高一点"
-- 42×6 → 用户确认
-- 后又改为 45×6
+### 问题2：手机端导航失灵（第8次修复）
 
-**最终确定：45px × 6px**
+**用户愤怒反馈：** "改了七八回了，手机端依旧失灵...太过分了"
 
-**缩略图间距：** 从 8px 缩小一半 → **4px**
+**修复历程：**
 
-### 第 3 轮讨论 - 手机端导航失灵
+| 版本 | 方法 | 结果 |
+|------|------|------|
+| v1-v7 | addEventListener + preventDefault + stopPropagation | ❌ 失败 |
+| v3 | 选择器 `.menuItem, .menuCategoryTitle` + tagName检查 | ❌ 失败 |
+| v4 | 简化：移除preventDefault，用style直接控制 | ❌ 失败 |
+| v5 | **最原始方法**：onclick + getElementsByTagName + window.location + setTimeout | ✅ 已推送 |
 
-**用户反馈：** "改了七八回了，手机端依旧失灵，无法测试任何页面"
-
-**根本原因分析：**
-- `tagName === 'A'` 可能因大小写问题失败
-- 缺少 DOMContentLoaded 确保元素加载
-- BASE 路径计算方式与 images 页面不一致
-
-**最终修复方案：**
+**v5 最终代码（所有6个页面统一）：**
 ```javascript
 document.addEventListener('DOMContentLoaded', function() {
-  // 使用 filter(Boolean) 方式计算 BASE
-  const pathParts = location.pathname.split("/").filter(Boolean);
-  const BASE = pathParts.length > 0 ? "/" + pathParts[0] + "/" : "/";
+  var menuToggle = document.getElementById('menuToggle');
+  var fullscreenMenu = document.getElementById('fullscreenMenu');
+  var menuCloseBtn = document.getElementById('menuCloseBtn');
 
-  // 使用 toUpperCase() 避免大小写问题
-  if(item.tagName && item.tagName.toUpperCase() === 'A'){
-    // ...
+  if(!menuToggle || !fullscreenMenu) return;
+
+  // 计算 BASE
+  var pathParts = location.pathname.split("/").filter(Boolean);
+  var BASE = pathParts.length > 0 ? "/" + pathParts[0] + "/" : "/";
+
+  // setTimeout 确保DOM准备好，用原始方法
+  setTimeout(function() {
+    var links = fullscreenMenu.getElementsByTagName('a');
+    for(var i = 0; i < links.length; i++) {
+      (function(link) {
+        var href = link.getAttribute('href');
+        if(href && !href.startsWith('/') && !href.startsWith('http')) {
+          link.href = BASE + href;
+        }
+        // 直接设置 onclick 跳转
+        link.onclick = function() {
+          window.location = this.href;
+          return false;
+        };
+      })(links[i]);
+    }
+  }, 100);
+
+  // 打开菜单
+  menuToggle.onclick = function() {
+    fullscreenMenu.style.display = 'block';
+    fullscreenMenu.style.opacity = '1';
+    fullscreenMenu.style.pointerEvents = 'auto';
+    document.body.style.overflow = 'hidden';
+  };
+
+  // 关闭菜单
+  function closeMenu() {
+    fullscreenMenu.style.opacity = '0';
+    fullscreenMenu.style.pointerEvents = 'none';
   }
+
+  menuCloseBtn.onclick = closeMenu;
+  fullscreenMenu.onclick = function(e) {
+    if(e.target === fullscreenMenu) closeMenu();
+  };
 });
+```
+
+**关键点：**
+- 使用 `var` 代替 `const/let`
+- 使用 `onclick` 代替 `addEventListener`
+- 使用 `getElementsByTagName` 代替 `querySelectorAll`
+- 使用 `window.location` 直接跳转
+- 添加 `setTimeout(100ms)` 确保 DOM 完全准备好
+
+**修复的文件（共6个）：**
+1. `index.html`
+2. `images/index.html`
+3. `projects/formless-buddha/index.html`
+4. `projects/frontispiece/index.html`
+5. `projects/yellow-river/index.html`
+6. `projects/yellow/index.html`
+
+---
+
+### 问题3：Images 页面缩略图点击不流畅
+
+**原因：** 图片太大，每次切换都要重新加载
+
+**解决方案：** 添加图片预加载
+```javascript
+// 预加载所有图片
+function preloadImages() {
+  images.forEach(imgData => {
+    const img = new Image();
+    img.src = imgData.src;
+  });
+}
+
+// 初始化时调用
+preloadImages();
+createBookmarks();
+showImage(0);
 ```
 
 ---
 
-## 最终确定的代码修改
+## 最终确定的代码样式
 
-### index.html（首页）
+### images/index.html 布局
 
-**全屏菜单脚本（786-840 行）：**
-- 用 `DOMContentLoaded` 包裹
-- `tagName.toUpperCase()` 避免大小写问题
-- 使用 `filter(Boolean)` 计算 BASE
-- 添加 `e.stopPropagation()`
-
-### images/index.html
-
-**主容器（108-114 行）：**
 ```css
-.container{
-  padding: 100px 60px 160px 60px;  /* 统一左右 padding */
-}
-```
-
-**主展示区（117-124 行）：**
-```css
+/* 主展示区 - 70px对称居中 */
 .mainDisplay{
-  padding: 0;  /* 移除不对称 padding */
+  padding: 0 70px;
 }
-```
 
-**缩略图区域（154-169 行）：**
-```css
+/* 缩略图 */
 .archivePool{
-  width: 45px;
-  gap: 4px;
-  align-items: center;  /* 自身居中 */
+  gap: 3px;
+}
+.archiveBookmark{
+  width: 12px;
+  height: 45px;
+}
+/* 删除了 .bookmarkNum 相关CSS */
+```
+
+### 手机端也统一
+
+```css
+@media (max-width: 1024px){
+  .mainDisplay{
+    padding: 0 70px;  /* 手机端也保持70px */
+  }
+  .archiveBookmark{
+    width: 12px;
+    height: 45px;
+  }
 }
 ```
 
-**缩略图（171-180 行）：**
-```css
-.archiveBookmark{
-  width: 45px;
-  height: 6px;
-}
+---
+
+## Git 提交历史（2025-01-17）
+
 ```
+b2b9f1f Fix v5: Mobile nav with most basic JS methods
+4fb4717 Fix v4: Rewrite mobile navigation + add image preload
+d531cb3 Fix: Mobile navigation + Images layout redesign
+d772849 Revert Images to bottom layout, fix mobile nav
+```
+
+---
+
+## 重要提醒给 Claude
+
+1. **不要改动任何已有功能**，除非用户明确要求
+2. **每次修改前**先说明要改哪个文件、哪几行、为什么
+3. **修改后**必须提供网站链接让用户测试
+4. **一次只处理一个问题**
+5. **始终用中文交流**
+6. 用户是编程小白，不懂英语
+7. **任何新改动前，先和用户讨论方案，确认后再动手**
+8. **逐步确认细节**，不要一次性决定所有事情
+9. **手机端导航非常脆弱**，修改时必须非常小心
+10. **数字编号规则**必须永久记住，将来添加图片时继续按此规律设计
 
 ---
 
@@ -146,33 +237,6 @@ document.addEventListener('DOMContentLoaded', function() {
 | **yellow 项目** | **~14.8 MB** | 7 张，待压缩 |
 | **全部图片** | **~38 MB** | |
 
-**待处理：** Yellow 项目图片压缩（用户手动处理）
-
 ---
 
-## Git 提交历史
-
-```
-15d53d2 Fix: Mobile navigation and Images layout (final)
-dc12991 Fix: Mobile navigation and Images layout (left column)
-715e66c Fix: Mobile menu navigation buttons now work
-f3da9e9 Fix: Mobile menu navigation and Images page layout
-b61a2c9 Fix v1.9.7: Complete site-wide bug fixes and layout redesigns
-```
-
----
-
-## 重要提醒给 Claude
-
-1. **不要改动任何已有功能**，除非用户明确要求
-2. **每次修改前**先说明要改哪个文件、哪几行、为什么
-3. **修改后**必须提供网站链接让用户测试
-4. **一次只处理一个问题**
-5. **始终用中文交流**
-6. 用户是编程小白，不懂英语
-7. **任何新改动前，先和用户讨论方案，确认后再动手**
-8. **逐步确认细节**，不要一次性决定所有事情
-
----
-
-*最后更新：2025-01-16 晚*
+*最后更新：2025-01-17 晚*
