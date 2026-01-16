@@ -795,7 +795,7 @@
       const BASE = REPO ? `/${REPO}/` : "/";
 
       // 动态设置菜单链接
-      const menuItems = fullscreenMenu.querySelectorAll('.menuItem');
+      const menuItems = fullscreenMenu.querySelectorAll('.menuItem, .menuCategoryTitle');
       menuItems.forEach(item => {
         const currentHref = item.getAttribute('href');
         // 跳过相对父目录路径(../)和绝对路径(/)
