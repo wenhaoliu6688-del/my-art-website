@@ -863,47 +863,58 @@
 
   <script>
     // ===== 全屏菜单控制（手机端）=====
-    const menuToggle = document.getElementById('menuToggle');
-    const fullscreenMenu = document.getElementById('fullscreenMenu');
-    const menuCloseBtn = document.getElementById('menuCloseBtn');
+    // 确保 DOM 加载完成后执行
+    document.addEventListener('DOMContentLoaded', function() {
+      const menuToggle = document.getElementById('menuToggle');
+      const fullscreenMenu = document.getElementById('fullscreenMenu');
+      const menuCloseBtn = document.getElementById('menuCloseBtn');
 
-    if(menuToggle && fullscreenMenu){
-      // 动态设置BASE路径（与首页使用相同的逻辑）
-      const REPO = location.pathname.split("/").filter(Boolean).length > 2 ? "/" + location.pathname.split("/")[1] + "/" : "/";
-      const BASE = REPO;
+      if(menuToggle && fullscreenMenu){
+        const pathParts = location.pathname.split("/").filter(Boolean);
+        const BASE = pathParts.length > 0 ? "/" + pathParts[0] + "/" : "/";
 
-      // 动态设置菜单链接
-      const menuItems = fullscreenMenu.querySelectorAll('.menuItem');
-      menuItems.forEach(item => {
-        const currentHref = item.getAttribute('href');
-        // 跳过相对父目录路径(../)和绝对路径(/)
-        // 只处理纯相对路径，如"projects/yellow/"
-        if (currentHref && !currentHref.startsWith('/') && !currentHref.startsWith('../')) {
-          item.setAttribute('href', BASE + currentHref);
-        }
-      });
+        // 同时处理 menuItem 和 menuCategoryTitle
+        const menuItems = fullscreenMenu.querySelectorAll('.menuItem, .menuCategoryTitle');
+        menuItems.forEach(function(item) {
+          // 检查是否为 A 标签
+          if(item.tagName && item.tagName.toUpperCase() === 'A'){
+            const currentHref = item.getAttribute('href');
+            if (currentHref && !currentHref.startsWith('/') && !currentHref.startsWith('../')) {
+              var finalHref = BASE + currentHref;
+              item.setAttribute('href', finalHref);
 
-      // 打开菜单
-      menuToggle.addEventListener('click', (e) => {
-        e.stopPropagation();
-        fullscreenMenu.classList.add('is-open');
-        document.body.style.overflow = 'hidden';
-      });
+              // 添加点击事件确保跳转
+              item.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                window.location.href = finalHref;
+              });
+            }
+          }
+        });
 
-      // 关闭按钮
-      menuCloseBtn.addEventListener('click', () => {
-        fullscreenMenu.classList.remove('is-open');
-        document.body.style.overflow = '';
-      });
+        // 打开菜单
+        menuToggle.addEventListener('click', function(e) {
+          e.stopPropagation();
+          fullscreenMenu.classList.add('is-open');
+          document.body.style.overflow = 'hidden';
+        });
 
-      // 点击菜单外部关闭
-      fullscreenMenu.addEventListener('click', (e) => {
-        if(e.target === fullscreenMenu){
+        // 关闭按钮
+        menuCloseBtn.addEventListener('click', function() {
           fullscreenMenu.classList.remove('is-open');
           document.body.style.overflow = '';
-        }
-      });
-    }
+        });
+
+        // 点击菜单外部关闭
+        fullscreenMenu.addEventListener('click', function(e) {
+          if(e.target === fullscreenMenu){
+            fullscreenMenu.classList.remove('is-open');
+            document.body.style.overflow = '';
+          }
+        });
+      }
+    });
   </script>
 
 </body>
