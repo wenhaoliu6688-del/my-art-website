@@ -274,7 +274,7 @@
       .menuToggle{ display: block; }
 
       .container{
-        padding: -15px 20px 140px;
+        padding: 0 20px 140px;
       }
 
       .mainDisplay{
@@ -284,9 +284,11 @@
 
       .imageWrapper{
         max-width: 100%;
+        margin-top: -40px;
       }
       .imageWrapper img{
-        max-height: 95vh;
+        max-height: 100vh;
+        width: auto;
       }
 
       .imageInfo{
@@ -408,6 +410,13 @@
       /* iPad端：文字放在图片上方，避免宽幅作品冲突 */
       .mainDisplay{
         flex-direction: column !important;
+        padding: 0 !important;
+      }
+      .imageWrapper{
+        margin-top: 0 !important;
+      }
+      .imageWrapper img{
+        max-height: 80vh !important;
       }
       .imageInfo{
         position: static !important;
@@ -415,13 +424,13 @@
         top: auto !important;
         transform: none !important;
         text-align: center !important;
-        margin-bottom: 15px;
+        margin-bottom: 15px !important;
         order: -1 !important;
       }
       /* iPad端：缩印图按钮增大 */
       .archiveBookmark{
-        width: 40px;
-        height: 80px;
+        width: 40px !important;
+        height: 80px !important;
       }
     }
 
