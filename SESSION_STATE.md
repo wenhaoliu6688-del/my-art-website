@@ -1,105 +1,222 @@
 # HARRY6 工作状态记录
 
-> 给新对话 Claude：**必须先读取这个文件！这能保证工作连续性。**
+> **给新对话 Claude 或任何 AI 工具：必须先读取这个文件！这能保证工作连续性。**
 
 ---
 
-## 最新状态（2025-01-17 晚 - 已完成）
+## 最新状态（2025-01-17 晚 - 最终完成）
 
-### Images底部导航改造完成
+**最新Git提交：** `92e6aa3` (Mobile raise 90px more)
 
-| 问题 | 方案 | 状态 |
-|------|------|------|
-| Images手机端作品太靠下 | 减小padding为50px | ✅ 已完成 |
-| iPad端宽幅作品与文字冲突 | 文字移到图片上方 | ✅ 已完成 |
-| Yellow手机端作品太靠上 | 往下移100px | ✅ 已完成 |
-
-**最新Git提交：** `97fc7cd` (Mobile padding 50px, iPad text above image)
+**所有主要功能已完成：**
+- ✅ Images 页面布局（手机/iPad/电脑端都OK）
+- ✅ 手机端导航修复（v7 双事件方案）
+- ✅ 所有 Projects 页面正常
+- ✅ 数字编号系统已建立
 
 ---
 
-## 正在进行的改造：Images底部导航
+## 网站结构（重要！）
 
-### 确认的设计方案
-
-**应用范围：** 手机端 + iPad端（电脑端保持现状）
-
-| 项目 | 确认值 |
-|------|--------|
-| 图片大小 | 95vh（手机端） |
-| 缩印图数量 | 固定7个，滑动窗口 |
-| 缩印图样式 | 保持原样 12px×45px竖条 |
-| 箭头按钮 | 38px×38px圆形（和Yellow一样） |
-| 箭头和缩印图间距 | 24px |
-| 高亮方式 | 黑色背景 |
-
-**布局示意：**
 ```
-[ ← ] ░░░░░░░░░░░░░ [ → ]
+my-art-website-main/
+├── index.html                    # 首页（p5.js 动画）
+├── images/
+│   └── index.html                # Images 页面
+│   └── assets/
+│       ├── *.jpg                 # 大图
+│       └── thumbs/
+│           └── *.jpg             # 缩印图
+├── projects/
+│   ├── yellow-river/
+│   │   └── index.html            # Yellow River 项目
+│   ├── frontispiece/
+│   │   └── index.html            # Frontispiece 项目
+│   ├── formless-buddha/
+│   │   └── index.html            # Formless Buddha 项目
+│   └── yellow/
+│       └── index.html            # Yellow 项目
+├── about/
+│   └── index.html                # About 页面
+└── SESSION_STATE.md              # 本文件
 ```
-左箭头 + 7个缩印图 + 右箭头
-
-**滑动窗口逻辑：**
-- 第1张图：显示 1-7
-- 第50张图：显示 47-53
-- 第100张图：显示 94-100
-- 当前图片始终在中间（第4个位置）
 
 ---
 
-## 2025-01-17 完整修复过程
+## 一、如何添加新图片到 Images 页面
 
-### 问题1：Images 页面布局和编号设计
+**用户只需准备图片，然后找 Claude Code 帮忙。**
 
-**用户需求：**
-- 作品必须居中，左右对称
-- 缩略图要"条形码一样的小小的"
-- 缩略图上移除编号显示
-- 右侧信息栏保留编号，但要重新设计
+### 步骤：
 
-**缩略图尺寸讨论：**
-- 20×36px → 太高
-- 12×45px → 用户确认
+1. **准备图片文件**
+   - 大图放到：`images/assets/` 文件夹
+   - 小图放到：`images/assets/thumbs/` 文件夹
+   - 文件名按顺序：`010.jpg`, `011.jpg`, `012.jpg`...
+   - 建议图片宽度：1920px 或更大
+   - 建议缩印图尺寸：12px × 45px
 
-**数字编号规则（永久）：**
-1. 格式：`A·B·C·D`，用间隔号·分隔
-2. 四个数字必须都不相同
-3. 要有数学美感（斐波那契、质数等）
-4. 整体要有递进的节奏感
+2. **找 Claude Code**
+   - 说："我要在 Images 页面加一张新图片"
+   - Claude 会自动帮你写代码
 
-**最终确定的9组编号：**
-```
-001: 1·2·3·5  (斐波那契开头)
-002: 2·3·5·8  (斐波那契继续)
-003: 1·4·6·9  (递增节奏)
-004: 2·5·7·11 (质数混合)
-005: 3·4·8·12 (倍数关系)
-006: 1·6·9·14 (更大跨度)
-007: 2·7·11·16 (递进感)
-008: 3·8·13·18 (继续递进)
-009: 4·9·14·21 (完整收尾)
+### 代码格式（供 Claude 参考）：
+
+在 `images/index.html` 的 `images` 数组中添加一行：
+
+```javascript
+{
+  code: '新编号',     // 见下方编号规则
+  year: '2025',       // 年份
+  medium: 'Digital Art', // 媒介
+  src: './assets/010.jpg',           // 大图路径
+  thumb: './assets/thumbs/010.jpg'   // 小图路径
+}
 ```
 
-**将来添加图片时继续按此规律设计！**
+### 数字编号规则（永久）：
+
+格式：`A·B·C·D`（用间隔号 · 分隔）
+
+规则：
+1. 四个数字必须都不相同
+2. 要有数学美感（斐波那契、质数等）
+3. 整体要有递进的节奏感
+
+**现有9组编号（继续按此规律）：**
+```
+001: 1·2·3·5   (斐波那契)
+002: 2·3·5·8   (斐波那契)
+003: 1·4·6·9   (递增)
+004: 2·5·7·11  (质数混合)
+005: 3·4·8·12  (倍数)
+006: 1·6·9·14  (跨度)
+007: 2·7·11·16 (递进)
+008: 3·8·13·18 (递进)
+009: 4·9·14·21 (收尾)
+```
+
+**下一个可以是：** `1·5·12·22`, `2·9·15·25` 等...
 
 ---
 
-### 问题2：手机端导航失灵（第9次修复成功）
+## 二、如何添加新 Project 页面
 
-**用户愤怒反馈：** "改了七八回了，手机端依旧失灵...太过分了"
+### 步骤：
 
-**修复历程：**
+1. **创建文件夹**
+   - 在 `projects/` 下创建新文件夹，如 `projects/new-project/`
 
-| 版本 | 方法 | 结果 |
-|------|------|------|
-| v1-v7 | addEventListener + preventDefault + stopPropagation | ❌ 失败 |
-| v3 | 选择器 `.menuItem, .menuCategoryTitle` + tagName检查 | ❌ 失败 |
-| v4 | 简化：移除preventDefault，用style直接控制 | ❌ 失败 |
-| v5 | 最原始方法：onclick + getElementsByTagName | ❌ 失败 |
-| v6 | 跳过相对路径 ../ 和 ./ | ❌ 失败 |
-| v7 | **touchstart + click 双事件 + 视觉反馈** | ✅ 成功！ |
+2. **准备图片**
+   - 把项目图片放到文件夹内
+   - 建议图片文件名简单：`1.jpg`, `2.jpg`...
 
-**v7 最终代码（所有7个页面统一）：**
+3. **复制现有项目页面作为模板**
+   - 推荐：复制 `projects/yellow-river/index.html`
+   - 或复制 `projects/frontispiece/index.html`
+
+4. **修改内容**
+   - 修改标题（`<title>`）
+   - 修改图片数量和路径
+   - 修改项目标题、年份等文字信息
+
+### Claude 可以直接帮你完成整个流程。
+
+---
+
+## 三、最终确定的 CSS 样式（重要！）
+
+### Images 页面 - 手机端 (max-width: 1024px)
+
+```css
+.container {
+  padding: 0 20px 140px;  /* 顶部0，底部140 */
+}
+
+.mainDisplay {
+  padding: 0 40px;
+  flex-direction: column;
+  justify-content: center;
+  margin-top: -115px;  /* 上移，达到居中效果 */
+}
+
+.imageWrapper {
+  margin-top: 0;
+}
+.imageWrapper img {
+  max-height: 85vh;  /* 图片够大 */
+}
+
+.imageInfo {
+  position: static;
+  text-align: center;
+  margin-bottom: 20px;  /* 与图片的间隔 */
+  order: -1;  /* 文字在图片上方 */
+}
+```
+
+### Images 页面 - iPad端 (768px - 1400px，包含横屏)
+
+```css
+@media (min-width: 768px) and (max-width: 1400px) {
+  .mainDisplay {
+    flex-direction: column !important;
+    justify-content: center !important;
+    padding: 0 40px !important;
+  }
+
+  .imageWrapper img {
+    max-height: 50vh !important;  /* 图片适中 */
+  }
+
+  .imageInfo {
+    position: static !important;
+    text-align: center !important;
+    margin-bottom: 30px !important;
+    order: -1 !important;
+  }
+
+  .archiveBookmark {
+    width: 20px !important;
+    height: 45px !important;
+  }
+
+  .navArrow {
+    width: 30px !important;
+    height: 30px !important;
+  }
+}
+```
+
+### Images 页面 - 电脑端
+
+```css
+.mainDisplay {
+  padding: 0 70px;
+}
+
+.imageInfo {
+  position: absolute;
+  right: 60px;
+  top: 50%;
+  transform: translateY(-50%);
+  text-align: right;
+}
+
+.archiveBookmark {
+  width: 12px;
+  height: 45px;
+}
+```
+
+---
+
+## 四、手机端导航修复方案（v7 - 已验证有效）
+
+**问题：** 手机端导航按钮点击不响应
+
+**解决方案：** touchstart + click 双事件 + 视觉反馈
+
 ```javascript
 // 同时绑定 touchstart 和 click
 link.addEventListener('touchstart', navigate, {passive: false});
@@ -108,131 +225,41 @@ link.addEventListener('click', navigate);
 // 导航函数，带视觉反馈
 function navigate(e) {
   if(e) e.preventDefault();
-  link.style.opacity = '0.5';
+  link.style.opacity = '0.5';  // 视觉反馈
   setTimeout(function() {
     window.location.href = link.href;
   }, 50);
 }
 ```
 
-**修复的文件（共7个）：**
-1. `index.html`
-2. `images/index.html`
-3. `about/index.html`
-4. `projects/formless-buddha/index.html`
-5. `projects/frontispiece/index.html`
-6. `projects/yellow-river/index.html`
-7. `projects/yellow/index.html`
+**已修复的页面（共7个）：**
+1. index.html
+2. images/index.html
+3. about/index.html
+4. projects/formless-buddha/index.html
+5. projects/frontispiece/index.html
+6. projects/yellow-river/index.html
+7. projects/yellow/index.html
+
+**警告：不要轻易改动手机端导航代码！**
 
 ---
 
-### 问题3：Images 页面缩略图点击不流畅
+## 五、Git 提交历史
 
-**原因：** 图片太大，每次切换都要重新加载
-
-**解决方案：** 添加图片预加载
-```javascript
-// 预加载所有图片
-function preloadImages() {
-  images.forEach(imgData => {
-    const img = new Image();
-    img.src = imgData.src;
-  });
-}
+```
+92e6aa3 Fix: Mobile raise 90px more (3x)
+2d5613a Fix: Mobile 5px padding, iPad 50vh image
+f878db4 Fix: Mobile 15px padding, iPad smaller elements
+bb8d91c Fix: Proper centering, iPad landscape support, no overlap
+428b69b Fix: Mobile raise 30px more with negative margin
 ```
 
 ---
 
-### 问题4：手机端/iPad端布局调整
+## 六、重要提醒给 Claude/AI 工具
 
-**修改内容：**
-
-| 页面 | 修改 | 状态 |
-|------|------|------|
-| Yellow | 手机端往下移100px | ✅ |
-| Images | 图片95vh，文字移到上方 | ✅ |
-| Images | 手机端padding减小为50px | ✅ |
-| Images | iPad文字移到图片上方（避免宽图冲突） | ✅ |
-| Images | 左右箭头 + 7个缩印图滑动窗口 | ✅ |
-
----
-
-## 最终确定的代码样式
-
-### images/index.html 布局（当前）
-
-```css
-/* 主展示区 - 70px对称居中 */
-.mainDisplay{
-  padding: 0 70px;
-}
-
-/* 缩略图 */
-.archivePool{
-  gap: 3px;
-}
-.archiveBookmark{
-  width: 12px;
-  height: 45px;
-}
-```
-
-### 手机端
-
-```css
-@media (max-width: 1024px){
-  .mainDisplay{
-    padding: 0 70px;
-    flex-direction: column;  /* 文字在上方 */
-  }
-  .imageWrapper img{
-    max-height: 95vh;  /* 图片尽量大 */
-  }
-  .imageInfo{
-    position: static;
-    text-align: center;
-    order: -1;  /* 文字在图片上方 */
-  }
-}
-```
-
----
-
-## 如何添加新图片（重要！）
-
-**用户不会编程，只需：**
-
-1. **准备图片文件**
-   - 大图放到 `images/assets/` 文件夹
-   - 小图放到 `images/assets/thumbs/` 文件夹
-   - 文件名按顺序：010.jpg, 011.jpg...
-
-2. **找 Claude Code 帮忙**
-   - 说："我要在Images页面加一张新图片"
-   - Claude 会帮你写好那行代码
-
-**代码格式示例：**
-```javascript
-{ code: '新编号', year: '2025', medium: 'Digital Art', src: './assets/010.jpg', thumb: './assets/thumbs/010.jpg' }
-```
-
-**新的导航逻辑会自动适配任意数量的图片，无需修改其他代码。**
-
----
-
-## Git 提交历史（2025-01-17）
-
-```
-97fc7cd Fix: Mobile padding 50px, iPad text above image
-8ea2a2d Feat: Images navigation - 95vh image, arrow buttons, 7-thumbnail slider
-3efa552 Fix: Yellow 100px padding, Images 85vh text above, iPad 40x80px buttons
-f2bf11b Fix: Mobile layout adjustments - Yellow padding, Images size, iPad buttons
-2d106ee Fix v7: Add touchstart + click dual events with visual feedback
-```
-
----
-
-## 重要提醒给 Claude
+### 必须遵守的规则：
 
 1. **不要改动任何已有功能**，除非用户明确要求
 2. **每次修改前**先说明要改哪个文件、哪几行、为什么
@@ -244,11 +271,21 @@ f2bf11b Fix: Mobile layout adjustments - Yellow padding, Images size, iPad butto
 8. **逐步确认细节**，不要一次性决定所有事情
 9. **手机端导航已修复（v7）**，不要轻易改动
 10. **数字编号规则**必须永久记住
-11. **用户只会用Claude Code**，不会自己写代码
+11. **用户只会用 Claude Code**，不会自己写代码
+12. **CSS 不支持负值 padding**，要用负 margin 代替
+13. **iPad 横屏宽度 > 1024px**，媒体查询要覆盖到 1400px
+
+### 部署流程：
+
+```
+修改代码 → git commit → git push → 等待1-2分钟 → GitHub Pages 自动部署
+```
+
+**测试链接：** https://wenhaoliu6688-del.github.io/my-art-website/
 
 ---
 
-## 图片文件统计
+## 七、图片文件统计
 
 | 目录 | 总大小 | 说明 |
 |------|--------|------|
@@ -257,9 +294,10 @@ f2bf11b Fix: Mobile layout adjustments - Yellow padding, Images size, iPad butto
 | frontispiece | ~6.3 MB | 9 张 |
 | yellow-river | ~2.1 MB | 3 张 |
 | images/assets | ~6.8 MB | 9 张主图 |
-| **yellow 项目** | **~14.8 MB** | 7 张，待压缩 |
+| **yellow 项目** | **~14.8 MB** | 7 张 |
 | **全部图片** | **~38 MB** | |
 
 ---
 
-*最后更新：2025-01-17 晚 - 所有布局问题已完成*
+*最后更新：2025-01-17 晚 - 网站建设已完成*
+*感谢 Claude Opus 4.5 的协助*
