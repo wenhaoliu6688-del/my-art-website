@@ -678,54 +678,51 @@
   </div>
 
   <script>
-    // 确保 DOM 加载完成后执行
+    // 全屏菜单脚本 - 简化版，更可靠
     document.addEventListener('DOMContentLoaded', function() {
       const menuToggle = document.getElementById('menuToggle');
       const fullscreenMenu = document.getElementById('fullscreenMenu');
       const menuCloseBtn = document.getElementById('menuCloseBtn');
 
-      if(menuToggle && fullscreenMenu){
-        const pathParts = location.pathname.split("/").filter(Boolean);
-        const BASE = pathParts.length > 0 ? "/" + pathParts[0] + "/" : "/";
+      if(!menuToggle || !fullscreenMenu) return;
 
-        // 同时处理 menuItem 和 menuCategoryTitle
-        const menuItems = fullscreenMenu.querySelectorAll('.menuItem, .menuCategoryTitle');
-        menuItems.forEach(function(item) {
-          // 检查是否为 A 标签
-          if(item.tagName && item.tagName.toUpperCase() === 'A'){
-            const currentHref = item.getAttribute('href');
-            if (currentHref && !currentHref.startsWith('/')) {
-              var finalHref = BASE + currentHref;
-              item.setAttribute('href', finalHref);
+      // 计算 BASE 路径
+      const pathParts = location.pathname.split("/").filter(Boolean);
+      const BASE = pathParts.length > 0 ? "/" + pathParts[0] + "/" : "/";
 
-              // 添加点击事件确保跳转
-              item.addEventListener('click', function(e) {
-                e.preventDefault();
-                e.stopPropagation();
-                window.location.href = finalHref;
-              });
-            }
-          }
-        });
+      // 遍历所有菜单链接，直接设置 href
+      const allLinks = fullscreenMenu.querySelectorAll('a');
+      allLinks.forEach(function(link) {
+        const href = link.getAttribute('href');
+        if(href && !href.startsWith('/') && !href.startsWith('http')) {
+          link.setAttribute('href', BASE + href);
+        }
+      });
 
-        menuToggle.addEventListener('click', function(e) {
-          e.stopPropagation();
-          fullscreenMenu.classList.add('is-open');
-          document.body.style.overflow = 'hidden';
-        });
+      // 打开菜单
+      menuToggle.addEventListener('click', function(e) {
+        e.preventDefault();
+        fullscreenMenu.style.display = 'block';
+        fullscreenMenu.style.opacity = '1';
+        fullscreenMenu.style.pointerEvents = 'auto';
+        document.body.style.overflow = 'hidden';
+      });
 
-        menuCloseBtn.addEventListener('click', function() {
-          fullscreenMenu.classList.remove('is-open');
-          document.body.style.overflow = '';
-        });
-
-        fullscreenMenu.addEventListener('click', function(e) {
-          if(e.target === fullscreenMenu){
-            fullscreenMenu.classList.remove('is-open');
-            document.body.style.overflow = '';
-          }
-        });
+      // 关闭菜单
+      function closeMenu() {
+        fullscreenMenu.style.opacity = '0';
+        fullscreenMenu.style.pointerEvents = 'none';
+        document.body.style.overflow = '';
       }
+
+      menuCloseBtn.addEventListener('click', closeMenu);
+
+      // 点击外部关闭
+      fullscreenMenu.addEventListener('click', function(e) {
+        if(e.target === fullscreenMenu) {
+          closeMenu();
+        }
+      });
     });
   </script>
 
@@ -751,6 +748,14 @@
       const infoMedium = document.getElementById('infoMedium');
       const archivePool = document.getElementById('archivePool');
 
+      // 预加载所有图片
+      function preloadImages() {
+        images.forEach(imgData => {
+          const img = new Image();
+          img.src = imgData.src;
+        });
+      }
+
       function createBookmarks() {
         images.forEach((img, index) => {
           const bookmark = document.createElement('div');
@@ -767,6 +772,7 @@
         currentIndex = index;
         const img = images[index];
 
+        // 直接设置src（图片已预加载，会很快显示）
         mainImage.src = img.src;
         infoCode.textContent = img.code;
         infoYear.textContent = img.year;
@@ -793,6 +799,8 @@
         if(e.key === 'ArrowRight') showNext();
       });
 
+      // 初始化
+      preloadImages();
       createBookmarks();
       showImage(0);
     });
