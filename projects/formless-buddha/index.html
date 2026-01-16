@@ -653,51 +653,54 @@
   </div>
 
   <script>
-    // 全屏菜单脚本 - 简化版，更可靠
+    // 全屏菜单 - 使用最原始的方法，确保兼容性
     document.addEventListener('DOMContentLoaded', function() {
-      const menuToggle = document.getElementById('menuToggle');
-      const fullscreenMenu = document.getElementById('fullscreenMenu');
-      const menuCloseBtn = document.getElementById('menuCloseBtn');
+      var menuToggle = document.getElementById('menuToggle');
+      var fullscreenMenu = document.getElementById('fullscreenMenu');
+      var menuCloseBtn = document.getElementById('menuCloseBtn');
 
       if(!menuToggle || !fullscreenMenu) return;
 
       // 计算 BASE 路径
-      const pathParts = location.pathname.split("/").filter(Boolean);
-      const BASE = pathParts.length > 0 ? "/" + pathParts[0] + "/" : "/";
+      var pathParts = location.pathname.split("/").filter(Boolean);
+      var BASE = pathParts.length > 0 ? "/" + pathParts[0] + "/" : "/";
 
-      // 遍历所有菜单链接，直接设置 href
-      const allLinks = fullscreenMenu.querySelectorAll('a');
-      allLinks.forEach(function(link) {
-        const href = link.getAttribute('href');
-        if(href && !href.startsWith('/') && !href.startsWith('http')) {
-          link.setAttribute('href', BASE + href);
+      // 为所有链接设置点击处理 - 使用 setTimeout 确保DOM准备好
+      setTimeout(function() {
+        var links = fullscreenMenu.getElementsByTagName('a');
+        for(var i = 0; i < links.length; i++) {
+          (function(link) {
+            var href = link.getAttribute('href');
+            if(href && !href.startsWith('/') && !href.startsWith('http')) {
+              link.href = BASE + href;
+            }
+            // 直接设置 onclick 跳转
+            link.onclick = function() {
+              window.location = this.href;
+              return false;
+            };
+          })(links[i]);
         }
-      });
+      }, 100);
 
       // 打开菜单
-      menuToggle.addEventListener('click', function(e) {
-        e.preventDefault();
+      menuToggle.onclick = function() {
         fullscreenMenu.style.display = 'block';
         fullscreenMenu.style.opacity = '1';
         fullscreenMenu.style.pointerEvents = 'auto';
         document.body.style.overflow = 'hidden';
-      });
+      };
 
       // 关闭菜单
       function closeMenu() {
         fullscreenMenu.style.opacity = '0';
         fullscreenMenu.style.pointerEvents = 'none';
-        document.body.style.overflow = '';
       }
 
-      menuCloseBtn.addEventListener('click', closeMenu);
-
-      // 点击外部关闭
-      fullscreenMenu.addEventListener('click', function(e) {
-        if(e.target === fullscreenMenu) {
-          closeMenu();
-        }
-      });
+      menuCloseBtn.onclick = closeMenu;
+      fullscreenMenu.onclick = function(e) {
+        if(e.target === fullscreenMenu) closeMenu();
+      };
     });
   </script>
 
