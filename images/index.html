@@ -107,9 +107,10 @@
     /* 主容器 */
     .container{
       display: flex;
-      flex-direction: column;
+      flex-direction: row;
       min-height: 100vh;
       padding: 100px 40px 160px;
+      align-items: center;
     }
 
     /* 主展示区 */
@@ -118,7 +119,7 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 0 60px;
+      padding: 0 60px 0 80px;
       position: relative;
     }
 
@@ -149,22 +150,25 @@
       line-height: 1.8;
     }
 
-    /* 底部档案池 - 书签式缩略图 */
+    /* 左侧档案池 - 单列缩略图 */
     .archivePool{
       display: flex;
-      justify-content: center;
-      gap: 6px;
-      padding: 40px 40px 20px;
-      overflow-x: auto;
+      flex-direction: column;
+      gap: 8px;
+      padding: 0;
+      overflow-y: auto;
+      max-height: 70vh;
       scrollbar-width: none;
+      flex-shrink: 0;
+      width: 60px;
     }
     .archivePool::-webkit-scrollbar{
       display: none;
     }
 
     .archiveBookmark{
-      width: 8px;
-      height: 45px;
+      width: 40px;
+      height: 25px;
       flex-shrink: 0;
       background: #f0f0f0;
       cursor: pointer;
@@ -375,6 +379,34 @@
       .menuToggle{
         display: block !important;
       }
+
+      /* 手机端：缩略图回到底部 */
+      .container{
+        flex-direction: column;
+        padding: 80px 20px 120px;
+      }
+      .mainDisplay{
+        padding: 0;
+      }
+      .archivePool{
+        flex-direction: row;
+        width: auto;
+        max-height: none;
+        overflow-x: auto;
+        overflow-y: auto;
+        gap: 6px;
+        padding: 30px 0 0;
+      }
+      .archiveBookmark{
+        width: 8px;
+        height: 45px;
+      }
+      .imageInfo{
+        position: static;
+        transform: none;
+        text-align: center;
+        margin-top: 20px;
+      }
     }
   </style>
 </head>
@@ -396,6 +428,9 @@
   </button>
 
   <div class="container">
+    <!-- 左侧档案池 -->
+    <div class="archivePool" id="archivePool"></div>
+
     <!-- 主展示区 -->
     <div class="mainDisplay">
       <div class="imageWrapper">
@@ -407,9 +442,6 @@
         <span id="infoMedium"></span>
       </div>
     </div>
-
-    <!-- 底部档案池 -->
-    <div class="archivePool" id="archivePool"></div>
   </div>
 
   <div class="emailWrap">

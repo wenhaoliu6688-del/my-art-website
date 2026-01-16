@@ -801,7 +801,16 @@
         // 跳过相对父目录路径(../)和绝对路径(/)
         // 只处理纯相对路径，如"projects/yellow/"
         if (currentHref && !currentHref.startsWith('/') && !currentHref.startsWith('../')) {
-          item.setAttribute('href', BASE + currentHref);
+          const finalHref = BASE + currentHref;
+          item.setAttribute('href', finalHref);
+
+          // 添加点击事件处理，确保手机端也能正常跳转
+          item.addEventListener('click', (e) => {
+            if(item.tagName === 'A'){
+              e.preventDefault();
+              window.location.href = finalHref;
+            }
+          });
         }
       });
 
