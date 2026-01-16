@@ -60,3 +60,23 @@ Claude should treat this file as the highest authority for all future actions.
 
 
 
+---
+
+## CURRENT STATE (2025-01-16)
+
+**Latest Commit:** dc12991
+
+**Recent Changes:**
+- Mobile navigation: Fixed click event handler for fullscreen menu
+- Images page: Left column thumbnails (40px x 25px), main image absolute centered
+- Images mobile: Thumbnails return to bottom on small screens
+
+**Known Issues / Pending:**
+- Yellow project images need compression (14.8 MB → ~9 MB using TinyPNG)
+
+**Code Locations:**
+- index.html lines 797-815: Fullscreen menu click handler
+- images/index.html: Flex row layout, left thumbnail column
+
+
+
