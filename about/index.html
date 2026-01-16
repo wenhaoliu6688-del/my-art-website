@@ -648,42 +648,56 @@
   </div>
 
   <script>
-    const menuToggle = document.getElementById('menuToggle');
-    const fullscreenMenu = document.getElementById('fullscreenMenu');
-    const menuCloseBtn = document.getElementById('menuCloseBtn');
+    // 全屏菜单 - 使用最原始的方法，确保兼容性
+    document.addEventListener('DOMContentLoaded', function() {
+      var menuToggle = document.getElementById('menuToggle');
+      var fullscreenMenu = document.getElementById('fullscreenMenu');
+      var menuCloseBtn = document.getElementById('menuCloseBtn');
 
-    if(menuToggle && fullscreenMenu){
-      // 获取网站根目录
-      const pathParts = location.pathname.split("/").filter(Boolean);
-      const BASE = pathParts.length > 0 ? "/" + pathParts[0] + "/" : "/";
+      if(!menuToggle || !fullscreenMenu) return;
 
-      const menuItems = fullscreenMenu.querySelectorAll('.menuItem');
-      menuItems.forEach(item => {
-        const currentHref = item.getAttribute('href');
-        // 修复所有相对路径
-        if (currentHref && !currentHref.startsWith('/')) {
-          item.setAttribute('href', BASE + currentHref);
+      // 计算 BASE 路径
+      var pathParts = location.pathname.split("/").filter(Boolean);
+      var BASE = pathParts.length > 0 ? "/" + pathParts[0] + "/" : "/";
+
+      // 为所有链接设置点击处理 - 使用 setTimeout 确保DOM准备好
+      setTimeout(function() {
+        var links = fullscreenMenu.getElementsByTagName('a');
+        for(var i = 0; i < links.length; i++) {
+          (function(link) {
+            var href = link.getAttribute('href');
+            // 跳过相对路径 ../ 和 ./，它们会自动正确工作
+            if(href && !href.startsWith('/') && !href.startsWith('http') && !href.startsWith('../') && !href.startsWith('./')) {
+              link.href = BASE + href;
+            }
+            // 直接设置 onclick 跳转
+            link.onclick = function() {
+              window.location = this.href;
+              return false;
+            };
+          })(links[i]);
         }
-      });
+      }, 100);
 
-      menuToggle.addEventListener('click', (e) => {
-        e.stopPropagation();
-        fullscreenMenu.classList.add('is-open');
+      // 打开菜单
+      menuToggle.onclick = function() {
+        fullscreenMenu.style.display = 'block';
+        fullscreenMenu.style.opacity = '1';
+        fullscreenMenu.style.pointerEvents = 'auto';
         document.body.style.overflow = 'hidden';
-      });
+      };
 
-      menuCloseBtn.addEventListener('click', () => {
-        fullscreenMenu.classList.remove('is-open');
-        document.body.style.overflow = '';
-      });
+      // 关闭菜单
+      function closeMenu() {
+        fullscreenMenu.style.opacity = '0';
+        fullscreenMenu.style.pointerEvents = 'none';
+      }
 
-      fullscreenMenu.addEventListener('click', (e) => {
-        if(e.target === fullscreenMenu){
-          fullscreenMenu.classList.remove('is-open');
-          document.body.style.overflow = '';
-        }
-      });
-    }
+      menuCloseBtn.onclick = closeMenu;
+      fullscreenMenu.onclick = function(e) {
+        if(e.target === fullscreenMenu) closeMenu();
+      };
+    });
   </script>
 
 </body>

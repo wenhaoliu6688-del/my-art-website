@@ -802,7 +802,8 @@
         for(var i = 0; i < links.length; i++) {
           (function(link) {
             var href = link.getAttribute('href');
-            if(href && !href.startsWith('/') && !href.startsWith('http')) {
+            // 跳过相对路径 ../ 和 ./，它们会自动正确工作
+            if(href && !href.startsWith('/') && !href.startsWith('http') && !href.startsWith('../') && !href.startsWith('./')) {
               link.href = BASE + href;
             }
             // 直接设置 onclick 跳转
