@@ -653,7 +653,7 @@
   </div>
 
   <script>
-    // 全屏菜单 - 使用最原始的方法，确保兼容性
+    // 全屏菜单 - v7版本：支持touch和click，带视觉反馈
     document.addEventListener('DOMContentLoaded', function() {
       var menuToggle = document.getElementById('menuToggle');
       var fullscreenMenu = document.getElementById('fullscreenMenu');
@@ -665,43 +665,65 @@
       var pathParts = location.pathname.split("/").filter(Boolean);
       var BASE = pathParts.length > 0 ? "/" + pathParts[0] + "/" : "/";
 
-      // 为所有链接设置点击处理 - 使用 setTimeout 确保DOM准备好
+      // 为所有链接设置点击处理
       setTimeout(function() {
-        var links = fullscreenMenu.getElementsByTagName('a');
+        var links = fullscreenMenu.querySelectorAll('#fullscreenMenu a');
         for(var i = 0; i < links.length; i++) {
           (function(link) {
             var href = link.getAttribute('href');
-            // 跳过相对路径 ../ 和 ./，它们会自动正确工作
+            // 跳过相对路径 ../ 和 ./
             if(href && !href.startsWith('/') && !href.startsWith('http') && !href.startsWith('../') && !href.startsWith('./')) {
               link.href = BASE + href;
             }
-            // 直接设置 onclick 跳转
-            link.onclick = function() {
-              window.location = this.href;
-              return false;
-            };
+
+            // 导航函数
+            function navigate(e) {
+              if(e) e.preventDefault();
+              if(e) e.stopPropagation();
+              // 视觉反馈
+              link.style.opacity = '0.5';
+              setTimeout(function() {
+                window.location.href = link.href;
+              }, 50);
+            }
+
+            // 同时绑定 touchstart 和 click
+            link.addEventListener('touchstart', navigate, {passive: false});
+            link.addEventListener('click', navigate);
           })(links[i]);
         }
-      }, 100);
+      }, 150);
 
       // 打开菜单
-      menuToggle.onclick = function() {
+      menuToggle.addEventListener('click', function(e) {
+        e.preventDefault();
         fullscreenMenu.style.display = 'block';
-        fullscreenMenu.style.opacity = '1';
-        fullscreenMenu.style.pointerEvents = 'auto';
-        document.body.style.overflow = 'hidden';
-      };
+        setTimeout(function() {
+          fullscreenMenu.classList.add('is-open');
+        }, 10);
+      });
+      menuToggle.addEventListener('touchstart', function(e) {
+        e.preventDefault();
+        fullscreenMenu.style.display = 'block';
+        setTimeout(function() {
+          fullscreenMenu.classList.add('is-open');
+        }, 10);
+      }, {passive: false});
 
       // 关闭菜单
       function closeMenu() {
-        fullscreenMenu.style.opacity = '0';
-        fullscreenMenu.style.pointerEvents = 'none';
+        fullscreenMenu.classList.remove('is-open');
       }
 
-      menuCloseBtn.onclick = closeMenu;
-      fullscreenMenu.onclick = function(e) {
+      menuCloseBtn.addEventListener('click', closeMenu);
+      menuCloseBtn.addEventListener('touchstart', function(e) {
+        e.preventDefault();
+        closeMenu();
+      }, {passive: false});
+
+      fullscreenMenu.addEventListener('click', function(e) {
         if(e.target === fullscreenMenu) closeMenu();
-      };
+      });
     });
   </script>
 
