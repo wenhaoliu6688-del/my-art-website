@@ -274,28 +274,28 @@
       .menuToggle{ display: block; }
 
       .container{
-        padding: 0 20px 140px;
+        padding: 25px 20px 140px;
       }
 
       .mainDisplay{
-        padding: 0 70px;
+        padding: 0 40px;
         flex-direction: column;
+        justify-content: center;
       }
 
       .imageWrapper{
         max-width: 100%;
-        margin-top: -40px;
+        margin-top: 0;
       }
       .imageWrapper img{
-        max-height: 100vh;
-        width: auto;
+        max-height: 85vh;
       }
 
       .imageInfo{
         position: static;
         transform: none;
         text-align: center;
-        margin-bottom: 15px;
+        margin-bottom: 20px;
         font-size: 11px;
         order: -1;
       }
@@ -397,7 +397,7 @@
       }
     }
 
-    @media (min-width: 768px) and (max-width: 1024px){
+    @media (min-width: 768px) and (max-width: 1400px){
       .menuToggle{
         display: block !important;
       }
@@ -407,16 +407,17 @@
       .fullscreenMenu{
         display: block !important;
       }
-      /* iPad端：文字放在图片上方，避免宽幅作品冲突 */
+      /* iPad端：文字放在图片上方，包含横屏 */
       .mainDisplay{
         flex-direction: column !important;
-        padding: 0 !important;
+        justify-content: center !important;
+        padding: 0 40px !important;
       }
       .imageWrapper{
         margin-top: 0 !important;
       }
       .imageWrapper img{
-        max-height: 80vh !important;
+        max-height: 75vh !important;
       }
       .imageInfo{
         position: static !important;
@@ -424,7 +425,7 @@
         top: auto !important;
         transform: none !important;
         text-align: center !important;
-        margin-bottom: 15px !important;
+        margin-bottom: 20px !important;
         order: -1 !important;
       }
       /* iPad端：缩印图按钮增大 */
