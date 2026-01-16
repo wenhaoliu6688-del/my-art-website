@@ -107,10 +107,9 @@
     /* 主容器 */
     .container{
       display: flex;
-      flex-direction: row;
+      flex-direction: column;
       min-height: 100vh;
-      padding: 100px 60px 160px 60px;
-      align-items: center;
+      padding: 100px 40px 160px;
     }
 
     /* 主展示区 */
@@ -119,7 +118,7 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 0;
+      padding: 0 100px 0 40px;
       position: relative;
     }
 
@@ -150,27 +149,22 @@
       line-height: 1.8;
     }
 
-    /* 左侧档案池 - 单列缩略图 */
+    /* 底部档案池 - 书签式缩略图 */
     .archivePool{
       display: flex;
-      flex-direction: column;
-      align-items: center;
       justify-content: center;
-      gap: 4px;
-      padding: 0;
-      overflow-y: auto;
-      max-height: 70vh;
+      gap: 6px;
+      padding: 40px 40px 20px;
+      overflow-x: auto;
       scrollbar-width: none;
-      flex-shrink: 0;
-      width: 45px;
     }
     .archivePool::-webkit-scrollbar{
       display: none;
     }
 
     .archiveBookmark{
-      width: 45px;
-      height: 6px;
+      width: 20px;
+      height: 36px;
       flex-shrink: 0;
       background: #f0f0f0;
       cursor: pointer;
@@ -201,6 +195,19 @@
       opacity: 0.7;
     }
 
+    .archiveBookmark .bookmarkNum{
+      position: absolute;
+      bottom: 2px;
+      left: 0;
+      right: 0;
+      text-align: center;
+      font-size: 8px;
+      color: rgba(0,0,0,0.4);
+      letter-spacing: 0.05em;
+    }
+    .archiveBookmark.active .bookmarkNum{
+      color: rgba(255,255,255,0.7);
+    }
 
     /* email */
     .emailWrap{
@@ -381,34 +388,6 @@
       .menuToggle{
         display: block !important;
       }
-
-      /* 手机端：缩略图回到底部 */
-      .container{
-        flex-direction: column;
-        padding: 80px 20px 120px;
-      }
-      .mainDisplay{
-        padding: 0;
-      }
-      .archivePool{
-        flex-direction: row;
-        width: auto;
-        max-height: none;
-        overflow-x: auto;
-        overflow-y: auto;
-        gap: 6px;
-        padding: 30px 0 0;
-      }
-      .archiveBookmark{
-        width: 8px;
-        height: 45px;
-      }
-      .imageInfo{
-        position: static;
-        transform: none;
-        text-align: center;
-        margin-top: 20px;
-      }
     }
   </style>
 </head>
@@ -430,9 +409,6 @@
   </button>
 
   <div class="container">
-    <!-- 左侧档案池 -->
-    <div class="archivePool" id="archivePool"></div>
-
     <!-- 主展示区 -->
     <div class="mainDisplay">
       <div class="imageWrapper">
@@ -444,6 +420,9 @@
         <span id="infoMedium"></span>
       </div>
     </div>
+
+    <!-- 底部档案池 -->
+    <div class="archivePool" id="archivePool"></div>
   </div>
 
   <div class="emailWrap">
@@ -721,7 +700,7 @@
       const pathParts = location.pathname.split("/").filter(Boolean);
       const BASE = pathParts.length > 0 ? "/" + pathParts[0] + "/" : "/";
 
-      const menuItems = fullscreenMenu.querySelectorAll('.menuItem, .menuCategoryTitle');
+      const menuItems = fullscreenMenu.querySelectorAll('.menuItem');
       menuItems.forEach(item => {
         const currentHref = item.getAttribute('href');
         if (currentHref && !currentHref.startsWith('/')) {
@@ -753,15 +732,15 @@
   <script>
     document.addEventListener('DOMContentLoaded', () => {
       const images = [
-        { code: '3·2·2·4', year: '2025', medium: 'Digital Art', src: './assets/001.jpg', thumb: './assets/thumbs/001.jpg' },
-        { code: '5·3·4·6', year: '2025', medium: 'Digital Art', src: './assets/002.jpg', thumb: './assets/thumbs/002.jpg' },
-        { code: '6·3·5·7', year: '2025', medium: 'Digital Art', src: './assets/003.jpg', thumb: './assets/thumbs/003.jpg' },
-        { code: '8·7·6·6', year: '2025', medium: 'Digital Art', src: './assets/004.jpg', thumb: './assets/thumbs/004.jpg' },
-        { code: '7·6·7·5', year: '2025', medium: 'Digital Art', src: './assets/005.jpg', thumb: './assets/thumbs/005.jpg' },
-        { code: '5·4·6·6', year: '2025', medium: 'Digital Art', src: './assets/006.jpg', thumb: './assets/thumbs/006.jpg' },
-        { code: '7·5·7·6', year: '2025', medium: 'Digital Art', src: './assets/007.jpg', thumb: './assets/thumbs/007.jpg' },
-        { code: '9·7·9·8', year: '2025', medium: 'Digital Art', src: './assets/008.jpg', thumb: './assets/thumbs/008.jpg' },
-        { code: '8·8·8·7', year: '2025', medium: 'Digital Art', src: './assets/009.jpg', thumb: './assets/thumbs/009.jpg' }
+        { code: '18:09:33', year: '2025', medium: 'Digital Art', src: './assets/001.jpg', thumb: './assets/thumbs/001.jpg' },
+        { code: '18:09:35', year: '2025', medium: 'Digital Art', src: './assets/002.jpg', thumb: './assets/thumbs/002.jpg' },
+        { code: '18:09:37', year: '2025', medium: 'Digital Art', src: './assets/003.jpg', thumb: './assets/thumbs/003.jpg' },
+        { code: '18:09:40', year: '2025', medium: 'Digital Art', src: './assets/004.jpg', thumb: './assets/thumbs/004.jpg' },
+        { code: '18:09:46', year: '2025', medium: 'Digital Art', src: './assets/005.jpg', thumb: './assets/thumbs/005.jpg' },
+        { code: '18:09:52', year: '2025', medium: 'Digital Art', src: './assets/006.jpg', thumb: './assets/thumbs/006.jpg' },
+        { code: '18:09:56', year: '2025', medium: 'Digital Art', src: './assets/007.jpg', thumb: './assets/thumbs/007.jpg' },
+        { code: '18:09:59', year: '2025', medium: 'Digital Art', src: './assets/008.jpg', thumb: './assets/thumbs/008.jpg' },
+        { code: '18:10:00', year: '2025', medium: 'Digital Art', src: './assets/009.jpg', thumb: './assets/thumbs/009.jpg' }
       ];
 
       let currentIndex = 0;
@@ -777,6 +756,7 @@
           bookmark.className = 'archiveBookmark' + (index === 0 ? ' active' : '');
           bookmark.innerHTML = `
             <img src="${img.thumb}" alt="${img.code}">
+            <span class="bookmarkNum">${img.code}</span>
           `;
           bookmark.addEventListener('click', () => showImage(index));
           archivePool.appendChild(bookmark);
