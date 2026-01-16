@@ -4,20 +4,46 @@
 
 ---
 
-## 最新状态（2025-01-17 晚）
+## 最新状态（2025-01-17 晚 - 进行中）
 
-### 最新完成 - v5
+### 待完成 - Images底部导航改造
 
 | 问题 | 方案 | 状态 |
 |------|------|------|
-| 手机端导航失灵（第8次尝试） | 最原始JS方法：onclick + getElementsByTagName + window.location | ✅ 已推送 |
-| Images页面缩略图不流畅 | 添加图片预加载功能 | ✅ |
-| Images页面布局 | 70px对称padding，12×45px缩略图，3px间距 | ✅ |
-| 图片编号设计 | 9组独特数字（X·Y·Z·W格式，四个不同） | ✅ |
+| Images手机端图片太小 | 图片95vh，文字移到上方 | 🔄 进行中 |
+| iPad端按钮太小不好点 | 改为左右箭头 + 缩印图滑动窗口 | 🔄 进行中 |
+| Yellow手机端作品太靠上 | 往下移100px | ✅ 已完成 |
 
-**Git 提交：** `b2b9f1f`
+**最新Git提交：** `3efa552` (Yellow 100px, Images 85vh, iPad 40×80px按钮 - 待改进)
 
-**测试地址：** https://wenhaoliu6688-del.github.io/my-art-website/
+---
+
+## 正在进行的改造：Images底部导航
+
+### 确认的设计方案
+
+**应用范围：** 手机端 + iPad端（电脑端保持现状）
+
+| 项目 | 确认值 |
+|------|--------|
+| 图片大小 | 95vh（手机端） |
+| 缩印图数量 | 固定7个，滑动窗口 |
+| 缩印图样式 | 保持原样 12px×45px竖条 |
+| 箭头按钮 | 38px×38px圆形（和Yellow一样） |
+| 箭头和缩印图间距 | 24px |
+| 高亮方式 | 黑色背景 |
+
+**布局示意：**
+```
+[ ← ] ░░░░░░░░░░░░░ [ → ]
+```
+左箭头 + 7个缩印图 + 右箭头
+
+**滑动窗口逻辑：**
+- 第1张图：显示 1-7
+- 第50张图：显示 47-53
+- 第100张图：显示 94-100
+- 当前图片始终在中间（第4个位置）
 
 ---
 
@@ -58,7 +84,7 @@
 
 ---
 
-### 问题2：手机端导航失灵（第8次修复）
+### 问题2：手机端导航失灵（第9次修复成功）
 
 **用户愤怒反馈：** "改了七八回了，手机端依旧失灵...太过分了"
 
@@ -69,74 +95,34 @@
 | v1-v7 | addEventListener + preventDefault + stopPropagation | ❌ 失败 |
 | v3 | 选择器 `.menuItem, .menuCategoryTitle` + tagName检查 | ❌ 失败 |
 | v4 | 简化：移除preventDefault，用style直接控制 | ❌ 失败 |
-| v5 | **最原始方法**：onclick + getElementsByTagName + window.location + setTimeout | ✅ 已推送 |
+| v5 | 最原始方法：onclick + getElementsByTagName | ❌ 失败 |
+| v6 | 跳过相对路径 ../ 和 ./ | ❌ 失败 |
+| v7 | **touchstart + click 双事件 + 视觉反馈** | ✅ 成功！ |
 
-**v5 最终代码（所有6个页面统一）：**
+**v7 最终代码（所有7个页面统一）：**
 ```javascript
-document.addEventListener('DOMContentLoaded', function() {
-  var menuToggle = document.getElementById('menuToggle');
-  var fullscreenMenu = document.getElementById('fullscreenMenu');
-  var menuCloseBtn = document.getElementById('menuCloseBtn');
+// 同时绑定 touchstart 和 click
+link.addEventListener('touchstart', navigate, {passive: false});
+link.addEventListener('click', navigate);
 
-  if(!menuToggle || !fullscreenMenu) return;
-
-  // 计算 BASE
-  var pathParts = location.pathname.split("/").filter(Boolean);
-  var BASE = pathParts.length > 0 ? "/" + pathParts[0] + "/" : "/";
-
-  // setTimeout 确保DOM准备好，用原始方法
+// 导航函数，带视觉反馈
+function navigate(e) {
+  if(e) e.preventDefault();
+  link.style.opacity = '0.5';
   setTimeout(function() {
-    var links = fullscreenMenu.getElementsByTagName('a');
-    for(var i = 0; i < links.length; i++) {
-      (function(link) {
-        var href = link.getAttribute('href');
-        if(href && !href.startsWith('/') && !href.startsWith('http')) {
-          link.href = BASE + href;
-        }
-        // 直接设置 onclick 跳转
-        link.onclick = function() {
-          window.location = this.href;
-          return false;
-        };
-      })(links[i]);
-    }
-  }, 100);
-
-  // 打开菜单
-  menuToggle.onclick = function() {
-    fullscreenMenu.style.display = 'block';
-    fullscreenMenu.style.opacity = '1';
-    fullscreenMenu.style.pointerEvents = 'auto';
-    document.body.style.overflow = 'hidden';
-  };
-
-  // 关闭菜单
-  function closeMenu() {
-    fullscreenMenu.style.opacity = '0';
-    fullscreenMenu.style.pointerEvents = 'none';
-  }
-
-  menuCloseBtn.onclick = closeMenu;
-  fullscreenMenu.onclick = function(e) {
-    if(e.target === fullscreenMenu) closeMenu();
-  };
-});
+    window.location.href = link.href;
+  }, 50);
+}
 ```
 
-**关键点：**
-- 使用 `var` 代替 `const/let`
-- 使用 `onclick` 代替 `addEventListener`
-- 使用 `getElementsByTagName` 代替 `querySelectorAll`
-- 使用 `window.location` 直接跳转
-- 添加 `setTimeout(100ms)` 确保 DOM 完全准备好
-
-**修复的文件（共6个）：**
+**修复的文件（共7个）：**
 1. `index.html`
 2. `images/index.html`
-3. `projects/formless-buddha/index.html`
-4. `projects/frontispiece/index.html`
-5. `projects/yellow-river/index.html`
-6. `projects/yellow/index.html`
+3. `about/index.html`
+4. `projects/formless-buddha/index.html`
+5. `projects/frontispiece/index.html`
+6. `projects/yellow-river/index.html`
+7. `projects/yellow/index.html`
 
 ---
 
@@ -153,18 +139,25 @@ function preloadImages() {
     img.src = imgData.src;
   });
 }
-
-// 初始化时调用
-preloadImages();
-createBookmarks();
-showImage(0);
 ```
+
+---
+
+### 问题4：手机端布局调整
+
+**修改内容：**
+
+| 页面 | 修改 | 状态 |
+|------|------|------|
+| Yellow | 手机端往下移100px | ✅ |
+| Images | 图片95vh，文字移到上方 | ✅ |
+| Images | iPad按钮40px×80px（待改为箭头） | 🔄 |
 
 ---
 
 ## 最终确定的代码样式
 
-### images/index.html 布局
+### images/index.html 布局（当前）
 
 ```css
 /* 主展示区 - 70px对称居中 */
@@ -180,32 +173,59 @@ showImage(0);
   width: 12px;
   height: 45px;
 }
-/* 删除了 .bookmarkNum 相关CSS */
 ```
 
-### 手机端也统一
+### 手机端
 
 ```css
 @media (max-width: 1024px){
   .mainDisplay{
-    padding: 0 70px;  /* 手机端也保持70px */
+    padding: 0 70px;
+    flex-direction: column;  /* 文字在上方 */
   }
-  .archiveBookmark{
-    width: 12px;
-    height: 45px;
+  .imageWrapper img{
+    max-height: 95vh;  /* 图片尽量大 */
+  }
+  .imageInfo{
+    position: static;
+    text-align: center;
+    order: -1;  /* 文字在图片上方 */
   }
 }
 ```
 
 ---
 
+## 如何添加新图片（重要！）
+
+**用户不会编程，只需：**
+
+1. **准备图片文件**
+   - 大图放到 `images/assets/` 文件夹
+   - 小图放到 `images/assets/thumbs/` 文件夹
+   - 文件名按顺序：010.jpg, 011.jpg...
+
+2. **找 Claude Code 帮忙**
+   - 说："我要在Images页面加一张新图片"
+   - Claude 会帮你写好那行代码
+
+**代码格式示例：**
+```javascript
+{ code: '新编号', year: '2025', medium: 'Digital Art', src: './assets/010.jpg', thumb: './assets/thumbs/010.jpg' }
+```
+
+**新的导航逻辑会自动适配任意数量的图片，无需修改其他代码。**
+
+---
+
 ## Git 提交历史（2025-01-17）
 
 ```
-b2b9f1f Fix v5: Mobile nav with most basic JS methods
-4fb4717 Fix v4: Rewrite mobile navigation + add image preload
-d531cb3 Fix: Mobile navigation + Images layout redesign
-d772849 Revert Images to bottom layout, fix mobile nav
+3efa552 Fix: Yellow 100px padding, Images 85vh text above, iPad 40x80px buttons
+f2bf11b Fix: Mobile layout adjustments - Yellow padding, Images size, iPad buttons
+2d106ee Fix v7: Add touchstart + click dual events with visual feedback
+b9599e6 Fix v6: Skip relative paths ../ and ./ in menu navigation
+713c837 Update SESSION_STATE: Document 2025-01-17 mobile nav v5 and Images redesign
 ```
 
 ---
@@ -220,8 +240,9 @@ d772849 Revert Images to bottom layout, fix mobile nav
 6. 用户是编程小白，不懂英语
 7. **任何新改动前，先和用户讨论方案，确认后再动手**
 8. **逐步确认细节**，不要一次性决定所有事情
-9. **手机端导航非常脆弱**，修改时必须非常小心
-10. **数字编号规则**必须永久记住，将来添加图片时继续按此规律设计
+9. **手机端导航已修复（v7）**，不要轻易改动
+10. **数字编号规则**必须永久记住
+11. **用户只会用Claude Code**，不会自己写代码
 
 ---
 
@@ -239,4 +260,4 @@ d772849 Revert Images to bottom layout, fix mobile nav
 
 ---
 
-*最后更新：2025-01-17 晚*
+*最后更新：2025-01-17 晚 - 待完成Images导航改造*

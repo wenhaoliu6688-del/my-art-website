@@ -154,9 +154,6 @@
       display: flex;
       justify-content: center;
       gap: 3px;
-      padding: 40px 40px 20px;
-      overflow-x: auto;
-      scrollbar-width: none;
     }
     .archivePool::-webkit-scrollbar{
       display: none;
@@ -193,6 +190,46 @@
     }
     .archiveBookmark.active img{
       opacity: 0.7;
+    }
+
+    /* 底部导航区域 - 左右箭头 + 缩印图 */
+    .bottomNav{
+      position: fixed;
+      bottom: 48px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      align-items: center;
+      gap: 24px;
+      z-index: 100;
+    }
+
+    /* 左右箭头按钮 */
+    .navArrow{
+      width: 38px;
+      height: 38px;
+      border: none;
+      background: transparent;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0;
+      margin: 0;
+      flex-shrink: 0;
+      transition: opacity .2s ease;
+    }
+    .navArrow svg{
+      width: 20px;
+      height: 20px;
+      stroke: var(--text);
+      stroke-width: 1.2;
+      fill: none;
+      opacity: 0.25;
+      transition: opacity .2s ease;
+    }
+    .navArrow:hover svg{
+      opacity: 0.6;
     }
 
     /* email */
@@ -249,7 +286,7 @@
         max-width: 100%;
       }
       .imageWrapper img{
-        max-height: 85vh;
+        max-height: 95vh;
       }
 
       .imageInfo{
@@ -415,8 +452,20 @@
       </div>
     </div>
 
-    <!-- 底部档案池 -->
-    <div class="archivePool" id="archivePool"></div>
+    <!-- 底部档案池 - 带左右箭头导航 -->
+    <div class="bottomNav">
+      <button class="navArrow prev" id="prevBtn" aria-label="上一张">
+        <svg viewBox="0 0 24 24">
+          <path d="M15 18l-6-6 6-6"/>
+        </svg>
+      </button>
+      <div class="archivePool" id="archivePool"></div>
+      <button class="navArrow next" id="nextBtn" aria-label="下一张">
+        <svg viewBox="0 0 24 24">
+          <path d="M9 18l6-6-6-6"/>
+        </svg>
+      </button>
+    </div>
   </div>
 
   <div class="emailWrap">
@@ -781,6 +830,14 @@
       const infoYear = document.getElementById('infoYear');
       const infoMedium = document.getElementById('infoMedium');
       const archivePool = document.getElementById('archivePool');
+      const prevBtn = document.getElementById('prevBtn');
+      const nextBtn = document.getElementById('nextBtn');
+
+      // ========== 如何添加新图片 ==========
+      // 1. 准备图片文件：assets/XXX.jpg 和 assets/thumbs/XXX.jpg
+      // 2. 在上面 images 数组中添加一行（复制上一行，修改编号和文件名）
+      // 3. 编号规则见 SESSION_STATE.md
+      // ====================================
 
       // 预加载所有图片
       function preloadImages() {
@@ -790,16 +847,37 @@
         });
       }
 
+      // 滑动窗口：只显示7个缩印图，当前图片在中间
       function createBookmarks() {
-        images.forEach((img, index) => {
+        archivePool.innerHTML = '';  // 清空
+        const visibleCount = 7;  // 显示7个
+        const halfCount = Math.floor(visibleCount / 2);  // 中间位置是第4个
+
+        // 计算起始索引
+        let startIndex = currentIndex - halfCount;
+        if (startIndex < 0) startIndex = 0;  // 开头不够7个时从0开始
+        if (startIndex + visibleCount > images.length) {
+          startIndex = images.length - visibleCount;  // 结尾不够7个时调整
+        }
+        if (startIndex < 0) startIndex = 0;  // 再次确保不小于0
+
+        // 创建可见的缩印图
+        for (let i = 0; i < visibleCount; i++) {
+          const index = startIndex + i;
+          if (index >= images.length) break;  // 防止越界
+
+          const img = images[index];
           const bookmark = document.createElement('div');
-          bookmark.className = 'archiveBookmark' + (index === 0 ? ' active' : '');
-          bookmark.innerHTML = `
-            <img src="${img.thumb}" alt="${img.code}">
-          `;
+          bookmark.className = 'archiveBookmark' + (index === currentIndex ? ' active' : '');
+          bookmark.innerHTML = `<img src="${img.thumb}" alt="${img.code}">`;
           bookmark.addEventListener('click', () => showImage(index));
           archivePool.appendChild(bookmark);
-        });
+        }
+      }
+
+      // 更新缩印图显示（当切换图片时）
+      function updateBookmarks() {
+        createBookmarks();  // 重新创建缩印图
       }
 
       function showImage(index) {
@@ -812,10 +890,8 @@
         infoYear.textContent = img.year;
         infoMedium.textContent = img.medium;
 
-        const bookmarks = archivePool.querySelectorAll('.archiveBookmark');
-        bookmarks.forEach((b, i) => {
-          b.classList.toggle('active', i === index);
-        });
+        // 更新缩印图
+        updateBookmarks();
       }
 
       function showPrev() {
@@ -828,9 +904,28 @@
         showImage(currentIndex);
       }
 
+      // 键盘左右箭头切换
       document.addEventListener('keydown', (e) => {
         if(e.key === 'ArrowLeft') showPrev();
         if(e.key === 'ArrowRight') showNext();
+      });
+
+      // 箭头按钮事件 - click + touchend（iPad优化）
+      prevBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        showPrev();
+      });
+      nextBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        showNext();
+      });
+      prevBtn.addEventListener('touchend', (e) => {
+        e.preventDefault();
+        showPrev();
+      });
+      nextBtn.addEventListener('touchend', (e) => {
+        e.preventDefault();
+        showNext();
       });
 
       // 初始化
