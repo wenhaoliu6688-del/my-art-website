@@ -274,7 +274,7 @@
       .menuToggle{ display: block; }
 
       .container{
-        padding: 15px 20px 140px;
+        padding: -15px 20px 140px;
       }
 
       .mainDisplay{
@@ -407,7 +407,7 @@
       }
       /* iPad端：文字放在图片上方，避免宽幅作品冲突 */
       .mainDisplay{
-        flex-direction: column;
+        flex-direction: column !important;
       }
       .imageInfo{
         position: static !important;
@@ -416,7 +416,7 @@
         transform: none !important;
         text-align: center !important;
         margin-bottom: 15px;
-        order: -1;
+        order: -1 !important;
       }
       /* iPad端：缩印图按钮增大 */
       .archiveBookmark{
